@@ -45,7 +45,7 @@ const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek:
   return span;
 };
 
-const getDayOffset: Function = (event: CalendarEvent, startOfWeek: Moment): number => {
+export const getDayOffset: Function = (event: CalendarEvent, startOfWeek: Moment): number => {
   let offset: number = 0;
   if (moment(event.start).startOf('day').isAfter(moment(startOfWeek))) {
     offset = moment(event.start).startOf('day').diff(startOfWeek, 'days');
