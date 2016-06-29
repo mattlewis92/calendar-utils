@@ -93,7 +93,7 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
   });
 
   const eventRows: WeekViewEventRow[] = [];
-  const allocatedEvents: Set = new Set();
+  const allocatedEvents: Set<any> = new Set();
 
   eventsMapped.forEach((event: WeekViewEvent, index: number) => {
     if (!allocatedEvents.has(event)) {
