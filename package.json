@@ -1,0 +1,48 @@
+{
+  "name": "calendar-utils",
+  "version": "0.0.1",
+  "description": "Utility functions to generate views for calendars",
+  "main": "dist/src/calendarUtils.js",
+  "typings": "dist/src/calendarUtils.d.ts",
+  "files": [
+    "dist/src"
+  ],
+  "scripts": {
+    "lint": "tslint ./src/**/*.ts ./test/**/*.ts",
+    "pretsc": "typings install",
+    "tsc": "tsc -p .",
+    "tsc:watch": "npm run tsc -- --watch",
+    "pretest": "npm run lint && npm run tsc",
+    "test": "mocha dist/test",
+    "test:watch": "npm test -- --watch",
+    "start": "concurrently \"npm run tsc:watch\" \"npm run test:watch\"",
+    "prepublish": "npm test",
+    "preversion": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattlewis92/calendar-utils.git"
+  },
+  "keywords": [
+    "calendar",
+    "utilities"
+  ],
+  "author": "Matt Lewis",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mattlewis92/calendar-utils/issues"
+  },
+  "homepage": "https://github.com/mattlewis92/calendar-utils#readme",
+  "peerDependencies": {
+    "moment": "~2.13.0"
+  },
+  "devDependencies": {
+    "chai": "~3.5.0",
+    "concurrently": "~2.1.0",
+    "mocha": "~2.5.3",
+    "moment": "~2.13.0",
+    "tslint": "~3.12.1",
+    "typescript": "~1.8.10",
+    "typings": "~1.3.1"
+  }
+}
