@@ -70,7 +70,7 @@ export const getWeekViewHeader: Function = ({viewDate}: {viewDate: Date}): WeekD
 export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent[], viewDate: Date}): WeekViewEventRow[] => {
 
   const startOfWeek: Moment = moment(viewDate).startOf('week');
-  const endOfWeek: Moment = moment(startOfWeek).clone().add(DAYS_IN_WEEK, 'days');
+  const endOfWeek: Moment = moment(viewDate).endOf('week');
 
   const eventsMapped: WeekViewEvent[] = events.map(event => {
     const offset: number = getDayOffset(event, startOfWeek);
