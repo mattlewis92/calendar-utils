@@ -93,21 +93,21 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
   });
 
   const eventRows: WeekViewEventRow[] = [];
-  const allocatedEvents: Set<any> = new Set();
+  const allocatedEvents: WeekViewEvent[] = [];
 
   eventsMapped.forEach((event: WeekViewEvent, index: number) => {
-    if (!allocatedEvents.has(event)) {
-      allocatedEvents.add(event);
+    if (allocatedEvents.indexOf(event) === -1) {
+      allocatedEvents.push(event);
       let rowSpan: number = event.span + event.offset;
       const otherRowEvents: WeekViewEvent[] = eventsMapped.slice(index + 1).filter(nextEvent => {
         if (
-          !allocatedEvents.has(nextEvent) &&
+          allocatedEvents.indexOf(nextEvent) === -1 &&
           nextEvent.offset >= rowSpan &&
           rowSpan + nextEvent.span <= DAYS_IN_WEEK
         ) {
           nextEvent.offset -= rowSpan;
           rowSpan += nextEvent.span + nextEvent.offset;
-          allocatedEvents.add(nextEvent);
+          allocatedEvents.push(nextEvent);
           return true;
         }
       });
