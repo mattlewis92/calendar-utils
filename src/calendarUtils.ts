@@ -12,7 +12,7 @@ export interface WeekDay {
   isWeekend: boolean;
 }
 
-interface EventColor {
+export interface EventColor {
   primary: string;
   secondary: string;
 }
@@ -34,6 +34,16 @@ export interface WeekViewEvent {
 
 export interface WeekViewEventRow {
   row: WeekViewEvent[];
+}
+
+export interface MonthViewDay extends WeekDay {
+  inMonth: boolean;
+  events: CalendarEvent[];
+}
+
+export interface MonthView {
+  rowOffsets: number[];
+  days: MonthViewDay[];
 }
 
 const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Moment): number => {
@@ -108,20 +118,24 @@ const getEventsInPeriod: Function = ({events, periodStart, periodEnd}: GetEvents
   return events.filter((event: CalendarEvent) => isEventIsPeriod({event, periodStart, periodEnd}));
 };
 
+const getWeekDay: Function = ({date}: {date: Moment}): WeekDay => {
+  const today: Moment = moment().startOf('day');
+  return {
+    date,
+    isPast: date.isBefore(today),
+    isToday: date.isSame(today),
+    isFuture: date.isAfter(today),
+    isWeekend: WEEKEND_DAY_NUMBERS.indexOf(date.day()) > -1
+  };
+};
+
 export const getWeekViewHeader: Function = ({viewDate}: {viewDate: Date}): WeekDay[] => {
 
   const start: Moment = moment(viewDate).startOf('week');
   const days: WeekDay[] = [];
-  const today: Moment = moment().startOf('day');
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
     const date: Moment = start.clone().add(i, 'days');
-    days.push({
-      date,
-      isPast: date.isBefore(today),
-      isToday: date.isSame(today),
-      isFuture: date.isAfter(today),
-      isWeekend: WEEKEND_DAY_NUMBERS.indexOf(date.day()) > -1
-    });
+    days.push(getWeekDay({date}));
   }
 
   return days;
@@ -182,5 +196,40 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
   });
 
   return eventRows;
+
+};
+
+export const getMonthView: Function = ({events, viewDate}: {events: CalendarEvent[], viewDate: Date}): MonthView => {
+
+  const start: Moment = moment(viewDate).startOf('month').startOf('week');
+  const end: Moment = moment(viewDate).endOf('month').endOf('week');
+  const eventsInMonth: CalendarEvent[] = getEventsInPeriod({
+    events,
+    periodStart: moment(viewDate).startOf('month'),
+    periodEnd: moment(viewDate).endOf('month')
+  });
+  const days: MonthViewDay[] = [];
+  for (let i: number = 0; i < end.diff(start, 'days') + 1; i++) {
+    const date: Moment = start.clone().add(i, 'days');
+    const day: MonthViewDay = getWeekDay({date});
+    day.inMonth = date.clone().startOf('month').isSame(moment(viewDate).startOf('month'));
+    day.events = getEventsInPeriod({
+      events: eventsInMonth,
+      periodStart: moment(date).startOf('day'),
+      periodEnd: moment(date).endOf('day')
+    });
+    days.push(day);
+  }
+
+  const rows: number = Math.floor(days.length / 7);
+  const rowOffsets: number[] = [];
+  for (let i: number = 0; i < rows; i++) {
+    rowOffsets.push(i * 7);
+  }
+
+  return {
+    rowOffsets,
+    days
+  };
 
 };

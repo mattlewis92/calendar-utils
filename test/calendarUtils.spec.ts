@@ -1,20 +1,28 @@
 import {expect} from 'chai';
 import * as sinon from 'sinon';
 import * as moment from 'moment';
-import {getWeekViewHeader, getWeekView, WeekDay, CalendarEvent, WeekViewEventRow} from './../src/calendarUtils';
+import {
+  getWeekViewHeader,
+  getWeekView,
+  getMonthView
+  WeekDay,
+  CalendarEvent,
+  WeekViewEventRow,
+  MonthView
+} from './../src/calendarUtils';
 
 const TIMEZONE_OFFSET: number = new Date().getTimezoneOffset() * 60 * 1000;
 
+let clock: any;
+beforeEach(() => {
+  clock = sinon.useFakeTimers(new Date('2016-06-28').getTime());
+});
+
+afterEach(() => {
+  clock.restore();
+});
+
 describe('getWeekViewHeader', () => {
-
-  let clock: any;
-  beforeEach(() => {
-    clock = sinon.useFakeTimers(new Date('2016-06-28').getTime());
-  });
-
-  afterEach(() => {
-    clock.restore();
-  });
 
   it('get all days of the week for the given date', () => {
     const days: WeekDay[] = getWeekViewHeader({
@@ -360,6 +368,87 @@ describe('getWeekView', () => {
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
     expect(result[0].row[0].event).to.deep.equal(events[0]);
+  });
+
+});
+
+describe('getMonthView', () => {
+
+  let result: MonthView, events: CalendarEvent[];
+  beforeEach(() => {
+    events = [{
+      start: new Date('2016-07-03'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: new Date('2016-07-05'),
+      end: new Date('2016-07-07'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: new Date('2016-06-29'),
+      end: new Date('2016-06-30'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+
+    result = getMonthView({viewDate: new Date('2016-07-03'), events});
+  });
+
+  it('should get the row offsets', () => {
+    expect(result.rowOffsets).to.deep.equal([0, 7, 14, 21, 28, 35]);
+  });
+
+  it('should get all days in the month plus the ones at the start and end of the week', () => {
+    expect(result.days.length).to.equal(42);
+  });
+
+  it('should set the date on each day', () => {
+    expect(result.days[0].date.valueOf()).to.equal(new Date('2016-06-26').getTime() + TIMEZONE_OFFSET);
+    expect(result.days[10].date.valueOf()).to.equal(new Date('2016-07-06').getTime() + TIMEZONE_OFFSET);
+  });
+
+  it('should set inMonth on days', () => {
+    expect(result.days[0].inMonth).to.be.false;
+    expect(result.days[10].inMonth).to.be.true;
+    expect(result.days[40].inMonth).to.be.false;
+  });
+
+  it('should set isPast on days', () => {
+    expect(result.days[0].isPast).to.be.true;
+    expect(result.days[2].isPast).to.be.false;
+    expect(result.days[10].isPast).to.be.false;
+  });
+
+  it('should set isToday on days', () => {
+    expect(result.days[0].isToday).to.be.false;
+    expect(result.days[2].isToday).to.be.true;
+  });
+
+  it('should set isFuture on days', () => {
+    expect(result.days[0].isFuture).to.be.false;
+    expect(result.days[2].isFuture).to.be.false;
+    expect(result.days[10].isFuture).to.be.true;
+  });
+
+  it('should set isWeekend on days', () => {
+    expect(result.days[0].isWeekend).to.be.true;
+    expect(result.days[2].isWeekend).to.be.false;
+    expect(result.days[6].isWeekend).to.be.true;
+  });
+
+  it('should exclude events not in the current month but that could appear on the first and last days of adjoining months', () => {
+    expect(result.days[3].events.length).to.equal(0);
+  });
+
+  it('should set events on the corrent days', () => {
+    expect(result.days[6].events).to.deep.equal([]);
+    expect(result.days[7].events).to.deep.equal([events[0]]);
+    expect(result.days[8].events).to.deep.equal([]);
+    expect(result.days[9].events).to.deep.equal([events[1]]);
+    expect(result.days[10].events).to.deep.equal([events[1]]);
+    expect(result.days[11].events).to.deep.equal([events[1]]);
+    expect(result.days[12].events).to.deep.equal([]);
   });
 
 });
