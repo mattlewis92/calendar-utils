@@ -21,7 +21,7 @@ export interface CalendarEvent {
   start: Date;
   end?: Date;
   title: string;
-  color: EventColor | string;
+  color: EventColor;
 }
 
 export interface WeekViewEvent {

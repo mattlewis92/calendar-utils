@@ -81,7 +81,7 @@ describe('getWeekView', () => {
       start: new Date('2016-06-27'),
       end: new Date('2016-06-29'),
       title: '',
-      color: ''
+      color: {primary: '', secondary: ''}
     }];
 
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
@@ -103,7 +103,7 @@ describe('getWeekView', () => {
       start: new Date('2016-06-24'),
       end: new Date('2016-06-29'),
       title: '',
-      color: ''
+      color: {primary: '', secondary: ''}
     }];
 
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
@@ -125,7 +125,7 @@ describe('getWeekView', () => {
       start: new Date('2016-06-27'),
       end: new Date('2016-07-10'),
       title: '',
-      color: ''
+      color: {primary: '', secondary: ''}
     }];
 
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
@@ -147,7 +147,7 @@ describe('getWeekView', () => {
       start: new Date('2016-06-24'),
       end: new Date('2016-07-10'),
       title: '',
-      color: ''
+      color: {primary: '', secondary: ''}
     }];
 
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
@@ -170,62 +170,62 @@ describe('getWeekView', () => {
       start: moment().startOf('week').add(4, 'days').toDate(),
       end: moment().startOf('week').add(5, 'days').toDate(),
       title: 'A final event',
-      color: '#FAE3E3'
+      color: {primary: '', secondary: ''}
     }, { // 1
       start: moment().startOf('week').add(1, 'minutes').add(4, 'days').toDate(),
       end: moment().startOf('week').add(5, 'days').toDate(),
       title: 'A final event',
-      color: '#FAE3E3'
+      color: {primary: '', secondary: ''}
     }, { // 2
       start: moment().startOf('week').add(2, 'minutes').add(4, 'days').toDate(),
       end: moment().startOf('week').add(5, 'days').toDate(),
       title: 'A final event',
-      color: '#FAE3E3'
+      color: {primary: '', secondary: ''}
     }, { // 3
       start: moment().startOf('week').add(6, 'days').toDate(),
       end: moment().startOf('week').add(7, 'days').toDate(),
       title: 'I should be last',
-      color: '#FAE3E3'
+      color: {primary: '', secondary: ''}
     }, { // 4
       start: moment().startOf('week').add(1, 'minutes').add(6, 'days').toDate(),
       end: moment().startOf('week').add(7, 'days').toDate(),
       title: 'I should be last',
-      color: '#FAE3E3'
+      color: {primary: '', secondary: ''}
     }, { // 5
       start: moment().startOf('week').add(2, 'minutes').add(6, 'days').toDate(),
       end: moment().startOf('week').add(7, 'days').toDate(),
       title: 'I should be last',
-      color: '#FAE3E3'
+      color: {primary: '', secondary: ''}
     }, { // 6
       start: moment().startOf('week').add(3, 'minutes').add(6, 'days').toDate(),
       end: moment().startOf('week').add(7, 'days').toDate(),
       title: 'I should be last',
-      color: '#FAE3E3'
+      color: {primary: '', secondary: ''}
     }, { // 7
       start: moment().startOf('week').toDate(),
       end: moment().startOf('week').add(5, 'days').toDate(),
       title: 'Another event',
-      color: '#FDF1BA'
+      color: {primary: '', secondary: ''}
     }, { // 8
       start: moment().startOf('week').add(1, 'minutes').toDate(),
       end: moment().startOf('week').add(5, 'days').toDate(),
       title: 'Another event',
-      color: '#FDF1BA'
+      color: {primary: '', secondary: ''}
     }, { // 9
       start: moment().startOf('week').subtract(3, 'days').toDate(),
       end: moment().endOf('week').add(3, 'days').toDate(),
       title: 'My event',
-      color: '#D1E8FF'
+      color: {primary: '', secondary: ''}
     }, { // 10
       start: moment().startOf('week').add(1, 'days').toDate(),
       end: moment().startOf('week').add(3, 'days').toDate(),
       title: '3 day event',
-      color: '#D1E8FF'
+      color: {primary: '', secondary: ''}
     }, { // 11
       start: moment().startOf('week').add(1, 'days').toDate(),
       end: moment().startOf('week').add(2, 'days').toDate(),
       title: '2 day event',
-      color: '#D1E8FF'
+      color: {primary: '', secondary: ''}
     }];
 
     for (let i: number = 0; i < 7; i++) {
@@ -233,7 +233,7 @@ describe('getWeekView', () => {
         events.push({
           start: moment().startOf('week').add(j, 'minutes').add(i, 'days').toDate(),
           title: `Event column ${i} count ${j}`,
-          color: '#D1E8FF'
+          color: {primary: '', secondary: ''}
         });
       }
     }
@@ -319,7 +319,7 @@ describe('getWeekView', () => {
       start: new Date('2016-06-24'),
       end: new Date('2016-05-25'),
       title: '',
-      color: ''
+      color: {primary: '', secondary: ''}
     }];
 
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
@@ -332,7 +332,7 @@ describe('getWeekView', () => {
     const events: CalendarEvent[] = [{
       start: new Date('2016-06-24'),
       title: '',
-      color: ''
+      color: {primary: '', secondary: ''}
     }];
 
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
@@ -345,7 +345,7 @@ describe('getWeekView', () => {
       start: moment(new Date('2016-06-27')).startOf('week').toDate(),
       end: new Date('2016-08-01'),
       title: '',
-      color: ''
+      color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
     expect(result[0].row[0].event).to.deep.equal(events[0]);
@@ -356,7 +356,7 @@ describe('getWeekView', () => {
       start: new Date('2016-04-01'),
       end: moment(new Date('2016-06-27')).endOf('week').toDate(),
       title: '',
-      color: ''
+      color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
     expect(result[0].row[0].event).to.deep.equal(events[0]);
