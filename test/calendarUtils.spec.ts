@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import {
   getWeekViewHeader,
   getWeekView,
-  getMonthView
+  getMonthView,
   WeekDay,
   CalendarEvent,
   WeekViewEventRow,
