@@ -1,4 +1,5 @@
 import {expect} from 'chai';
+import * as sinon from 'sinon';
 import * as moment from 'moment';
 import {getWeekViewHeader, getWeekView, WeekDay, CalendarEvent, WeekViewEventRow} from './../src/calendarUtils';
 
@@ -6,18 +7,68 @@ const TIMEZONE_OFFSET: number = new Date().getTimezoneOffset() * 60 * 1000;
 
 describe('getWeekViewHeader', () => {
 
+  let clock: any;
+  beforeEach(() => {
+    clock = sinon.useFakeTimers(new Date('2016-06-28').getTime());
+  });
+
+  afterEach(() => {
+    clock.restore();
+  });
+
   it('get all days of the week for the given date', () => {
     const days: WeekDay[] = getWeekViewHeader({
       viewDate: new Date('2016-06-28')
     });
-    expect(days.length).to.equal(7);
-    expect(days[0].date.valueOf()).to.equal(new Date('2016-06-26').getTime() + TIMEZONE_OFFSET);
-    expect(days[1].date.valueOf()).to.equal(new Date('2016-06-27').getTime() + TIMEZONE_OFFSET);
-    expect(days[2].date.valueOf()).to.equal(new Date('2016-06-28').getTime() + TIMEZONE_OFFSET);
-    expect(days[3].date.valueOf()).to.equal(new Date('2016-06-29').getTime() + TIMEZONE_OFFSET);
-    expect(days[4].date.valueOf()).to.equal(new Date('2016-06-30').getTime() + TIMEZONE_OFFSET);
-    expect(days[5].date.valueOf()).to.equal(new Date('2016-07-01').getTime() + TIMEZONE_OFFSET);
-    expect(days[6].date.valueOf()).to.equal(new Date('2016-07-02').getTime() + TIMEZONE_OFFSET);
+    days.forEach((day: any) => {
+      day.timestamp = day.date.valueOf();
+      delete day.date;
+    });
+
+    expect(days).to.deep.equal([{
+      timestamp: new Date('2016-06-26').getTime() + TIMEZONE_OFFSET,
+      isPast: true,
+      isToday: false,
+      isFuture: false,
+      isWeekend: true
+    }, {
+      timestamp: new Date('2016-06-27').getTime() + TIMEZONE_OFFSET,
+      isPast: true,
+      isToday: false,
+      isFuture: false,
+      isWeekend: false
+    }, {
+      timestamp: new Date('2016-06-28').getTime() + TIMEZONE_OFFSET,
+      isPast: false,
+      isToday: true,
+      isFuture: false,
+      isWeekend: false
+    }, {
+      timestamp: new Date('2016-06-29').getTime() + TIMEZONE_OFFSET,
+      isPast: false,
+      isToday: false,
+      isFuture: true,
+      isWeekend: false
+    }, {
+      timestamp: new Date('2016-06-30').getTime() + TIMEZONE_OFFSET,
+      isPast: false,
+      isToday: false,
+      isFuture: true,
+      isWeekend: false
+    }, {
+      timestamp: new Date('2016-07-01').getTime() + TIMEZONE_OFFSET,
+      isPast: false,
+      isToday: false,
+      isFuture: true,
+      isWeekend: false
+    }, {
+      timestamp: new Date('2016-07-02').getTime() + TIMEZONE_OFFSET,
+      isPast: false,
+      isToday: false,
+      isFuture: true,
+      isWeekend: true
+    }]);
+
   });
 
 });

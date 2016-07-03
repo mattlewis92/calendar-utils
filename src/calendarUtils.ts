@@ -2,9 +2,14 @@ import * as moment from 'moment';
 import {Moment} from 'moment';
 
 const DAYS_IN_WEEK: number = 7;
+const WEEKEND_DAY_NUMBERS: number[] = [0, 6];
 
 export interface WeekDay {
   date: Moment;
+  isPast: boolean;
+  isToday: boolean;
+  isFuture: boolean;
+  isWeekend: boolean;
 }
 
 export interface CalendarEvent {
@@ -102,9 +107,15 @@ export const getWeekViewHeader: Function = ({viewDate}: {viewDate: Date}): WeekD
 
   const start: Moment = moment(viewDate).startOf('week');
   const days: WeekDay[] = [];
+  const today: Moment = moment().startOf('day');
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
+    const date: Moment = start.clone().add(i, 'days');
     days.push({
-      date: start.clone().add(i, 'days')
+      date,
+      isPast: date.isBefore(today),
+      isToday: date.isSame(today),
+      isFuture: date.isAfter(today),
+      isWeekend: WEEKEND_DAY_NUMBERS.indexOf(date.day()) > -1
     });
   }
 
