@@ -16,8 +16,8 @@
     "test": "mocha dist/test",
     "test:watch": "npm test -- --watch",
     "start": "concurrently \"npm run tsc:watch\" \"npm run test:watch\"",
-    "prepublish": "npm test",
-    "preversion": "npm test"
+    "preversion": "npm test",
+    "postversion": "git push && npm publish"
   },
   "repository": {
     "type": "git",
