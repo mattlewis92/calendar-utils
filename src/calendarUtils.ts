@@ -12,11 +12,16 @@ export interface WeekDay {
   isWeekend: boolean;
 }
 
+interface EventColor {
+  primary: string;
+  secondary: string;
+}
+
 export interface CalendarEvent {
   start: Date;
   end?: Date;
   title: string;
-  color: string;
+  color: EventColor | string;
 }
 
 export interface WeekViewEvent {
