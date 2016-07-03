@@ -53,6 +53,51 @@ export const getDayOffset: Function = (event: CalendarEvent, startOfWeek: Moment
   return offset;
 };
 
+interface IsEventInPeriodArgs {
+  event: CalendarEvent;
+  periodStart: Moment;
+  periodEnd: Moment;
+}
+
+const isEventIsPeriod: Function = ({event, periodStart, periodEnd}: IsEventInPeriodArgs): boolean => {
+
+  const eventStart: Moment = moment(event.start);
+  const eventEnd: Moment = moment(event.end || event.start);
+
+  if (eventStart.isAfter(periodStart) && eventStart.isBefore(periodEnd)) {
+    return true;
+  }
+
+  if (eventEnd.isAfter(periodStart) && eventEnd.isBefore(periodEnd)) {
+    return true;
+  }
+
+  if (eventStart.isBefore(periodStart) && eventEnd.isAfter(periodEnd)) {
+    return true;
+  }
+
+  if (eventStart.isSame(periodStart)) {
+    return true;
+  }
+
+  if (eventEnd.isSame(periodEnd)) {
+    return true;
+  }
+
+  return false;
+
+};
+
+interface GetEventsInPeriodArgs {
+  events: CalendarEvent[];
+  periodStart: Moment;
+  periodEnd: Moment;
+}
+
+const getEventsInPeriod: Function = ({events, periodStart, periodEnd}: GetEventsInPeriodArgs): CalendarEvent[] => {
+  return events.filter((event: CalendarEvent) => isEventIsPeriod({event, periodStart, periodEnd}));
+};
+
 export const getWeekViewHeader: Function = ({viewDate}: {viewDate: Date}): WeekDay[] => {
 
   const start: Moment = moment(viewDate).startOf('week');
@@ -72,7 +117,7 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
   const startOfWeek: Moment = moment(viewDate).startOf('week');
   const endOfWeek: Moment = moment(viewDate).endOf('week');
 
-  const eventsMapped: WeekViewEvent[] = events.map(event => {
+  const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfWeek, periodEnd: endOfWeek}).map(event => {
     const offset: number = getDayOffset(event, startOfWeek);
     const span: number = getDaySpan(event, offset, startOfWeek);
     return {

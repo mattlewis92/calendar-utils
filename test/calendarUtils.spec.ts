@@ -262,4 +262,53 @@ describe('getWeekView', () => {
 
   });
 
+  it('should exclude any events that dont occur in the event period', () => {
+
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-06-24'),
+      end: new Date('2016-05-25'),
+      title: '',
+      color: ''
+    }];
+
+    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
+    expect(result).to.deep.equal([]);
+
+  });
+
+  it('should exclude any events without an end date that dont occur in the event period', () => {
+
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-06-24'),
+      title: '',
+      color: ''
+    }];
+
+    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
+    expect(result).to.deep.equal([]);
+
+  });
+
+  it('should include events that start on the beginning on the week', () => {
+    const events: CalendarEvent[] = [{
+      start: moment(new Date('2016-06-27')).startOf('week').toDate(),
+      end: new Date('2016-08-01'),
+      title: '',
+      color: ''
+    }];
+    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
+    expect(result[0].row[0].event).to.deep.equal(events[0]);
+  });
+
+  it('should include events that end the end end of the week', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-04-01'),
+      end: moment(new Date('2016-06-27')).endOf('week').toDate(),
+      title: '',
+      color: ''
+    }];
+    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27')});
+    expect(result[0].row[0].event).to.deep.equal(events[0]);
+  });
+
 });
