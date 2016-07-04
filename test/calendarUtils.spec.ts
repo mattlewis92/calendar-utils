@@ -451,4 +451,19 @@ describe('getMonthView', () => {
     expect(result.days[12].events).to.deep.equal([]);
   });
 
+  it('should exclude events that start on the first week of the calendar but not actually in the month', () => {
+    events = [{
+      start: new Date('2016-06-29'),
+      end: new Date('2016-07-01'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+
+    result = getMonthView({viewDate: new Date('2016-07-03'), events});
+    expect(result.days[3].events).to.deep.equal([]);
+    expect(result.days[4].events).to.deep.equal([]);
+    expect(result.days[5].events).to.deep.equal([events[0]]);
+    expect(result.days[6].events).to.deep.equal([]);
+  });
+
 });

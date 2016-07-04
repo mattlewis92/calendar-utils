@@ -213,11 +213,15 @@ export const getMonthView: Function = ({events, viewDate}: {events: CalendarEven
     const date: Moment = start.clone().add(i, 'days');
     const day: MonthViewDay = getWeekDay({date});
     day.inMonth = date.clone().startOf('month').isSame(moment(viewDate).startOf('month'));
-    day.events = getEventsInPeriod({
-      events: eventsInMonth,
-      periodStart: moment(date).startOf('day'),
-      periodEnd: moment(date).endOf('day')
-    });
+    if (day.inMonth) {
+      day.events = getEventsInPeriod({
+        events: eventsInMonth,
+        periodStart: moment(date).startOf('day'),
+        periodEnd: moment(date).endOf('day')
+      });
+    } else {
+      day.events = [];
+    }
     days.push(day);
   }
 
