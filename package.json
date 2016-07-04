@@ -34,7 +34,7 @@
   },
   "homepage": "https://github.com/mattlewis92/calendar-utils#readme",
   "peerDependencies": {
-    "moment": "~2.13.0"
+    "moment": "2.x.x"
   },
   "devDependencies": {
     "chai": "~3.5.0",
