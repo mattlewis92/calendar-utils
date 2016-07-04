@@ -96,11 +96,11 @@ const isEventIsPeriod: Function = ({event, periodStart, periodEnd}: IsEventInPer
     return true;
   }
 
-  if (eventStart.isSame(periodStart)) {
+  if (eventStart.isSame(periodStart) || eventStart.isSame(periodEnd)) {
     return true;
   }
 
-  if (eventEnd.isSame(periodEnd)) {
+  if (eventEnd.isSame(periodStart) || eventEnd.isSame(periodEnd)) {
     return true;
   }
 
