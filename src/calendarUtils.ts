@@ -39,6 +39,8 @@ export interface WeekViewEventRow {
 export interface MonthViewDay extends WeekDay {
   inMonth: boolean;
   events: CalendarEvent[];
+  backgroundColor?: string;
+  cssClass?: string;
 }
 
 export interface MonthView {
