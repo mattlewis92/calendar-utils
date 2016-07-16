@@ -38,9 +38,9 @@
   },
   "devDependencies": {
     "chai": "~3.5.0",
-    "concurrently": "~2.1.0",
+    "concurrently": "~2.2.0",
     "mocha": "~2.5.3",
-    "moment": "~2.13.0",
+    "moment": "~2.14.1",
     "sinon": "~1.17.4",
     "tslint": "~3.13.0",
     "typescript": "~1.8.10",
