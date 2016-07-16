@@ -17,11 +17,17 @@ export interface EventColor {
   secondary: string;
 }
 
+export interface EventAction {
+  label: string;
+  click(event: CalendarEvent): any;
+}
+
 export interface CalendarEvent {
   start: Date;
   end?: Date;
   title: string;
   color: EventColor;
+  actions?: EventAction[];
 }
 
 export interface WeekViewEvent {
