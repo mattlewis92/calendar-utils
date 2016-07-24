@@ -15,7 +15,7 @@
     "pretest": "npm run lint && npm run tsc",
     "test": "mocha dist/test",
     "test:watch": "npm test -- --watch",
-    "start": "concurrently \"npm run tsc:watch\" \"npm run test:watch\"",
+    "start": "concurrently --raw \"npm run tsc:watch\" \"npm run test:watch\"",
     "preversion": "npm test",
     "postversion": "git push && npm publish"
   },
