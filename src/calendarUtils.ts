@@ -21,7 +21,8 @@ export interface EventColor {
 
 export interface EventAction {
   label: string;
-  onClick(event: CalendarEvent): any;
+  cssClass?: string;
+  onClick({event}: {event: CalendarEvent}): any;
 }
 
 export interface CalendarEvent {
