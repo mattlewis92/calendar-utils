@@ -497,7 +497,7 @@ describe('getDayView', () => {
   it('should include events that start before the view date and end during it', () => {
     const events: CalendarEvent[] = [{
       start: moment().subtract(1, 'day').startOf('day').toDate(),
-      end: moment().startOf('day').toDate(),
+      end: moment().startOf('day').add(1, 'hour').toDate(),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -954,6 +954,25 @@ describe('getDayView', () => {
       segmentHeight: 30
     });
     expect(result.width).to.equal(300);
+  });
+
+  it('should exclude events with 0 height', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').toDate(),
+      end: moment().startOf('day').add(2, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events.length).to.equal(0);
   });
 
 });

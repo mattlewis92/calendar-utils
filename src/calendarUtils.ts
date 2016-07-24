@@ -362,11 +362,13 @@ export const getDayView: Function = ({
       extendsBottom
     };
 
-    previousDayEvents.push(dayEvent);
+    if (height > 0) {
+      previousDayEvents.push(dayEvent);
+    }
 
     return dayEvent;
 
-  });
+  }).filter((dayEvent: DayViewEvent) => dayEvent.height > 0);
 
   const width: number = Math.max(...dayViewEvents.map((event: DayViewEvent) => event.left + event.width));
 
