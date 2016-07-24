@@ -10,7 +10,10 @@ import {
   WeekViewEventRow,
   MonthView,
   getDayView,
-  DayView
+  DayView,
+  DayViewHour,
+  getDayViewHourGrid,
+  DayViewHourSegment
 } from './../src/calendarUtils';
 
 const TIMEZONE_OFFSET: number = new Date().getTimezoneOffset() * 60 * 1000;
@@ -951,6 +954,95 @@ describe('getDayView', () => {
       segmentHeight: 30
     });
     expect(result.maxWidth).to.equal(300);
+  });
+
+});
+
+describe('getDayViewHourGrid', () => {
+
+  interface DayViewHourSegmentDate extends DayViewHourSegment {
+    jsDate: Date;
+  }
+
+  it('should get the day view segments respecting the start and end of the day', () => {
+
+    const result: DayViewHour[] = getDayViewHourGrid({
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {
+        hour: 1,
+        minute: 30
+      },
+      dayEnd: {
+        hour: 3,
+        minute: 59
+      }
+    });
+    result.forEach((hour: DayViewHour) => {
+      hour.segments.forEach((segment: DayViewHourSegmentDate) => {
+        segment.jsDate = segment.date.toDate();
+        delete segment.date;
+      });
+    });
+    expect(result).to.deep.equal([{
+      segments: [
+        {jsDate: moment().startOf('day').hours(1).minutes(30).toDate(), isStart: false}
+      ]
+    }, {
+      segments: [
+        {jsDate: moment().startOf('day').hours(2).minutes(0).toDate(), isStart: true},
+        {jsDate: moment().startOf('day').hours(2).minutes(30).toDate(), isStart: false}
+      ]
+    }, {
+      segments: [
+        {jsDate: moment().startOf('day').hours(3).minutes(0).toDate(), isStart: true},
+        {jsDate: moment().startOf('day').hours(3).minutes(30).toDate(), isStart: false}
+      ]
+    }]);
+
+  });
+
+  it('should get the day view segments with a bigger segment size', () => {
+
+    const result: DayViewHour[] = getDayViewHourGrid({
+      viewDate: new Date(),
+      hourSegments: 4,
+      dayStart: {
+        hour: 1,
+        minute: 30
+      },
+      dayEnd: {
+        hour: 3,
+        minute: 59
+      }
+    });
+    result.forEach((hour: DayViewHour) => {
+      hour.segments.forEach((segment: DayViewHourSegmentDate) => {
+        segment.jsDate = segment.date.toDate();
+        delete segment.date;
+      });
+    });
+    expect(result).to.deep.equal([{
+      segments: [
+        {jsDate: moment().startOf('day').hours(1).minutes(30).toDate(), isStart: false},
+        {jsDate: moment().startOf('day').hours(1).minutes(45).toDate(), isStart: false}
+      ]
+    }, {
+      segments: [
+        {jsDate: moment().startOf('day').hours(2).minutes(0).toDate(), isStart: true},
+        {jsDate: moment().startOf('day').hours(2).minutes(15).toDate(), isStart: false},
+        {jsDate: moment().startOf('day').hours(2).minutes(30).toDate(), isStart: false},
+        {jsDate: moment().startOf('day').hours(2).minutes(45).toDate(), isStart: false}
+      ]
+    }, {
+      segments: [
+        {jsDate: moment().startOf('day').hours(3).minutes(0).toDate(), isStart: true},
+        {jsDate: moment().startOf('day').hours(3).minutes(15).toDate(), isStart: false},
+        {jsDate: moment().startOf('day').hours(3).minutes(30).toDate(), isStart: false},
+        {jsDate: moment().startOf('day').hours(3).minutes(45).toDate(), isStart: false}
+      ]
+    }]);
+
   });
 
 });

@@ -1,8 +1,10 @@
 import * as moment from 'moment';
 import {Moment} from 'moment';
 
-const DAYS_IN_WEEK: number = 7;
 const WEEKEND_DAY_NUMBERS: number[] = [0, 6];
+const DAYS_IN_WEEK: number = 7;
+const HOURS_IN_DAY = 24;
+const MINUTES_IN_HOUR: number = 60;
 
 export interface WeekDay {
   date: Moment;
@@ -67,6 +69,15 @@ export interface DayViewEvent {
 export interface DayView {
   events: DayViewEvent[];
   maxWidth: number;
+}
+
+export interface DayViewHourSegment {
+  isStart: boolean;
+  date: Moment;
+}
+
+export interface DayViewHour {
+  segments: DayViewHourSegment[];
 }
 
 const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Moment): number => {
@@ -306,7 +317,7 @@ export const getDayView: Function = ({
     const eventEnd = event.end || eventStart;
     const extendsTop: boolean = eventStart < startOfView.toDate();
     const extendsBottom: boolean = eventEnd > endOfView.toDate();
-    const hourHeightModifier = (hourSegments * segmentHeight) / 60;
+    const hourHeightModifier = (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
 
     let top: number = 0;
     if (eventStart > startOfView.toDate()) {
@@ -364,4 +375,31 @@ export const getDayView: Function = ({
     maxWidth
   };
 
+};
+
+export const getDayViewHourGrid: Function = ({viewDate, hourSegments, dayStart, dayEnd}): DayViewHour[] => {
+
+  const hours: DayViewHour[] = [];
+  const startOfView: Moment = moment(viewDate).startOf('day').hour(dayStart.hour).minute(dayStart.minute);
+  const endOfView: Moment = moment(viewDate).endOf('day').startOf('minute').hour(dayEnd.hour).minute(dayEnd.minute);
+  const segmentDuration: number = MINUTES_IN_HOUR / hourSegments;
+  const startOfDay: Moment = moment(viewDate).startOf('day');
+
+  for (let i: number = 0; i < HOURS_IN_DAY; i++) {
+    const segments: DayViewHourSegment[] = [];
+    for (let j: number = 0; j < hourSegments; j++) {
+      const date: Moment = startOfDay.clone().add(i, 'hours').add(j * segmentDuration, 'minutes');
+      if (date >= startOfView && date < endOfView) {
+        segments.push({
+          date,
+          isStart: j === 0
+        });
+      }
+    }
+    if (segments.length > 0) {
+      hours.push({segments});
+    }
+  }
+
+  return hours;
 };
