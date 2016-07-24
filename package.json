@@ -1,6 +1,6 @@
 {
   "name": "calendar-utils",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Utility functions to generate views for calendars",
   "main": "dist/src/calendarUtils.js",
   "typings": "dist/src/calendarUtils.d.ts",
