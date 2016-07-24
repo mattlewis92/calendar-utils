@@ -103,8 +103,8 @@ describe('getWeekView', () => {
         event: events[0],
         offset: 1,
         span: 3,
-        extendsLeft: false,
-        extendsRight: false
+        startsWithinWeek: true,
+        endsWithinWeek: true
       }]
     }]);
 
@@ -125,8 +125,8 @@ describe('getWeekView', () => {
         event: events[0],
         offset: 0,
         span: 4,
-        extendsLeft: true,
-        extendsRight: false
+        startsWithinWeek: false,
+        endsWithinWeek: true
       }]
     }]);
 
@@ -147,8 +147,8 @@ describe('getWeekView', () => {
         event: events[0],
         offset: 1,
         span: 6,
-        extendsLeft: false,
-        extendsRight: true
+        startsWithinWeek: true,
+        endsWithinWeek: false
       }]
     }]);
 
@@ -169,8 +169,8 @@ describe('getWeekView', () => {
         event: events[0],
         offset: 0,
         span: 7,
-        extendsLeft: true,
-        extendsRight: true
+        startsWithinWeek: false,
+        endsWithinWeek: false
       }]
     }]);
 

@@ -37,8 +37,8 @@ export interface WeekViewEvent {
   event: CalendarEvent;
   offset: number;
   span: number;
-  extendsLeft: boolean;
-  extendsRight: boolean;
+  startsWithinWeek: boolean;
+  endsWithinWeek: boolean;
 }
 
 export interface WeekViewEventRow {
@@ -189,8 +189,8 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
       event,
       offset,
       span,
-      extendsLeft: moment(event.start).isBefore(startOfWeek),
-      extendsRight: moment(event.end || event.start).isAfter(endOfWeek)
+      startsWithinWeek: event.start >= startOfWeek,
+      endsWithinWeek: moment(event.end || event.start) <= endOfWeek
     };
   }).sort((itemA, itemB): number => {
     const startSecondsDiff: number = moment(itemA.event.start).diff(moment(itemB.event.start));
