@@ -953,7 +953,7 @@ describe('getDayView', () => {
       eventWidth: 100,
       segmentHeight: 30
     });
-    expect(result.maxWidth).to.equal(300);
+    expect(result.width).to.equal(300);
   });
 
 });

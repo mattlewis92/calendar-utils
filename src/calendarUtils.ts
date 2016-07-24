@@ -68,7 +68,7 @@ export interface DayViewEvent {
 
 export interface DayView {
   events: DayViewEvent[];
-  maxWidth: number;
+  width: number;
 }
 
 export interface DayViewHourSegment {
@@ -368,11 +368,11 @@ export const getDayView: Function = ({
 
   });
 
-  const maxWidth: number = Math.max(...dayViewEvents.map((event: DayViewEvent) => event.left + event.width));
+  const width: number = Math.max(...dayViewEvents.map((event: DayViewEvent) => event.left + event.width));
 
   return {
     events: dayViewEvents,
-    maxWidth
+    width
   };
 
 };
