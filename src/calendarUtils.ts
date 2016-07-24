@@ -3,7 +3,7 @@ import {Moment} from 'moment';
 
 const WEEKEND_DAY_NUMBERS: number[] = [0, 6];
 const DAYS_IN_WEEK: number = 7;
-const HOURS_IN_DAY = 24;
+const HOURS_IN_DAY: number = 24;
 const MINUTES_IN_HOUR: number = 60;
 
 export interface WeekDay {
@@ -313,11 +313,11 @@ export const getDayView: Function = ({
     return eventA.start.valueOf() - eventB.start.valueOf();
   }).map((event: CalendarEvent) => {
 
-    const eventStart = event.start;
-    const eventEnd = event.end || eventStart;
+    const eventStart: Date = event.start;
+    const eventEnd: Date = event.end || eventStart;
     const extendsTop: boolean = eventStart < startOfView.toDate();
     const extendsBottom: boolean = eventEnd > endOfView.toDate();
-    const hourHeightModifier = (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
+    const hourHeightModifier: number = (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
 
     let top: number = 0;
     if (eventStart > startOfView.toDate()) {
@@ -327,18 +327,18 @@ export const getDayView: Function = ({
 
     const startDate: Moment = extendsTop ? startOfView : moment(eventStart);
     const endDate: Moment = extendsBottom ? endOfView : moment(eventEnd);
-    let height = endDate.diff(startDate, 'minutes');
+    let height: number = endDate.diff(startDate, 'minutes');
     if (!event.end) {
       height = segmentHeight;
     } else {
       height *= hourHeightModifier;
     }
 
-    const bottom = top + height;
+    const bottom: number = top + height;
 
-    const overlappingPreviousEvents = previousDayEvents.filter((previousEvent: DayViewEvent) => {
-      const previousEventTop = previousEvent.top;
-      const previousEventBottom = previousEvent.top + previousEvent.height;
+    const overlappingPreviousEvents: DayViewEvent[] = previousDayEvents.filter((previousEvent: DayViewEvent) => {
+      const previousEventTop: number = previousEvent.top;
+      const previousEventBottom: number = previousEvent.top + previousEvent.height;
 
       if (top < previousEventTop && previousEventTop < bottom) {
         return true;
