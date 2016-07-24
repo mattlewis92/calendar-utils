@@ -8,7 +8,9 @@ import {
   WeekDay,
   CalendarEvent,
   WeekViewEventRow,
-  MonthView
+  MonthView,
+  getDayView,
+  DayView
 } from './../src/calendarUtils';
 
 const TIMEZONE_OFFSET: number = new Date().getTimezoneOffset() * 60 * 1000;
@@ -464,6 +466,491 @@ describe('getMonthView', () => {
     expect(result.days[4].events).to.deep.equal([]);
     expect(result.days[5].events).to.deep.equal([events[0]]);
     expect(result.days[6].events).to.deep.equal([]);
+  });
+
+});
+
+describe('getDayView', () => {
+
+  it('should exclude all events that dont occur on the view date', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().subtract(1, 'day').startOf('day').toDate(),
+      end: moment().subtract(1, 'day').endOf('day').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events).to.deep.equal([]);
+  });
+
+  it('should include events that start before the view date and end during it', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().subtract(1, 'day').startOf('day').toDate(),
+      end: moment().startOf('day').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[0]);
+  });
+
+  it('should include events that start during the view date and end after it', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').toDate(),
+      end: moment().add(5, 'days').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[0]);
+  });
+
+  it('should include events that start during the view date and end during it', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(1, 'hour').toDate(),
+      end: moment().startOf('day').add(2, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[0]);
+  });
+
+  it('should exclude events that are on the view date but outside of the day start', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(1, 'hour').toDate(),
+      end: moment().startOf('day').add(6, 'hours').add(15, 'minutes').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 6, minute: 30},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events).to.deep.equal([]);
+  });
+
+  it('should exclude events that are on the view date but outside of the day end', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().endOf('day').subtract(1, 'hour').toDate(),
+      end: moment().hours(18).minutes(45).toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 18, minute: 30},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events).to.deep.equal([]);
+  });
+
+  it('should sort all events by start date', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(1, 'hour').toDate(),
+      end: moment().startOf('day').add(2, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').toDate(),
+      end: moment().startOf('day').add(1, 'hour').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[1]);
+    expect(result.events[1].event).to.equal(events[0]);
+  });
+
+  it('should span the entire day', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').toDate(),
+      end: moment().add(1, 'day').startOf('day').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].top).to.deep.equal(0);
+    expect(result.events[0].height).to.deep.equal(1439);
+    expect(result.events[0].extendsTop).to.be.false;
+    expect(result.events[0].extendsBottom).to.be.true;
+  });
+
+  it('should start part of the way through the day and end after it', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().add(2, 'days').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].top).to.deep.equal(150);
+    expect(result.events[0].height).to.deep.equal(1289);
+    expect(result.events[0].extendsTop).to.be.false;
+    expect(result.events[0].extendsBottom).to.be.true;
+  });
+
+  it('should start before the start of the day and end part of the way through', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().subtract(1, 'day').toDate(),
+      end: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].top).to.deep.equal(0);
+    expect(result.events[0].height).to.deep.equal(150);
+    expect(result.events[0].extendsTop).to.be.true;
+    expect(result.events[0].extendsBottom).to.be.false;
+  });
+
+  it('should start part of the way through the day and end part of the way through it', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(6, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].top).to.deep.equal(150);
+    expect(result.events[0].height).to.deep.equal(210);
+    expect(result.events[0].extendsTop).to.be.false;
+    expect(result.events[0].extendsBottom).to.be.false;
+  });
+
+  it('should use a default height of one segment if there is no event end date', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].top).to.deep.equal(150);
+    expect(result.events[0].height).to.deep.equal(30);
+    expect(result.events[0].extendsTop).to.be.false;
+    expect(result.events[0].extendsBottom).to.be.false;
+  });
+
+  it('should respect the day start', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(5, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 1, minute: 30},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].top).to.deep.equal(60);
+    expect(result.events[0].height).to.deep.equal(150);
+    expect(result.events[0].extendsTop).to.be.false;
+    expect(result.events[0].extendsBottom).to.be.false;
+  });
+
+  it('should respect the day end', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(18, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 16, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].top).to.deep.equal(150);
+    expect(result.events[0].height).to.deep.equal(869);
+    expect(result.events[0].extendsTop).to.be.false;
+    expect(result.events[0].extendsBottom).to.be.true;
+  });
+
+  it('should adjust the event height and top to account for a bigger hour segment size', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(7, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 6,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 16, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].top).to.deep.equal(450);
+    expect(result.events[0].height).to.deep.equal(810);
+  });
+
+  it('should stack events where one starts before the other and ends during it', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(7, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').add(1, 'hours').toDate(),
+      end: moment().startOf('day').add(5, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[1]);
+    expect(result.events[0].left).to.equal(0);
+    expect(result.events[1].event).to.equal(events[0]);
+    expect(result.events[1].left).to.equal(100);
+  });
+
+  it('should stack events where one starts during the other and ends after it', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(7, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').add(3, 'hours').toDate(),
+      end: moment().startOf('day').add(10, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[0]);
+    expect(result.events[0].left).to.equal(0);
+    expect(result.events[1].event).to.equal(events[1]);
+    expect(result.events[1].left).to.equal(100);
+  });
+
+  it('should stack events where one starts during the other and ends during it', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(7, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').add(3, 'hours').toDate(),
+      end: moment().startOf('day').add(5, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[0]);
+    expect(result.events[0].left).to.equal(0);
+    expect(result.events[1].event).to.equal(events[1]);
+    expect(result.events[1].left).to.equal(100);
+  });
+
+  it('should not stack events that do not overlap each other', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(4, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').add(5, 'hours').toDate(),
+      end: moment().startOf('day').add(6, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[0]);
+    expect(result.events[0].left).to.equal(0);
+    expect(result.events[1].event).to.equal(events[1]);
+    expect(result.events[1].left).to.equal(0);
+  });
+
+  it('should not stack events where one starts on the others end date', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      end: moment().startOf('day').add(4, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').add(4, 'hours').toDate(),
+      end: moment().startOf('day').add(6, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events[0].event).to.equal(events[0]);
+    expect(result.events[0].left).to.equal(0);
+    expect(result.events[1].event).to.equal(events[1]);
+    expect(result.events[1].left).to.equal(0);
+  });
+
+  it('should return the largest row width', () => {
+    const events: CalendarEvent[] = [{
+      start: moment().startOf('day').add(2, 'hours').toDate(),
+      end: moment().startOf('day').add(4, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').add(4, 'hours').toDate(),
+      end: moment().startOf('day').add(6, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').add(2, 'hours').toDate(),
+      end: moment().startOf('day').add(4, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: moment().startOf('day').add(2, 'hours').toDate(),
+      end: moment().startOf('day').add(4, 'hours').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.maxWidth).to.equal(300);
   });
 
 });

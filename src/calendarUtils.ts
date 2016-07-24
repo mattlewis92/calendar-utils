@@ -54,6 +54,21 @@ export interface MonthView {
   days: MonthViewDay[];
 }
 
+export interface DayViewEvent {
+  event: CalendarEvent;
+  height: number;
+  width: number;
+  top: number;
+  left: number;
+  extendsTop: boolean;
+  extendsBottom: boolean;
+}
+
+export interface DayView {
+  events: DayViewEvent[];
+  maxWidth: number;
+}
+
 const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Moment): number => {
   let span: number = 1;
   if (event.end) {
@@ -242,6 +257,111 @@ export const getMonthView: Function = ({events, viewDate}: {events: CalendarEven
   return {
     rowOffsets,
     days
+  };
+
+};
+
+interface GetDayViewArgs {
+  events: CalendarEvent[];
+  viewDate: Date;
+  hourSegments: number;
+  dayStart: {
+    hour: number;
+    minute: number;
+  };
+  dayEnd: {
+    hour: number;
+    minute: number;
+  };
+  eventWidth: number;
+  segmentHeight: number;
+}
+
+export const getDayView: Function = ({
+  events, viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight
+}: GetDayViewArgs): DayView => {
+
+  const startOfView: Moment = moment(viewDate)
+    .startOf('day')
+    .hour(dayStart.hour)
+    .minute(dayStart.minute);
+
+  const endOfView: Moment = moment(viewDate)
+    .endOf('day')
+    .startOf('minute')
+    .hour(dayEnd.hour)
+    .minute(dayEnd.minute);
+
+  const previousDayEvents: DayViewEvent[] = [];
+
+  const dayViewEvents: DayViewEvent[] = getEventsInPeriod({
+    events: events,
+    periodStart: startOfView,
+    periodEnd: endOfView
+  }).sort((eventA: CalendarEvent, eventB: CalendarEvent) => {
+    return eventA.start.valueOf() - eventB.start.valueOf();
+  }).map((event: CalendarEvent) => {
+
+    const eventStart = event.start;
+    const eventEnd = event.end || eventStart;
+    const extendsTop: boolean = eventStart < startOfView.toDate();
+    const extendsBottom: boolean = eventEnd > endOfView.toDate();
+    const hourHeightModifier = (hourSegments * segmentHeight) / 60;
+
+    let top: number = 0;
+    if (eventStart > startOfView.toDate()) {
+      top += moment(eventStart).diff(startOfView, 'minutes');
+    }
+    top *= hourHeightModifier;
+
+    const startDate: Moment = extendsTop ? startOfView : moment(eventStart);
+    const endDate: Moment = extendsBottom ? endOfView : moment(eventEnd);
+    let height = endDate.diff(startDate, 'minutes');
+    if (!event.end) {
+      height = segmentHeight;
+    } else {
+      height *= hourHeightModifier;
+    }
+
+    const bottom = top + height;
+
+    const overlappingPreviousEvents = previousDayEvents.filter((previousEvent: DayViewEvent) => {
+      const previousEventTop = previousEvent.top;
+      const previousEventBottom = previousEvent.top + previousEvent.height;
+
+      if (top < previousEventTop && previousEventTop < bottom) {
+        return true;
+      } else if (top < previousEventBottom && previousEventBottom < bottom) {
+        return true;
+      } else if (previousEventTop <= top && bottom <= previousEventBottom) {
+        return true;
+      }
+
+      return false;
+
+    });
+
+    const dayEvent: DayViewEvent = {
+      event,
+      height,
+      width: eventWidth,
+      top,
+      left: overlappingPreviousEvents.length * eventWidth,
+      extendsTop,
+      extendsBottom
+    };
+
+    previousDayEvents.push(dayEvent);
+
+    return dayEvent;
+
+  });
+
+  const maxWidth: number = Math.max(...dayViewEvents.map((event: DayViewEvent) => event.left + event.width));
+
+  return {
+    events: dayViewEvents,
+    maxWidth
   };
 
 };
