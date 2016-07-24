@@ -37,8 +37,8 @@ export interface WeekViewEvent {
   event: CalendarEvent;
   offset: number;
   span: number;
-  extendsLeft: boolean;
-  extendsRight: boolean;
+  startsBeforeWeek: boolean;
+  endsAfterWeek: boolean;
 }
 
 export interface WeekViewEventRow {
@@ -63,8 +63,8 @@ export interface DayViewEvent {
   width: number;
   top: number;
   left: number;
-  extendsTop: boolean;
-  extendsBottom: boolean;
+  startsBeforeDay: boolean;
+  startsAfterDay: boolean;
 }
 
 export interface DayView {
@@ -189,8 +189,8 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
       event,
       offset,
       span,
-      extendsLeft: moment(event.start).isBefore(startOfWeek),
-      extendsRight: moment(event.end || event.start).isAfter(endOfWeek)
+      startsBeforeWeek: moment(event.start).isBefore(startOfWeek),
+      startsAfterWeek: moment(event.end || event.start).isAfter(endOfWeek)
     };
   }).sort((itemA, itemB): number => {
     const startSecondsDiff: number = moment(itemA.event.start).diff(moment(itemB.event.start));
@@ -316,8 +316,8 @@ export const getDayView: Function = ({
 
     const eventStart: Date = event.start;
     const eventEnd: Date = event.end || eventStart;
-    const extendsTop: boolean = eventStart < startOfView.toDate();
-    const extendsBottom: boolean = eventEnd > endOfView.toDate();
+    const startsBeforeDay: boolean = eventStart < startOfView.toDate();
+    const startsAfterDay: boolean = eventEnd > endOfView.toDate();
     const hourHeightModifier: number = (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
 
     let top: number = 0;
@@ -326,8 +326,8 @@ export const getDayView: Function = ({
     }
     top *= hourHeightModifier;
 
-    const startDate: Moment = extendsTop ? startOfView : moment(eventStart);
-    const endDate: Moment = extendsBottom ? endOfView : moment(eventEnd);
+    const startDate: Moment = startsBeforeDay ? startOfView : moment(eventStart);
+    const endDate: Moment = startsAfterDay ? endOfView : moment(eventEnd);
     let height: number = endDate.diff(startDate, 'minutes');
     if (!event.end) {
       height = segmentHeight;
@@ -359,8 +359,8 @@ export const getDayView: Function = ({
       width: eventWidth,
       top,
       left: overlappingPreviousEvents.length * eventWidth,
-      extendsTop,
-      extendsBottom
+      startsBeforeDay,
+      startsAfterDay
     };
 
     if (height > 0) {

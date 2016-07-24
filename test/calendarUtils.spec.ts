@@ -103,8 +103,8 @@ describe('getWeekView', () => {
         event: events[0],
         offset: 1,
         span: 3,
-        extendsLeft: false,
-        extendsRight: false
+        startsBeforeWeek: false,
+        endsAfterWeek: false
       }]
     }]);
 
@@ -125,8 +125,8 @@ describe('getWeekView', () => {
         event: events[0],
         offset: 0,
         span: 4,
-        extendsLeft: true,
-        extendsRight: false
+        startsBeforeWeek: true,
+        endsAfterWeek: false
       }]
     }]);
 
@@ -147,8 +147,8 @@ describe('getWeekView', () => {
         event: events[0],
         offset: 1,
         span: 6,
-        extendsLeft: false,
-        extendsRight: true
+        startsBeforeWeek: false,
+        endsAfterWeek: true
       }]
     }]);
 
@@ -169,8 +169,8 @@ describe('getWeekView', () => {
         event: events[0],
         offset: 0,
         span: 7,
-        extendsLeft: true,
-        extendsRight: true
+        startsBeforeWeek: true,
+        endsAfterWeek: true
       }]
     }]);
 
@@ -632,8 +632,8 @@ describe('getDayView', () => {
     });
     expect(result.events[0].top).to.deep.equal(0);
     expect(result.events[0].height).to.deep.equal(1439);
-    expect(result.events[0].extendsTop).to.be.false;
-    expect(result.events[0].extendsBottom).to.be.true;
+    expect(result.events[0].startsBeforeDay).to.be.false;
+    expect(result.events[0].startsAfterDay).to.be.true;
   });
 
   it('should start part of the way through the day and end after it', () => {
@@ -654,8 +654,8 @@ describe('getDayView', () => {
     });
     expect(result.events[0].top).to.deep.equal(150);
     expect(result.events[0].height).to.deep.equal(1289);
-    expect(result.events[0].extendsTop).to.be.false;
-    expect(result.events[0].extendsBottom).to.be.true;
+    expect(result.events[0].startsBeforeDay).to.be.false;
+    expect(result.events[0].startsAfterDay).to.be.true;
   });
 
   it('should start before the start of the day and end part of the way through', () => {
@@ -676,8 +676,8 @@ describe('getDayView', () => {
     });
     expect(result.events[0].top).to.deep.equal(0);
     expect(result.events[0].height).to.deep.equal(150);
-    expect(result.events[0].extendsTop).to.be.true;
-    expect(result.events[0].extendsBottom).to.be.false;
+    expect(result.events[0].startsBeforeDay).to.be.true;
+    expect(result.events[0].startsAfterDay).to.be.false;
   });
 
   it('should start part of the way through the day and end part of the way through it', () => {
@@ -698,8 +698,8 @@ describe('getDayView', () => {
     });
     expect(result.events[0].top).to.deep.equal(150);
     expect(result.events[0].height).to.deep.equal(210);
-    expect(result.events[0].extendsTop).to.be.false;
-    expect(result.events[0].extendsBottom).to.be.false;
+    expect(result.events[0].startsBeforeDay).to.be.false;
+    expect(result.events[0].startsAfterDay).to.be.false;
   });
 
   it('should use a default height of one segment if there is no event end date', () => {
@@ -719,8 +719,8 @@ describe('getDayView', () => {
     });
     expect(result.events[0].top).to.deep.equal(150);
     expect(result.events[0].height).to.deep.equal(30);
-    expect(result.events[0].extendsTop).to.be.false;
-    expect(result.events[0].extendsBottom).to.be.false;
+    expect(result.events[0].startsBeforeDay).to.be.false;
+    expect(result.events[0].startsAfterDay).to.be.false;
   });
 
   it('should respect the day start', () => {
@@ -741,8 +741,8 @@ describe('getDayView', () => {
     });
     expect(result.events[0].top).to.deep.equal(60);
     expect(result.events[0].height).to.deep.equal(150);
-    expect(result.events[0].extendsTop).to.be.false;
-    expect(result.events[0].extendsBottom).to.be.false;
+    expect(result.events[0].startsBeforeDay).to.be.false;
+    expect(result.events[0].startsAfterDay).to.be.false;
   });
 
   it('should respect the day end', () => {
@@ -763,8 +763,8 @@ describe('getDayView', () => {
     });
     expect(result.events[0].top).to.deep.equal(150);
     expect(result.events[0].height).to.deep.equal(869);
-    expect(result.events[0].extendsTop).to.be.false;
-    expect(result.events[0].extendsBottom).to.be.true;
+    expect(result.events[0].startsBeforeDay).to.be.false;
+    expect(result.events[0].startsAfterDay).to.be.true;
   });
 
   it('should adjust the event height and top to account for a bigger hour segment size', () => {
