@@ -190,7 +190,7 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
       offset,
       span,
       startsBeforeWeek: moment(event.start).isBefore(startOfWeek),
-      startsAfterWeek: moment(event.end || event.start).isAfter(endOfWeek)
+      endsAfterWeek: moment(event.end || event.start).isAfter(endOfWeek)
     };
   }).sort((itemA, itemB): number => {
     const startSecondsDiff: number = moment(itemA.event.start).diff(moment(itemB.event.start));
