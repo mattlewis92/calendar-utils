@@ -64,7 +64,7 @@ export interface DayViewEvent {
   top: number;
   left: number;
   startsBeforeDay: boolean;
-  startsAfterDay: boolean;
+  endsAfterDay: boolean;
 }
 
 export interface DayView {
@@ -317,7 +317,7 @@ export const getDayView: Function = ({
     const eventStart: Date = event.start;
     const eventEnd: Date = event.end || eventStart;
     const startsBeforeDay: boolean = eventStart < startOfView.toDate();
-    const startsAfterDay: boolean = eventEnd > endOfView.toDate();
+    const endsAfterDay: boolean = eventEnd > endOfView.toDate();
     const hourHeightModifier: number = (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
 
     let top: number = 0;
@@ -327,7 +327,7 @@ export const getDayView: Function = ({
     top *= hourHeightModifier;
 
     const startDate: Moment = startsBeforeDay ? startOfView : moment(eventStart);
-    const endDate: Moment = startsAfterDay ? endOfView : moment(eventEnd);
+    const endDate: Moment = endsAfterDay ? endOfView : moment(eventEnd);
     let height: number = endDate.diff(startDate, 'minutes');
     if (!event.end) {
       height = segmentHeight;
@@ -360,7 +360,7 @@ export const getDayView: Function = ({
       top,
       left: overlappingPreviousEvents.length * eventWidth,
       startsBeforeDay,
-      startsAfterDay
+      endsAfterDay
     };
 
     if (height > 0) {
