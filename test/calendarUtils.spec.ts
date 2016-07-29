@@ -442,8 +442,8 @@ describe('getMonthView', () => {
     expect(result.days[6].isWeekend).to.be.true;
   });
 
-  it('should exclude events not in the current month but that could appear on the first and last days of adjoining months', () => {
-    expect(result.days[3].events.length).to.equal(0);
+  it('should include events not in the current month but that could appear on the first and last days of adjoining months', () => {
+    expect(result.days[3].events.length).to.equal(1);
   });
 
   it('should set events on the corrent days', () => {
@@ -456,7 +456,7 @@ describe('getMonthView', () => {
     expect(result.days[12].events).to.deep.equal([]);
   });
 
-  it('should exclude events that start on the first week of the calendar but not actually in the month', () => {
+  it('should include events that start on the first week of the calendar but not actually in the month', () => {
     events = [{
       start: new Date('2016-06-29'),
       end: new Date('2016-07-01'),
@@ -465,8 +465,8 @@ describe('getMonthView', () => {
     }];
 
     result = getMonthView({viewDate: new Date('2016-07-03'), events});
-    expect(result.days[3].events).to.deep.equal([]);
-    expect(result.days[4].events).to.deep.equal([]);
+    expect(result.days[3].events).to.deep.equal([events[0]]);
+    expect(result.days[4].events).to.deep.equal([events[0]]);
     expect(result.days[5].events).to.deep.equal([events[0]]);
     expect(result.days[6].events).to.deep.equal([]);
   });

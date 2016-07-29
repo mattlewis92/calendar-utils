@@ -240,23 +240,19 @@ export const getMonthView: Function = ({events, viewDate}: {events: CalendarEven
   const end: Moment = moment(viewDate).endOf('month').endOf('week');
   const eventsInMonth: CalendarEvent[] = getEventsInPeriod({
     events,
-    periodStart: moment(viewDate).startOf('month'),
-    periodEnd: moment(viewDate).endOf('month')
+    periodStart: start,
+    periodEnd: end
   });
   const days: MonthViewDay[] = [];
   for (let i: number = 0; i < end.diff(start, 'days') + 1; i++) {
     const date: Moment = start.clone().add(i, 'days');
     const day: MonthViewDay = getWeekDay({date});
     day.inMonth = date.clone().startOf('month').isSame(moment(viewDate).startOf('month'));
-    if (day.inMonth) {
-      day.events = getEventsInPeriod({
-        events: eventsInMonth,
-        periodStart: moment(date).startOf('day'),
-        periodEnd: moment(date).endOf('day')
-      });
-    } else {
-      day.events = [];
-    }
+    day.events = getEventsInPeriod({
+      events: eventsInMonth,
+      periodStart: moment(date).startOf('day'),
+      periodEnd: moment(date).endOf('day')
+    });
     days.push(day);
   }
 
