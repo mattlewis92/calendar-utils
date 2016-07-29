@@ -975,6 +975,29 @@ describe('getDayView', () => {
     expect(result.events.length).to.equal(0);
   });
 
+  it('should separate all day events', () => {
+
+    const events: CalendarEvent[] = [{
+      start: moment().subtract(1, 'day').startOf('day').toDate(),
+      end: moment().add(1, 'day').endOf('day').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''},
+      allDay: true
+    }];
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events).to.deep.equal([]);
+    expect(result.allDayEvents).to.deep.equal(events);
+
+  });
+
 });
 
 describe('getDayViewHourGrid', () => {

@@ -71,6 +71,7 @@ export interface DayViewEvent {
 export interface DayView {
   events: DayViewEvent[];
   width: number;
+  allDayEvents: CalendarEvent[];
 }
 
 export interface DayViewHourSegment {
@@ -304,7 +305,7 @@ export const getDayView: Function = ({
   const previousDayEvents: DayViewEvent[] = [];
 
   const dayViewEvents: DayViewEvent[] = getEventsInPeriod({
-    events: events,
+    events: events.filter((event: CalendarEvent) => !event.allDay),
     periodStart: startOfView,
     periodEnd: endOfView
   }).sort((eventA: CalendarEvent, eventB: CalendarEvent) => {
@@ -369,10 +370,12 @@ export const getDayView: Function = ({
   }).filter((dayEvent: DayViewEvent) => dayEvent.height > 0);
 
   const width: number = Math.max(...dayViewEvents.map((event: DayViewEvent) => event.left + event.width));
+  const allDayEvents: CalendarEvent[] = events.filter((event: CalendarEvent) => event.allDay);
 
   return {
     events: dayViewEvents,
-    width
+    width,
+    allDayEvents
   };
 
 };
