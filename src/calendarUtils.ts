@@ -31,6 +31,7 @@ export interface CalendarEvent {
   title: string;
   color: EventColor;
   actions?: EventAction[];
+  allDay?: boolean;
 }
 
 export interface WeekViewEvent {
