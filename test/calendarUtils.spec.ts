@@ -446,7 +446,7 @@ describe('getMonthView', () => {
     expect(result.days[3].events.length).to.equal(1);
   });
 
-  it('should set events on the corrent days', () => {
+  it('should set events on the correct days', () => {
     expect(result.days[6].events).to.deep.equal([]);
     expect(result.days[7].events).to.deep.equal([events[0]]);
     expect(result.days[8].events).to.deep.equal([]);
@@ -454,6 +454,16 @@ describe('getMonthView', () => {
     expect(result.days[10].events).to.deep.equal([events[1]]);
     expect(result.days[11].events).to.deep.equal([events[1]]);
     expect(result.days[12].events).to.deep.equal([]);
+  });
+
+  it('should set the badge total on days', () => {
+    expect(result.days[6].badgeTotal).to.equal(0);
+    expect(result.days[7].badgeTotal).to.equal(1);
+    expect(result.days[8].badgeTotal).to.equal(0);
+    expect(result.days[9].badgeTotal).to.equal(1);
+    expect(result.days[10].badgeTotal).to.equal(1);
+    expect(result.days[11].badgeTotal).to.equal(1);
+    expect(result.days[12].badgeTotal).to.equal(0);
   });
 
   it('should include events that start on the first week of the calendar but not actually in the month', () => {
