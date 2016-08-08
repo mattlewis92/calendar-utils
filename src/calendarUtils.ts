@@ -255,11 +255,9 @@ export const getMonthView: Function = ({events, viewDate}: {events: CalendarEven
       periodStart: moment(date).startOf('day'),
       periodEnd: moment(date).endOf('day')
     });
-    Object.assign(day, {
-      inMonth: date.clone().startOf('month').isSame(moment(viewDate).startOf('month')),
-      events,
-      badgeTotal: events.length
-    });
+    day.inMonth = date.clone().startOf('month').isSame(moment(viewDate).startOf('month'));
+    day.events = events;
+    day.badgeTotal = events.length;
     days.push(day);
   }
 
