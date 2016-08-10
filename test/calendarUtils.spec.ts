@@ -985,11 +985,23 @@ describe('getDayView', () => {
     expect(result.events.length).to.equal(0);
   });
 
-  it('should separate all day events', () => {
+  it('should separate all day events that occur on that day', () => {
 
     const events: CalendarEvent[] = [{
       start: moment().subtract(1, 'day').startOf('day').toDate(),
       end: moment().add(1, 'day').endOf('day').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''},
+      allDay: true
+    }, {
+      start: moment().subtract(1, 'day').startOf('day').toDate(),
+      end: moment().add(1, 'day').endOf('day').toDate(),
+      title: '',
+      color: {primary: '', secondary: ''},
+      allDay: false
+    }, {
+      start: moment().subtract(10, 'days').startOf('day').toDate(),
+      end: moment().subtract(5, 'days').endOf('day').toDate(),
       title: '',
       color: {primary: '', secondary: ''},
       allDay: true
@@ -1003,8 +1015,8 @@ describe('getDayView', () => {
       eventWidth: 100,
       segmentHeight: 30
     });
-    expect(result.events).to.deep.equal([]);
-    expect(result.allDayEvents).to.deep.equal(events);
+    expect(result.events[0].event).to.deep.equal(events[1]);
+    expect(result.allDayEvents).to.deep.equal([events[0]]);
 
   });
 

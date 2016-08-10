@@ -373,7 +373,11 @@ export const getDayView: Function = ({
   }).filter((dayEvent: DayViewEvent) => dayEvent.height > 0);
 
   const width: number = Math.max(...dayViewEvents.map((event: DayViewEvent) => event.left + event.width));
-  const allDayEvents: CalendarEvent[] = events.filter((event: CalendarEvent) => event.allDay);
+  const allDayEvents: CalendarEvent[] = getEventsInPeriod({
+    events: events.filter((event: CalendarEvent) => event.allDay),
+    periodStart: startOfView,
+    periodEnd: endOfView
+  });
 
   return {
     events: dayViewEvents,
