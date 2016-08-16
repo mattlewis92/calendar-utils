@@ -3,7 +3,7 @@
 /// <reference types="sinon" />
 
 import {expect} from 'chai';
-import * as sinon from 'sinon';
+import {useFakeTimers} from 'sinon';
 import * as moment from 'moment';
 import {
   getWeekViewHeader,
@@ -24,7 +24,7 @@ const TIMEZONE_OFFSET: number = new Date().getTimezoneOffset() * 60 * 1000;
 
 let clock: any;
 beforeEach(() => {
-  clock = sinon.useFakeTimers(new Date('2016-06-28').getTime());
+  clock = useFakeTimers(new Date('2016-06-28').getTime());
 });
 
 afterEach(() => {

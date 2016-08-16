@@ -8,15 +8,13 @@
     "dist/src"
   ],
   "scripts": {
-    "lint": "tslint ./src/**/*.ts ./test/**/*.ts",
-    "tsc": "tsc -p .",
-    "tsc:watch": "npm run tsc -- --watch",
-    "pretest": "npm run lint && npm run tsc",
-    "test": "mocha dist/test",
+    "test": "karma start",
     "test:watch": "npm test -- --watch",
-    "start": "concurrently --raw \"npm run tsc:watch\" \"npm run test:watch\"",
+    "start": "npm test",
+    "build": "webpack",
+    "clean": "rm -rf dist",
     "preversion": "npm test",
-    "postversion": "git push && npm publish"
+    "postversion": "npm run build && git push && npm publish && npm run clean"
   },
   "repository": {
     "type": "git",
@@ -41,10 +39,22 @@
     "@types/sinon": "~1.16.27",
     "chai": "~3.5.0",
     "concurrently": "~2.2.0",
+    "imports-loader": "~0.6.5",
+    "karma": "~1.2.0",
+    "karma-coverage": "~1.1.1",
+    "karma-mocha": "~1.1.1",
+    "karma-phantomjs-launcher": "~1.0.1",
+    "karma-remap-istanbul": "~0.2.1",
+    "karma-sourcemap-loader": "~0.3.7",
+    "karma-webpack": "~1.8.0",
     "mocha": "~3.0.1",
     "moment": "~2.14.1",
-    "sinon": "~1.17.4",
+    "sinon": "~2.0.0-pre.2",
+    "sourcemap-istanbul-instrumenter-loader": "~0.2.0",
+    "ts-loader": "~0.8.2",
     "tslint": "~3.14.0",
-    "typescript": "~2.0.0"
+    "tslint-loader": "~2.1.5",
+    "typescript": "~2.0.0",
+    "webpack": "~1.13.1"
   }
 }
