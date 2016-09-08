@@ -8,7 +8,6 @@ module.exports = {
   externals: {
     moment: 'moment'
   },
-  devtool: 'source-map',
   module: {
     preLoaders: [{
       test: /\.ts$/, loader: 'tslint?emitErrors=true&failOnHint=true', exclude: /node_modules/
