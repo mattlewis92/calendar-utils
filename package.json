@@ -10,7 +10,7 @@
   "scripts": {
     "test": "karma start",
     "test:watch": "npm test -- --watch",
-    "start": "npm test",
+    "start": "npm run test:watch",
     "build": "webpack",
     "clean": "rm -rf dist",
     "preversion": "npm test",
