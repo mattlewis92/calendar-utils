@@ -197,7 +197,13 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
       endsAfterWeek: moment(event.end || event.start).isAfter(endOfWeek)
     };
   }).sort((itemA, itemB): number => {
-    return moment(itemA.event.start).valueOf() - moment(itemB.event.start).valueOf();
+    const startSecondsDiff: number = moment(itemA.event.start).diff(moment(itemB.event.start));
+    if (startSecondsDiff === 0) {
+      const endA: Moment = moment(itemA.event.end || itemA.event.start);
+      const endB: Moment = moment(itemB.event.end || itemB.event.start);
+      return moment(endB).diff(endA);
+    }
+    return startSecondsDiff;
   });
 
   const eventRows: WeekViewEventRow[] = [];
