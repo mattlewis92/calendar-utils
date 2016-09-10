@@ -337,9 +337,7 @@ export const getDayView: Function = ({
       const previousEventTop: number = previousEvent.top;
       const previousEventBottom: number = previousEvent.top + previousEvent.height;
 
-      if (top < previousEventTop && previousEventTop < bottom) {
-        return true;
-      } else if (top < previousEventBottom && previousEventBottom < bottom) {
+      if (top < previousEventBottom && previousEventBottom < bottom) {
         return true;
       } else if (previousEventTop <= top && bottom <= previousEventBottom) {
         return true;
