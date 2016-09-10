@@ -88,7 +88,7 @@ export interface DayViewHour {
 const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Moment): number => {
   let span: number = 1;
   if (event.end) {
-    const begin: Moment = moment(event.start).isBefore(startOfWeek) ? startOfWeek : moment(event.start);
+    const begin: Moment = moment(event.start) < startOfWeek ? startOfWeek : moment(event.start);
     span = moment(event.end)
       .endOf('day')
       .add(1, 'minute')
@@ -106,7 +106,7 @@ const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek:
 
 export const getDayOffset: Function = (event: CalendarEvent, startOfWeek: Moment): number => {
   let offset: number = 0;
-  if (moment(event.start).startOf('day').isAfter(moment(startOfWeek))) {
+  if (moment(event.start).startOf('day') > moment(startOfWeek)) {
     offset = moment(event.start).startOf('day').diff(startOfWeek, 'days');
   }
   return offset;
@@ -123,15 +123,15 @@ const isEventIsPeriod: Function = ({event, periodStart, periodEnd}: IsEventInPer
   const eventStart: Moment = moment(event.start);
   const eventEnd: Moment = moment(event.end || event.start);
 
-  if (eventStart.isAfter(periodStart) && eventStart.isBefore(periodEnd)) {
+  if (eventStart > periodStart && eventStart < periodEnd) {
     return true;
   }
 
-  if (eventEnd.isAfter(periodStart) && eventEnd.isBefore(periodEnd)) {
+  if (eventEnd > periodStart && eventEnd < periodEnd) {
     return true;
   }
 
-  if (eventStart.isBefore(periodStart) && eventEnd.isAfter(periodEnd)) {
+  if (eventStart < periodStart && eventEnd > periodEnd) {
     return true;
   }
 
@@ -161,9 +161,9 @@ const getWeekDay: Function = ({date}: {date: Moment}): WeekDay => {
   const today: Moment = moment().startOf('day');
   return {
     date,
-    isPast: date.isBefore(today),
+    isPast: date < today,
     isToday: date.isSame(today),
-    isFuture: date.isAfter(today),
+    isFuture: date > today,
     isWeekend: WEEKEND_DAY_NUMBERS.indexOf(date.day()) > -1
   };
 };
@@ -193,8 +193,8 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
       event,
       offset,
       span,
-      startsBeforeWeek: moment(event.start).isBefore(startOfWeek),
-      endsAfterWeek: moment(event.end || event.start).isAfter(endOfWeek)
+      startsBeforeWeek: moment(event.start) < startOfWeek,
+      endsAfterWeek: moment(event.end || event.start) > endOfWeek
     };
   }).sort((itemA, itemB): number => {
     const startSecondsDiff: number = moment(itemA.event.start).diff(moment(itemB.event.start));
