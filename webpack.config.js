@@ -6,7 +6,6 @@ module.exports = {
     library: 'calendarUtils'
   },
   externals: {
-    moment: 'moment',
     'date-fns/end_of_day': {
       root: ['dateFns', 'endOfDay'],
       commonjs: 'date-fns/end_of_day',
