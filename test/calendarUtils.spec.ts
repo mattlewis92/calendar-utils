@@ -4,7 +4,8 @@
 
 import {expect} from 'chai';
 import {useFakeTimers} from 'sinon';
-import * as moment from 'moment';
+import * as moment from 'moment'; //TODO - remove the moment dependency from tests
+import {startOfWeek, addHours, addDays, endOfWeek, subDays, startOfDay, endOfDay, addMinutes} from 'date-fns';
 import {
   getWeekViewHeader,
   getWeekView,
@@ -183,13 +184,13 @@ describe('getWeekView', () => {
   it('should put events in the same row that don\'t overlap', () => {
     const events: CalendarEvent[] = [{
       title: 'Event 0',
-      start: moment().startOf('week').toDate(),
-      end: moment().startOf('week').add(5, 'hours').toDate(),
+      start: startOfWeek(new Date()),
+      end: addHours(startOfWeek(new Date()), 5),
       color: {primary: '', secondary: ''}
     }, {
       title: 'Event 1',
-      start: moment().startOf('week').add(2, 'days').toDate(),
-      end: moment().startOf('week').add(5, 'days').add(5, 'hours').toDate(),
+      start: addDays(startOfWeek(new Date()), 2),
+      end: addHours(addDays(startOfWeek(new Date()), 2), 5),
       color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date()});
@@ -200,13 +201,13 @@ describe('getWeekView', () => {
   it('should put events in the next row when they overlap', () => {
     const events: CalendarEvent[] = [{
       title: 'Event 0',
-      start: moment().startOf('week').toDate(),
-      end: moment().startOf('week').add(5, 'hours').toDate(),
+      start: startOfWeek(new Date()),
+      end: addHours(startOfWeek(new Date()), 5),
       color: {primary: '', secondary: ''}
     }, {
       title: 'Event 1',
-      start: moment().startOf('week').toDate(),
-      end: moment().startOf('week').add(5, 'hours').toDate(),
+      start: startOfWeek(new Date()),
+      end: addHours(startOfWeek(new Date()), 5),
       color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date()});
@@ -217,11 +218,11 @@ describe('getWeekView', () => {
   it('should sort events by start date when all events are in the same column', () => {
     const events: CalendarEvent[] = [{
       title: 'Event 1',
-      start: moment().add(1, 'hour').toDate(),
+      start: addHours(new Date(), 1),
       color: {primary: '', secondary: ''}
     }, {
       title: 'Event 0',
-      start: moment().toDate(),
+      start: new Date(),
       color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date()});
@@ -258,7 +259,7 @@ describe('getWeekView', () => {
 
   it('should include events that start on the beginning on the week', () => {
     const events: CalendarEvent[] = [{
-      start: moment(new Date('2016-06-27')).startOf('week').toDate(),
+      start: startOfWeek(new Date('2016-06-27')),
       end: new Date('2016-08-01'),
       title: '',
       color: {primary: '', secondary: ''}
@@ -270,7 +271,7 @@ describe('getWeekView', () => {
   it('should include events that end the end end of the week', () => {
     const events: CalendarEvent[] = [{
       start: new Date('2016-04-01'),
-      end: moment(new Date('2016-06-27')).endOf('week').toDate(),
+      end: endOfWeek(new Date('2016-06-27')),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -390,8 +391,8 @@ describe('getDayView', () => {
 
   it('should exclude all events that dont occur on the view date', () => {
     const events: CalendarEvent[] = [{
-      start: moment().subtract(1, 'day').startOf('day').toDate(),
-      end: moment().subtract(1, 'day').endOf('day').toDate(),
+      start: startOfDay(subDays(new Date(), 1)),
+      end: endOfDay(subDays(new Date(), 1)),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -409,8 +410,8 @@ describe('getDayView', () => {
 
   it('should include events that start before the view date and end during it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().subtract(1, 'day').startOf('day').toDate(),
-      end: moment().startOf('day').add(1, 'hour').toDate(),
+      start: startOfDay(subDays(new Date(), 1)),
+      end: addHours(startOfDay(new Date()), 1),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -428,8 +429,8 @@ describe('getDayView', () => {
 
   it('should include events that start during the view date and end after it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').toDate(),
-      end: moment().add(5, 'days').toDate(),
+      start: startOfDay(new Date()),
+      end: addDays(new Date(), 5),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -447,8 +448,8 @@ describe('getDayView', () => {
 
   it('should include events that start during the view date and end during it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(1, 'hour').toDate(),
-      end: moment().startOf('day').add(2, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 1),
+      end: addHours(startOfDay(new Date()), 2),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -466,8 +467,8 @@ describe('getDayView', () => {
 
   it('should exclude events that are on the view date but outside of the day start', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(1, 'hour').toDate(),
-      end: moment().startOf('day').add(6, 'hours').add(15, 'minutes').toDate(),
+      start: addHours(startOfDay(new Date()), 1),
+      end: addMinutes(addHours(startOfDay(new Date()), 6), 15),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -947,7 +948,7 @@ describe('getDayViewHourGrid', () => {
     });
     result.forEach((hour: DayViewHour) => {
       hour.segments.forEach((segment: DayViewHourSegmentDate) => {
-        segment.jsDate = segment.date.toDate();
+        segment.jsDate = segment.date;
         delete segment.date;
       });
     });
@@ -985,7 +986,7 @@ describe('getDayViewHourGrid', () => {
     });
     result.forEach((hour: DayViewHour) => {
       hour.segments.forEach((segment: DayViewHourSegmentDate) => {
-        segment.jsDate = segment.date.toDate();
+        segment.jsDate = segment.date;
         delete segment.date;
       });
     });
