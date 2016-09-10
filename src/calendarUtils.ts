@@ -209,9 +209,9 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
       let rowSpan: number = event.span + event.offset;
       const otherRowEvents: WeekViewEvent[] = eventsMapped.slice(index + 1).filter(nextEvent => {
         if (
-          allocatedEvents.indexOf(nextEvent) === -1 &&
           nextEvent.offset >= rowSpan &&
-          rowSpan + nextEvent.span <= DAYS_IN_WEEK
+          rowSpan + nextEvent.span <= DAYS_IN_WEEK &&
+          allocatedEvents.indexOf(nextEvent) === -1
         ) {
           nextEvent.offset -= rowSpan;
           rowSpan += nextEvent.span + nextEvent.offset;
