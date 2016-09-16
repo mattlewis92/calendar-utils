@@ -1,7 +1,3 @@
-/// <reference types="chai" />
-/// <reference types="mocha" />
-/// <reference types="sinon" />
-
 import {expect} from 'chai';
 import {useFakeTimers} from 'sinon';
 import {
