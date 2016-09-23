@@ -1,5 +1,24 @@
-import * as moment from 'moment';
-import {Moment} from 'moment';
+/// <reference path="./customTypings.d.ts" />
+
+import * as endOfDay from 'date-fns/end_of_day';
+import * as addMinutes from 'date-fns/add_minutes';
+import * as differenceInDays from 'date-fns/difference_in_days';
+import * as startOfDay from 'date-fns/start_of_day';
+import * as isSameDay from 'date-fns/is_same_day';
+import * as getDay from 'date-fns/get_day';
+import * as startOfWeek from 'date-fns/start_of_week';
+import * as addDays from 'date-fns/add_days';
+import * as endOfWeek from 'date-fns/end_of_week';
+import * as differenceInSeconds from 'date-fns/difference_in_seconds';
+import * as startOfMonth from 'date-fns/start_of_month';
+import * as endOfMonth from 'date-fns/end_of_month';
+import * as isSameMonth from 'date-fns/is_same_month';
+import * as isSameSecond from 'date-fns/is_same_second';
+import * as setHours from 'date-fns/set_hours';
+import * as setMinutes from 'date-fns/set_minutes';
+import * as startOfMinute from 'date-fns/start_of_minute';
+import * as differenceInMinutes from 'date-fns/difference_in_minutes';
+import * as addHours from 'date-fns/add_hours';
 
 const WEEKEND_DAY_NUMBERS: number[] = [0, 6];
 const DAYS_IN_WEEK: number = 7;
@@ -7,7 +26,7 @@ const HOURS_IN_DAY: number = 24;
 const MINUTES_IN_HOUR: number = 60;
 
 export interface WeekDay {
-  date: Moment;
+  date: Date;
   isPast: boolean;
   isToday: boolean;
   isFuture: boolean;
@@ -78,21 +97,18 @@ export interface DayView {
 
 export interface DayViewHourSegment {
   isStart: boolean;
-  date: Moment;
+  date: Date;
 }
 
 export interface DayViewHour {
   segments: DayViewHourSegment[];
 }
 
-const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Moment): number => {
+const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Date): number => {
   let span: number = 1;
   if (event.end) {
-    const begin: Moment = moment(event.start) < startOfWeek ? startOfWeek : moment(event.start);
-    span = moment(event.end)
-      .endOf('day')
-      .add(1, 'minute')
-      .diff(begin.startOf('day'), 'days');
+    const begin: Date = event.start < startOfWeek ? startOfWeek : event.start;
+    span = differenceInDays(addMinutes(endOfDay(event.end), 1), startOfDay(begin));
     if (span > DAYS_IN_WEEK) {
       span = DAYS_IN_WEEK;
     }
@@ -104,24 +120,24 @@ const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek:
   return span;
 };
 
-export const getDayOffset: Function = (event: CalendarEvent, startOfWeek: Moment): number => {
+export const getDayOffset: Function = (event: CalendarEvent, startOfWeek: Date): number => {
   let offset: number = 0;
-  if (moment(event.start).startOf('day') > moment(startOfWeek)) {
-    offset = moment(event.start).startOf('day').diff(startOfWeek, 'days');
+  if (startOfDay(event.start) > startOfWeek) {
+    offset = differenceInDays(startOfDay(event.start), startOfWeek);
   }
   return offset;
 };
 
 interface IsEventInPeriodArgs {
   event: CalendarEvent;
-  periodStart: Moment;
-  periodEnd: Moment;
+  periodStart: Date;
+  periodEnd: Date;
 }
 
 const isEventIsPeriod: Function = ({event, periodStart, periodEnd}: IsEventInPeriodArgs): boolean => {
 
-  const eventStart: Moment = moment(event.start);
-  const eventEnd: Moment = moment(event.end || event.start);
+  const eventStart: Date = event.start;
+  const eventEnd: Date = event.end || event.start;
 
   if (eventStart > periodStart && eventStart < periodEnd) {
     return true;
@@ -135,11 +151,11 @@ const isEventIsPeriod: Function = ({event, periodStart, periodEnd}: IsEventInPer
     return true;
   }
 
-  if (eventStart.isSame(periodStart) || eventStart.isSame(periodEnd)) {
+  if (isSameSecond(eventStart, periodStart) || isSameSecond(eventStart, periodEnd)) {
     return true;
   }
 
-  if (eventEnd.isSame(periodStart) || eventEnd.isSame(periodEnd)) {
+  if (isSameSecond(eventEnd, periodStart) || isSameSecond(eventEnd, periodEnd)) {
     return true;
   }
 
@@ -149,31 +165,31 @@ const isEventIsPeriod: Function = ({event, periodStart, periodEnd}: IsEventInPer
 
 interface GetEventsInPeriodArgs {
   events: CalendarEvent[];
-  periodStart: Moment;
-  periodEnd: Moment;
+  periodStart: Date;
+  periodEnd: Date;
 }
 
 const getEventsInPeriod: Function = ({events, periodStart, periodEnd}: GetEventsInPeriodArgs): CalendarEvent[] => {
   return events.filter((event: CalendarEvent) => isEventIsPeriod({event, periodStart, periodEnd}));
 };
 
-const getWeekDay: Function = ({date}: {date: Moment}): WeekDay => {
-  const today: Moment = moment().startOf('day');
+const getWeekDay: Function = ({date}: {date: Date}): WeekDay => {
+  const today: Date = startOfDay(new Date());
   return {
     date,
     isPast: date < today,
-    isToday: date.isSame(today),
+    isToday: isSameDay(date, today),
     isFuture: date > today,
-    isWeekend: WEEKEND_DAY_NUMBERS.indexOf(date.day()) > -1
+    isWeekend: WEEKEND_DAY_NUMBERS.indexOf(getDay(date)) > -1
   };
 };
 
-export const getWeekViewHeader: Function = ({viewDate}: {viewDate: Date}): WeekDay[] => {
+export const getWeekViewHeader: Function = ({viewDate, weekStartsOn}: {viewDate: Date, weekStartsOn: number}): WeekDay[] => {
 
-  const start: Moment = moment(viewDate).startOf('week');
+  const start: Date = startOfWeek(viewDate, {weekStartsOn});
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
-    const date: Moment = start.clone().add(i, 'days');
+    const date: Date = addDays(start, i);
     days.push(getWeekDay({date}));
   }
 
@@ -181,27 +197,26 @@ export const getWeekViewHeader: Function = ({viewDate}: {viewDate: Date}): WeekD
 
 };
 
-export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent[], viewDate: Date}): WeekViewEventRow[] => {
+export const getWeekView: Function = ({events, viewDate, weekStartsOn}: {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
+  : WeekViewEventRow[] => {
 
-  const startOfWeek: Moment = moment(viewDate).startOf('week');
-  const endOfWeek: Moment = moment(viewDate).endOf('week');
+  const startOfViewWeek: Date = startOfWeek(viewDate, {weekStartsOn});
+  const endOfViewWeek: Date = endOfWeek(viewDate, {weekStartsOn});
 
-  const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfWeek, periodEnd: endOfWeek}).map(event => {
-    const offset: number = getDayOffset(event, startOfWeek);
-    const span: number = getDaySpan(event, offset, startOfWeek);
+  const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
+    const offset: number = getDayOffset(event, startOfViewWeek);
+    const span: number = getDaySpan(event, offset, startOfViewWeek);
     return {
       event,
       offset,
       span,
-      startsBeforeWeek: moment(event.start) < startOfWeek,
-      endsAfterWeek: moment(event.end || event.start) > endOfWeek
+      startsBeforeWeek: event.start < startOfViewWeek,
+      endsAfterWeek: (event.end || event.start) > endOfViewWeek
     };
   }).sort((itemA, itemB): number => {
-    const startSecondsDiff: number = moment(itemA.event.start).diff(moment(itemB.event.start));
+    const startSecondsDiff: number = differenceInSeconds(itemA.event.start, itemB.event.start);
     if (startSecondsDiff === 0) {
-      const endA: Moment = moment(itemA.event.end || itemA.event.start);
-      const endB: Moment = moment(itemB.event.end || itemB.event.start);
-      return moment(endB).diff(endA);
+      return differenceInSeconds(itemB.event.end || itemB.event.start, itemA.event.end || itemA.event.start);
     }
     return startSecondsDiff;
   });
@@ -238,25 +253,26 @@ export const getWeekView: Function = ({events, viewDate}: {events: CalendarEvent
 
 };
 
-export const getMonthView: Function = ({events, viewDate}: {events: CalendarEvent[], viewDate: Date}): MonthView => {
+export const getMonthView: Function = ({events, viewDate, weekStartsOn}: {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
+  : MonthView => {
 
-  const start: Moment = moment(viewDate).startOf('month').startOf('week');
-  const end: Moment = moment(viewDate).endOf('month').endOf('week');
+  const start: Date = startOfWeek(startOfMonth(viewDate), {weekStartsOn});
+  const end: Date = endOfWeek(endOfMonth(viewDate), {weekStartsOn});
   const eventsInMonth: CalendarEvent[] = getEventsInPeriod({
     events,
     periodStart: start,
     periodEnd: end
   });
   const days: MonthViewDay[] = [];
-  for (let i: number = 0; i < end.diff(start, 'days') + 1; i++) {
-    const date: Moment = start.clone().add(i, 'days');
+  for (let i: number = 0; i < differenceInDays(end, start) + 1; i++) {
+    const date: Date = addDays(start, i);
     const day: MonthViewDay = getWeekDay({date});
     const events: CalendarEvent[] = getEventsInPeriod({
       events: eventsInMonth,
-      periodStart: moment(date).startOf('day'),
-      periodEnd: moment(date).endOf('day')
+      periodStart: startOfDay(date),
+      periodEnd: endOfDay(date)
     });
-    day.inMonth = date.clone().startOf('month').isSame(moment(viewDate).startOf('month'));
+    day.inMonth = isSameMonth(date, viewDate);
     day.events = events;
     day.badgeTotal = events.length;
     days.push(day);
@@ -291,21 +307,11 @@ interface GetDayViewArgs {
   segmentHeight: number;
 }
 
-export const getDayView: Function = ({
-  events, viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight
-}: GetDayViewArgs): DayView => {
+export const getDayView: Function = ({events, viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs)
+  : DayView => {
 
-  const startOfView: Moment = moment(viewDate)
-    .startOf('day')
-    .hour(dayStart.hour)
-    .minute(dayStart.minute);
-
-  const endOfView: Moment = moment(viewDate)
-    .endOf('day')
-    .startOf('minute')
-    .hour(dayEnd.hour)
-    .minute(dayEnd.minute);
-
+  const startOfView: Date = setMinutes(setHours(startOfDay(viewDate), dayStart.hour), dayStart.minute);
+  const endOfView: Date = setMinutes(setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour), dayEnd.minute);
   const previousDayEvents: DayViewEvent[] = [];
 
   const dayViewEvents: DayViewEvent[] = getEventsInPeriod({
@@ -318,19 +324,19 @@ export const getDayView: Function = ({
 
     const eventStart: Date = event.start;
     const eventEnd: Date = event.end || eventStart;
-    const startsBeforeDay: boolean = eventStart < startOfView.toDate();
-    const endsAfterDay: boolean = eventEnd > endOfView.toDate();
+    const startsBeforeDay: boolean = eventStart < startOfView;
+    const endsAfterDay: boolean = eventEnd > endOfView;
     const hourHeightModifier: number = (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
 
     let top: number = 0;
-    if (eventStart > startOfView.toDate()) {
-      top += moment(eventStart).diff(startOfView, 'minutes');
+    if (eventStart > startOfView) {
+      top += differenceInMinutes(eventStart, startOfView);
     }
     top *= hourHeightModifier;
 
-    const startDate: Moment = startsBeforeDay ? startOfView : moment(eventStart);
-    const endDate: Moment = endsAfterDay ? endOfView : moment(eventEnd);
-    let height: number = endDate.diff(startDate, 'minutes');
+    const startDate: Date = startsBeforeDay ? startOfView : eventStart;
+    const endDate: Date = endsAfterDay ? endOfView : eventEnd;
+    let height: number = differenceInMinutes(endDate, startDate);
     if (!event.end) {
       height = segmentHeight;
     } else {
@@ -389,15 +395,16 @@ export const getDayView: Function = ({
 export const getDayViewHourGrid: Function = ({viewDate, hourSegments, dayStart, dayEnd}): DayViewHour[] => {
 
   const hours: DayViewHour[] = [];
-  const startOfView: Moment = moment(viewDate).startOf('day').hour(dayStart.hour).minute(dayStart.minute);
-  const endOfView: Moment = moment(viewDate).endOf('day').startOf('minute').hour(dayEnd.hour).minute(dayEnd.minute);
+
+  const startOfView: Date = setMinutes(setHours(startOfDay(viewDate), dayStart.hour), dayStart.minute);
+  const endOfView: Date = setMinutes(setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour), dayEnd.minute);
   const segmentDuration: number = MINUTES_IN_HOUR / hourSegments;
-  const startOfDay: Moment = moment(viewDate).startOf('day');
+  const startOfViewDay: Date = startOfDay(viewDate);
 
   for (let i: number = 0; i < HOURS_IN_DAY; i++) {
     const segments: DayViewHourSegment[] = [];
     for (let j: number = 0; j < hourSegments; j++) {
-      const date: Moment = startOfDay.clone().add(i, 'hours').add(j * segmentDuration, 'minutes');
+      const date: Date = addMinutes(addHours(startOfViewDay, i), j * segmentDuration);
       if (date >= startOfView && date < endOfView) {
         segments.push({
           date,

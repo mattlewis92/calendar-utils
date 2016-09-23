@@ -4,7 +4,19 @@
 
 import {expect} from 'chai';
 import {useFakeTimers} from 'sinon';
-import * as moment from 'moment';
+import {
+  startOfWeek,
+  addHours,
+  addDays,
+  endOfWeek,
+  subDays,
+  startOfDay,
+  endOfDay,
+  addMinutes,
+  subHours,
+  setHours,
+  setMinutes
+} from 'date-fns';
 import {
   getWeekViewHeader,
   getWeekView,
@@ -183,13 +195,13 @@ describe('getWeekView', () => {
   it('should put events in the same row that don\'t overlap', () => {
     const events: CalendarEvent[] = [{
       title: 'Event 0',
-      start: moment().startOf('week').toDate(),
-      end: moment().startOf('week').add(5, 'hours').toDate(),
+      start: startOfWeek(new Date()),
+      end: addHours(startOfWeek(new Date()), 5),
       color: {primary: '', secondary: ''}
     }, {
       title: 'Event 1',
-      start: moment().startOf('week').add(2, 'days').toDate(),
-      end: moment().startOf('week').add(5, 'days').add(5, 'hours').toDate(),
+      start: addDays(startOfWeek(new Date()), 2),
+      end: addHours(addDays(startOfWeek(new Date()), 2), 5),
       color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date()});
@@ -200,13 +212,13 @@ describe('getWeekView', () => {
   it('should put events in the next row when they overlap', () => {
     const events: CalendarEvent[] = [{
       title: 'Event 0',
-      start: moment().startOf('week').toDate(),
-      end: moment().startOf('week').add(5, 'hours').toDate(),
+      start: startOfWeek(new Date()),
+      end: addHours(startOfWeek(new Date()), 5),
       color: {primary: '', secondary: ''}
     }, {
       title: 'Event 1',
-      start: moment().startOf('week').toDate(),
-      end: moment().startOf('week').add(5, 'hours').toDate(),
+      start: startOfWeek(new Date()),
+      end: addHours(startOfWeek(new Date()), 5),
       color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date()});
@@ -217,11 +229,11 @@ describe('getWeekView', () => {
   it('should sort events by start date when all events are in the same column', () => {
     const events: CalendarEvent[] = [{
       title: 'Event 1',
-      start: moment().add(1, 'hour').toDate(),
+      start: addHours(new Date(), 1),
       color: {primary: '', secondary: ''}
     }, {
       title: 'Event 0',
-      start: moment().toDate(),
+      start: new Date(),
       color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date()});
@@ -258,7 +270,7 @@ describe('getWeekView', () => {
 
   it('should include events that start on the beginning on the week', () => {
     const events: CalendarEvent[] = [{
-      start: moment(new Date('2016-06-27')).startOf('week').toDate(),
+      start: startOfWeek(new Date('2016-06-27')),
       end: new Date('2016-08-01'),
       title: '',
       color: {primary: '', secondary: ''}
@@ -270,7 +282,7 @@ describe('getWeekView', () => {
   it('should include events that end the end end of the week', () => {
     const events: CalendarEvent[] = [{
       start: new Date('2016-04-01'),
-      end: moment(new Date('2016-06-27')).endOf('week').toDate(),
+      end: endOfWeek(new Date('2016-06-27')),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -390,8 +402,8 @@ describe('getDayView', () => {
 
   it('should exclude all events that dont occur on the view date', () => {
     const events: CalendarEvent[] = [{
-      start: moment().subtract(1, 'day').startOf('day').toDate(),
-      end: moment().subtract(1, 'day').endOf('day').toDate(),
+      start: startOfDay(subDays(new Date(), 1)),
+      end: endOfDay(subDays(new Date(), 1)),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -409,8 +421,8 @@ describe('getDayView', () => {
 
   it('should include events that start before the view date and end during it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().subtract(1, 'day').startOf('day').toDate(),
-      end: moment().startOf('day').add(1, 'hour').toDate(),
+      start: startOfDay(subDays(new Date(), 1)),
+      end: addHours(startOfDay(new Date()), 1),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -428,8 +440,8 @@ describe('getDayView', () => {
 
   it('should include events that start during the view date and end after it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').toDate(),
-      end: moment().add(5, 'days').toDate(),
+      start: startOfDay(new Date()),
+      end: addDays(new Date(), 5),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -447,8 +459,8 @@ describe('getDayView', () => {
 
   it('should include events that start during the view date and end during it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(1, 'hour').toDate(),
-      end: moment().startOf('day').add(2, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 1),
+      end: addHours(startOfDay(new Date()), 2),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -466,8 +478,8 @@ describe('getDayView', () => {
 
   it('should exclude events that are on the view date but outside of the day start', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(1, 'hour').toDate(),
-      end: moment().startOf('day').add(6, 'hours').add(15, 'minutes').toDate(),
+      start: addHours(startOfDay(new Date()), 1),
+      end: addMinutes(addHours(startOfDay(new Date()), 6), 15),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -485,8 +497,8 @@ describe('getDayView', () => {
 
   it('should exclude events that are on the view date but outside of the day end', () => {
     const events: CalendarEvent[] = [{
-      start: moment().endOf('day').subtract(1, 'hour').toDate(),
-      end: moment().hours(18).minutes(45).toDate(),
+      start: subHours(endOfDay(new Date()), 1),
+      end: setMinutes(setHours(new Date(), 18), 45),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -504,13 +516,13 @@ describe('getDayView', () => {
 
   it('should sort all events by start date', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(1, 'hour').toDate(),
-      end: moment().startOf('day').add(2, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 1),
+      end: addHours(startOfDay(new Date()), 2),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').toDate(),
-      end: moment().startOf('day').add(1, 'hour').toDate(),
+      start: startOfDay(new Date()),
+      end: addHours(startOfDay(new Date()), 1),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -529,8 +541,8 @@ describe('getDayView', () => {
 
   it('should span the entire day', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').toDate(),
-      end: moment().add(1, 'day').startOf('day').toDate(),
+      start: startOfDay(new Date()),
+      end: startOfDay(addDays(new Date(), 1)),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -551,8 +563,8 @@ describe('getDayView', () => {
 
   it('should start part of the way through the day and end after it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().add(2, 'days').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addDays(new Date(), 2),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -573,8 +585,8 @@ describe('getDayView', () => {
 
   it('should start before the start of the day and end part of the way through', () => {
     const events: CalendarEvent[] = [{
-      start: moment().subtract(1, 'day').toDate(),
-      end: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      start: subDays(new Date(), 1),
+      end: addMinutes(addHours(startOfDay(new Date()), 2), 30),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -595,8 +607,8 @@ describe('getDayView', () => {
 
   it('should start part of the way through the day and end part of the way through it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(6, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 6),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -617,7 +629,7 @@ describe('getDayView', () => {
 
   it('should use a default height of one segment if there is no event end date', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -638,8 +650,8 @@ describe('getDayView', () => {
 
   it('should respect the day start', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(5, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 5),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -660,8 +672,8 @@ describe('getDayView', () => {
 
   it('should respect the day end', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(18, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 18),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -682,8 +694,8 @@ describe('getDayView', () => {
 
   it('should adjust the event height and top to account for a bigger hour segment size', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(7, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 7),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -702,13 +714,13 @@ describe('getDayView', () => {
 
   it('should stack events where one starts before the other and ends during it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(7, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 7),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').add(1, 'hours').toDate(),
-      end: moment().startOf('day').add(5, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 1),
+      end: addHours(startOfDay(new Date()), 5),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -729,13 +741,13 @@ describe('getDayView', () => {
 
   it('should stack events where one starts during the other and ends after it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(7, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 7),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').add(3, 'hours').toDate(),
-      end: moment().startOf('day').add(10, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 3),
+      end: addHours(startOfDay(new Date()), 10),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -756,13 +768,13 @@ describe('getDayView', () => {
 
   it('should stack events where one starts during the other and ends during it', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(7, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 7),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').add(3, 'hours').toDate(),
-      end: moment().startOf('day').add(5, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 3),
+      end: addHours(startOfDay(new Date()), 5),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -783,13 +795,13 @@ describe('getDayView', () => {
 
   it('should not stack events that do not overlap each other', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(4, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 4),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').add(5, 'hours').toDate(),
-      end: moment().startOf('day').add(6, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 5),
+      end: addHours(startOfDay(new Date()), 6),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -810,13 +822,13 @@ describe('getDayView', () => {
 
   it('should not stack events where one starts on the others end date', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').add(30, 'minutes').toDate(),
-      end: moment().startOf('day').add(4, 'hours').toDate(),
+      start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+      end: addHours(startOfDay(new Date()), 4),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').add(4, 'hours').toDate(),
-      end: moment().startOf('day').add(6, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 4),
+      end: addHours(startOfDay(new Date()), 6),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -837,23 +849,23 @@ describe('getDayView', () => {
 
   it('should return the largest row width', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').toDate(),
-      end: moment().startOf('day').add(4, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 2),
+      end: addHours(startOfDay(new Date()), 4),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').add(4, 'hours').toDate(),
-      end: moment().startOf('day').add(6, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 4),
+      end: addHours(startOfDay(new Date()), 6),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').add(2, 'hours').toDate(),
-      end: moment().startOf('day').add(4, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 2),
+      end: addHours(startOfDay(new Date()), 4),
       title: '',
       color: {primary: '', secondary: ''}
     }, {
-      start: moment().startOf('day').add(2, 'hours').toDate(),
-      end: moment().startOf('day').add(4, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 2),
+      end: addHours(startOfDay(new Date()), 4),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -871,8 +883,8 @@ describe('getDayView', () => {
 
   it('should exclude events with 0 height', () => {
     const events: CalendarEvent[] = [{
-      start: moment().startOf('day').add(2, 'hours').toDate(),
-      end: moment().startOf('day').add(2, 'hours').toDate(),
+      start: addHours(startOfDay(new Date()), 2),
+      end: addHours(startOfDay(new Date()), 2),
       title: '',
       color: {primary: '', secondary: ''}
     }];
@@ -891,20 +903,20 @@ describe('getDayView', () => {
   it('should separate all day events that occur on that day', () => {
 
     const events: CalendarEvent[] = [{
-      start: moment().subtract(1, 'day').startOf('day').toDate(),
-      end: moment().add(1, 'day').endOf('day').toDate(),
+      start: subDays(startOfDay(new Date()), 1),
+      end: endOfDay(addDays(new Date(), 1)),
       title: '',
       color: {primary: '', secondary: ''},
       allDay: true
     }, {
-      start: moment().subtract(1, 'day').startOf('day').toDate(),
-      end: moment().add(1, 'day').endOf('day').toDate(),
+      start: subDays(startOfDay(new Date()), 1),
+      end: endOfDay(addDays(new Date(), 1)),
       title: '',
       color: {primary: '', secondary: ''},
       allDay: false
     }, {
-      start: moment().subtract(10, 'days').startOf('day').toDate(),
-      end: moment().subtract(5, 'days').endOf('day').toDate(),
+      start: subDays(startOfDay(new Date()), 10),
+      end: endOfDay(subDays(new Date(), 5)),
       title: '',
       color: {primary: '', secondary: ''},
       allDay: true
@@ -947,23 +959,23 @@ describe('getDayViewHourGrid', () => {
     });
     result.forEach((hour: DayViewHour) => {
       hour.segments.forEach((segment: DayViewHourSegmentDate) => {
-        segment.jsDate = segment.date.toDate();
+        segment.jsDate = segment.date;
         delete segment.date;
       });
     });
     expect(result).to.deep.equal([{
       segments: [
-        {jsDate: moment().startOf('day').hours(1).minutes(30).toDate(), isStart: false}
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 1), 30), isStart: false}
       ]
     }, {
       segments: [
-        {jsDate: moment().startOf('day').hours(2).minutes(0).toDate(), isStart: true},
-        {jsDate: moment().startOf('day').hours(2).minutes(30).toDate(), isStart: false}
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 0), isStart: true},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 30), isStart: false}
       ]
     }, {
       segments: [
-        {jsDate: moment().startOf('day').hours(3).minutes(0).toDate(), isStart: true},
-        {jsDate: moment().startOf('day').hours(3).minutes(30).toDate(), isStart: false}
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 0), isStart: true},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 30), isStart: false}
       ]
     }]);
 
@@ -985,28 +997,28 @@ describe('getDayViewHourGrid', () => {
     });
     result.forEach((hour: DayViewHour) => {
       hour.segments.forEach((segment: DayViewHourSegmentDate) => {
-        segment.jsDate = segment.date.toDate();
+        segment.jsDate = segment.date;
         delete segment.date;
       });
     });
     expect(result).to.deep.equal([{
       segments: [
-        {jsDate: moment().startOf('day').hours(1).minutes(30).toDate(), isStart: false},
-        {jsDate: moment().startOf('day').hours(1).minutes(45).toDate(), isStart: false}
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 1), 30), isStart: false},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 1), 45), isStart: false}
       ]
     }, {
       segments: [
-        {jsDate: moment().startOf('day').hours(2).minutes(0).toDate(), isStart: true},
-        {jsDate: moment().startOf('day').hours(2).minutes(15).toDate(), isStart: false},
-        {jsDate: moment().startOf('day').hours(2).minutes(30).toDate(), isStart: false},
-        {jsDate: moment().startOf('day').hours(2).minutes(45).toDate(), isStart: false}
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 0), isStart: true},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 15), isStart: false},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 30), isStart: false},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 45), isStart: false}
       ]
     }, {
       segments: [
-        {jsDate: moment().startOf('day').hours(3).minutes(0).toDate(), isStart: true},
-        {jsDate: moment().startOf('day').hours(3).minutes(15).toDate(), isStart: false},
-        {jsDate: moment().startOf('day').hours(3).minutes(30).toDate(), isStart: false},
-        {jsDate: moment().startOf('day').hours(3).minutes(45).toDate(), isStart: false}
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 0), isStart: true},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 15), isStart: false},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 30), isStart: false},
+        {jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 45), isStart: false}
       ]
     }]);
 
