@@ -1,5 +1,3 @@
-/// <reference path="./customTypings.d.ts" />
-
 import * as endOfDay from 'date-fns/end_of_day';
 import * as addMinutes from 'date-fns/add_minutes';
 import * as differenceInDays from 'date-fns/difference_in_days';
