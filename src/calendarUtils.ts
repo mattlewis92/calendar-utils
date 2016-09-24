@@ -96,6 +96,7 @@ export interface DayView {
 export interface DayViewHourSegment {
   isStart: boolean;
   date: Date;
+  cssClass?: string;
 }
 
 export interface DayViewHour {
