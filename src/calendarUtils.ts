@@ -103,7 +103,7 @@ export interface DayViewHour {
   segments: DayViewHourSegment[];
 }
 
-const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Date): number => {
+const getWeekViewEventSpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Date): number => {
   let span: number = 1;
   if (event.end) {
     const begin: Date = event.start < startOfWeek ? startOfWeek : event.start;
@@ -119,7 +119,7 @@ const getDaySpan: Function = (event: CalendarEvent, offset: number, startOfWeek:
   return span;
 };
 
-export const getDayOffset: Function = (event: CalendarEvent, startOfWeek: Date): number => {
+export const getWeekViewEventOffset: Function = (event: CalendarEvent, startOfWeek: Date): number => {
   let offset: number = 0;
   if (startOfDay(event.start) > startOfWeek) {
     offset = differenceInDays(startOfDay(event.start), startOfWeek);
@@ -203,8 +203,8 @@ export const getWeekView: Function = ({events, viewDate, weekStartsOn}: {events:
   const endOfViewWeek: Date = endOfWeek(viewDate, {weekStartsOn});
 
   const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
-    const offset: number = getDayOffset(event, startOfViewWeek);
-    const span: number = getDaySpan(event, offset, startOfViewWeek);
+    const offset: number = getWeekViewEventOffset(event, startOfViewWeek);
+    const span: number = getWeekViewEventSpan(event, offset, startOfViewWeek);
     return {
       event,
       offset,
