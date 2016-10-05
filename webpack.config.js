@@ -1,7 +1,7 @@
 module.exports = {
   entry: './src/calendarUtils.ts',
   output: {
-    filename: './dist/src/calendarUtils.js',
+    filename: './dist/umd/calendarUtils.js',
     libraryTarget: 'umd',
     library: 'calendarUtils'
   },
