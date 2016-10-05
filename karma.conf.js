@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const WATCH = process.argv.indexOf('--watch') > -1;
+const FixDefaultImportPlugin = require('webpack-fix-default-import-plugin');
 
 module.exports = function(config) {
   config.set({
@@ -50,9 +51,11 @@ module.exports = function(config) {
         emitErrors: !WATCH,
         failOnHint: false
       },
-      plugins: WATCH ? [] : [
+      plugins: (WATCH ? [] : [
         new webpack.NoErrorsPlugin()
-      ]
+      ]).concat([
+        new FixDefaultImportPlugin()
+      ])
     },
 
     remapIstanbulReporter: {
