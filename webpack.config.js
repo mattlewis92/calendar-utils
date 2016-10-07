@@ -104,10 +104,19 @@ module.exports = {
   },
   module: {
     preLoaders: [{
-      test: /\.ts$/, loader: 'tslint?emitErrors=true&failOnHint=true', exclude: /node_modules/
+      test: /\.ts$/, loader: 'tslint-loader?emitErrors=true&failOnHint=true', exclude: /node_modules/
+    }, {
+      test: /\.ts$/,
+      exclude: /node_modules/,
+      loader: 'string-replace-loader',
+      query: {
+        search: "import (\\w+) from \\'date\\-fns\\/", // nasty fix for umd build to work
+        replace: 'import * as $1 from \'date-fns/',
+        flags: 'g'
+      }
     }],
     loaders: [{
-      test: /\.ts$/, loader: 'ts', exclude: /node_modules/
+      test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/
     }]
   },
   resolve: {
