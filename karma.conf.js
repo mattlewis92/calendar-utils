@@ -32,29 +32,37 @@ module.exports = function(config) {
     webpack: {
       devtool: 'inline-source-map',
       resolve: {
-        extensions: ['', '.ts', '.js']
+        extensions: ['.ts', '.js']
       },
       module: {
-        preLoaders: [{
-          test: /\.ts$/, loader: 'tslint', exclude: /node_modules/
-        }],
-        loaders: [{
-          test: /\.ts$/, loader: 'ts', exclude: /node_modules/
-        }],
-        postLoaders: [{
+        rules: [{
+          test: /\.ts$/,
+          loader: 'tslint-loader',
+          exclude: /node_modules/,
+          enforce: 'pre'
+        }, {
+          test: /\.ts$/,
+          loader: 'awesome-typescript-loader',
+          exclude: /node_modules/
+        }, {
           test: /src\/.+\.ts$/,
           exclude: /(test|node_modules)/,
-          loader: 'sourcemap-istanbul-instrumenter?force-sourcemap=true'
+          loader: 'sourcemap-istanbul-instrumenter-loader?force-sourcemap=true',
+          enforce: 'post'
         }]
-      },
-      tslint: {
-        emitErrors: !WATCH,
-        failOnHint: false
       },
       plugins: (WATCH ? [] : [
         new webpack.NoErrorsPlugin()
       ]).concat([
-        new FixDefaultImportPlugin()
+        new FixDefaultImportPlugin(),
+        new webpack.LoaderOptionsPlugin({
+          options: {
+            tslint: {
+              emitErrors: !WATCH,
+              failOnHint: false
+            }
+          }
+        })
       ])
     },
 

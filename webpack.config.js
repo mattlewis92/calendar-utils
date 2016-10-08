@@ -1,7 +1,8 @@
 module.exports = {
-  entry: './src/calendarUtils.ts',
+  entry: __dirname + '/src/calendarUtils.ts',
   output: {
-    filename: './dist/umd/calendarUtils.js',
+    path: __dirname + '/dist/umd',
+    filename: 'calendarUtils.js',
     libraryTarget: 'umd',
     library: 'calendarUtils'
   },
@@ -103,23 +104,18 @@ module.exports = {
     }
   },
   module: {
-    preLoaders: [{
-      test: /\.ts$/, loader: 'tslint-loader?emitErrors=true&failOnHint=true', exclude: /node_modules/
+    rules: [{
+      test: /\.ts$/,
+      loader: 'tslint-loader?emitErrors=true&failOnHint=true',
+      exclude: /node_modules/,
+      enforce: 'pre'
     }, {
       test: /\.ts$/,
-      exclude: /node_modules/,
-      loader: 'string-replace-loader',
-      query: {
-        search: "import (\\w+) from \\'date\\-fns\\/", // nasty fix for umd build to work
-        replace: 'import * as $1 from \'date-fns/',
-        flags: 'g'
-      }
-    }],
-    loaders: [{
-      test: /\.ts$/, loader: 'ts-loader', exclude: /node_modules/
+      loader: 'awesome-typescript-loader?module=es2015&declaration=false',
+      exclude: /node_modules/
     }]
   },
   resolve: {
-    extensions: ['', '.ts', '.js']
+    extensions: ['.ts', '.js']
   }
 };
