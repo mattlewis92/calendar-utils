@@ -1,5 +1,3 @@
-'use strict';
-
 const webpack = require('webpack');
 const WATCH = process.argv.indexOf('--watch') > -1;
 const FixDefaultImportPlugin = require('webpack-fix-default-import-plugin');
@@ -51,9 +49,10 @@ module.exports = function(config) {
           enforce: 'post'
         }]
       },
-      plugins: (WATCH ? [] : [
-        new webpack.NoErrorsPlugin()
-      ]).concat([
+      plugins: [
+        ...(WATCH ? [] : [
+          new webpack.NoErrorsPlugin()
+        ]),
         new FixDefaultImportPlugin(),
         new webpack.LoaderOptionsPlugin({
           options: {
@@ -63,7 +62,7 @@ module.exports = function(config) {
             }
           }
         })
-      ])
+      ]
     },
 
     remapIstanbulReporter: {

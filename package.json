@@ -41,6 +41,7 @@
     "@types/chai": "~3.4.30",
     "@types/date-fns": "0.0.2",
     "@types/mocha": "~2.2.29",
+    "@types/node": "~6.0.45",
     "@types/sinon": "~1.16.27",
     "awesome-typescript-loader": "~2.2.4",
     "chai": "~3.5.0",
