@@ -15,7 +15,10 @@ import {
   addMinutes,
   subHours,
   setHours,
-  setMinutes
+  setMinutes,
+  endOfMonth,
+  startOfYesterday,
+  startOfTomorrow
 } from 'date-fns';
 import {
   getWeekViewHeader,
@@ -954,6 +957,52 @@ describe('getDayView', () => {
       segmentHeight: 30
     });
     expect(result.allDayEvents).to.deep.equal([events[0]]);
+
+  });
+
+  it('should stack events in the correct columns', () => {
+
+    const events: CalendarEvent[] = [{
+      start: subDays(endOfMonth(new Date()), 3),
+      end: addDays(endOfMonth(new Date()), 3),
+      title: 'Day column 2',
+      color: {primary: '', secondary: ''},
+    }, {
+      start: startOfYesterday(),
+      end: setHours(startOfTomorrow(), 11),
+      title: 'Day column 1 - event 1',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: setHours(addDays(startOfDay(new Date()), 1), 11),
+      end: setHours(addDays(startOfDay(new Date()), 1), 15),
+      title: 'Day column 1 - event 2',
+      color: {primary: '', secondary: ''}
+    }];
+
+    const result: DayView = getDayView({
+      events,
+      viewDate: startOfTomorrow(),
+      hourSegments: 2,
+      dayStart: {hour: 0, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+
+    expect(result.events[0].event).to.equal(events[1]);
+    expect(result.events[0].height).to.equal(660);
+    expect(result.events[0].top).to.equal(0);
+    expect(result.events[0].left).to.equal(0);
+
+    expect(result.events[1].event).to.equal(events[0]);
+    expect(result.events[1].height).to.equal(1439);
+    expect(result.events[1].top).to.equal(0);
+    expect(result.events[1].left).to.equal(100);
+
+    expect(result.events[2].event).to.equal(events[2]);
+    expect(result.events[2].height).to.equal(240);
+    expect(result.events[2].top).to.equal(660);
+    expect(result.events[2].left).to.equal(0);
 
   });
 
