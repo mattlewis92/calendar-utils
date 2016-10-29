@@ -935,6 +935,28 @@ describe('getDayView', () => {
 
   });
 
+  it('should include all day events that start on the current day with no end date', () => {
+
+    const events: CalendarEvent[] = [{
+      start: startOfDay(new Date()),
+      title: '',
+      color: {primary: '', secondary: ''},
+      allDay: true
+    }];
+
+    const result: DayView = getDayView({
+      events,
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 6, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.allDayEvents).to.deep.equal([events[0]]);
+
+  });
+
 });
 
 describe('getDayViewHourGrid', () => {
