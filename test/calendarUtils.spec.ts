@@ -35,10 +35,10 @@ import {
   DayViewHourSegment
 } from './../src/calendarUtils';
 
-let clock: any, timezoneOffset: number;
+let clock: any, TIMEZONE_OFFSET: number;
 beforeEach(() => {
   clock = useFakeTimers(new Date('2016-06-28').getTime());
-  timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+  TIMEZONE_OFFSET = new Date().getTimezoneOffset() * 60 * 1000;
 });
 
 afterEach(() => {
@@ -57,43 +57,43 @@ describe('getWeekViewHeader', () => {
     });
 
     expect(days).to.deep.equal([{
-      timestamp: new Date('2016-06-26').getTime() + timezoneOffset,
+      timestamp: new Date('2016-06-26').getTime() + TIMEZONE_OFFSET,
       isPast: true,
       isToday: false,
       isFuture: false,
       isWeekend: true
     }, {
-      timestamp: new Date('2016-06-27').getTime() + timezoneOffset,
+      timestamp: new Date('2016-06-27').getTime() + TIMEZONE_OFFSET,
       isPast: true,
       isToday: false,
       isFuture: false,
       isWeekend: false
     }, {
-      timestamp: new Date('2016-06-28').getTime() + timezoneOffset,
+      timestamp: new Date('2016-06-28').getTime() + TIMEZONE_OFFSET,
       isPast: false,
       isToday: true,
       isFuture: false,
       isWeekend: false
     }, {
-      timestamp: new Date('2016-06-29').getTime() + timezoneOffset,
+      timestamp: new Date('2016-06-29').getTime() + TIMEZONE_OFFSET,
       isPast: false,
       isToday: false,
       isFuture: true,
       isWeekend: false
     }, {
-      timestamp: new Date('2016-06-30').getTime() + timezoneOffset,
+      timestamp: new Date('2016-06-30').getTime() + TIMEZONE_OFFSET,
       isPast: false,
       isToday: false,
       isFuture: true,
       isWeekend: false
     }, {
-      timestamp: new Date('2016-07-01').getTime() + timezoneOffset,
+      timestamp: new Date('2016-07-01').getTime() + TIMEZONE_OFFSET,
       isPast: false,
       isToday: false,
       isFuture: true,
       isWeekend: false
     }, {
-      timestamp: new Date('2016-07-02').getTime() + timezoneOffset,
+      timestamp: new Date('2016-07-02').getTime() + TIMEZONE_OFFSET,
       isPast: false,
       isToday: false,
       isFuture: true,
@@ -326,8 +326,8 @@ describe('getMonthView', () => {
   });
 
   it('should set the date on each day', () => {
-    expect(result.days[0].date.valueOf()).to.equal(new Date('2016-06-26').getTime() + timezoneOffset);
-    expect(result.days[10].date.valueOf()).to.equal(new Date('2016-07-06').getTime() + timezoneOffset);
+    expect(result.days[0].date.valueOf()).to.equal(new Date('2016-06-26').getTime() + TIMEZONE_OFFSET);
+    expect(result.days[10].date.valueOf()).to.equal(new Date('2016-07-06').getTime() + TIMEZONE_OFFSET);
   });
 
   it('should set inMonth on days', () => {
