@@ -358,12 +358,18 @@ export const getDayView: Function = ({events, viewDate, hourSegments, dayStart, 
 
     });
 
+    let left: number = 0;
+
+    while (overlappingPreviousEvents.some(previousEvent => previousEvent.left === left)) {
+      left += eventWidth;
+    }
+
     const dayEvent: DayViewEvent = {
       event,
       height,
       width: eventWidth,
       top,
-      left: overlappingPreviousEvents.length * eventWidth,
+      left,
       startsBeforeDay,
       endsAfterDay
     };
