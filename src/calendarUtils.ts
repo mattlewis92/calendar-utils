@@ -50,6 +50,10 @@ export interface CalendarEvent {
   actions?: EventAction[];
   allDay?: boolean;
   cssClass?: string;
+  resizable?: {
+    beforeStart?: boolean;
+    afterEnd?: boolean;
+  };
 }
 
 export interface WeekViewEvent {
