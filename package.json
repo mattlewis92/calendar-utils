@@ -57,8 +57,8 @@
     "mocha": "~3.2.0",
     "sinon": "~2.0.0-pre.2",
     "sourcemap-istanbul-instrumenter-loader": "~0.2.0",
-    "tslint": "~3.15.1",
-    "tslint-loader": "~2.1.5",
+    "tslint": "~4.0.2",
+    "tslint-loader": "~3.2.0",
     "typescript": "~2.0.0",
     "webpack": "~2.1.0-beta.25",
     "webpack-fix-default-import-plugin": "~1.0.1"
