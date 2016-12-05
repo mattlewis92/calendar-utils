@@ -111,7 +111,7 @@ module.exports = {
       enforce: 'pre'
     }, {
       test: /\.ts$/,
-      loader: 'awesome-typescript-loader?module=es2015&declaration=false',
+      loader: 'awesome-typescript-loader?module=es2015&declaration=false&ignoreDiagnostics=[2307]',
       exclude: /node_modules/
     }]
   },
