@@ -33,7 +33,7 @@ import {
   DayViewHour,
   getDayViewHourGrid,
   DayViewHourSegment
-} from './../src/calendarUtils';
+} from '../src/calendarUtils';
 
 let clock: any, timezoneOffset: number;
 beforeEach(() => {
@@ -292,6 +292,11 @@ describe('getWeekView', () => {
     expect(result[0].row[0].event).to.deep.equal(events[0]);
   });
 
+  it('should not throw if no events are provided', () => {
+    const result: WeekViewEventRow[] = getWeekView({viewDate: new Date('2016-06-27')});
+    expect(result).to.deep.equal([]);
+  });
+
 });
 
 describe('getMonthView', () => {
@@ -396,6 +401,10 @@ describe('getMonthView', () => {
     expect(result.days[4].events).to.deep.equal([events[0]]);
     expect(result.days[5].events).to.deep.equal([events[0]]);
     expect(result.days[6].events).to.deep.equal([]);
+  });
+
+  it('should not throw if no events are provided', () => {
+    expect(() => getMonthView({viewDate: new Date('2016-07-03')})).not.to.throw();
   });
 
 });
@@ -1002,6 +1011,20 @@ describe('getDayView', () => {
     expect(result.events[2].height).to.equal(240);
     expect(result.events[2].top).to.equal(660);
     expect(result.events[2].left).to.equal(0);
+
+  });
+
+  it('should not throw if no events are provided', () => {
+
+    const result: DayView = getDayView({
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 6, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30
+    });
+    expect(result.events).to.deep.equal([]);
 
   });
 

@@ -200,7 +200,8 @@ export const getWeekViewHeader: Function = ({viewDate, weekStartsOn}: {viewDate:
 
 };
 
-export const getWeekView: Function = ({events, viewDate, weekStartsOn}: {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
+export const getWeekView: Function = ({events = [], viewDate, weekStartsOn}:
+  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
   : WeekViewEventRow[] => {
 
   const startOfViewWeek: Date = startOfWeek(viewDate, {weekStartsOn});
@@ -256,7 +257,8 @@ export const getWeekView: Function = ({events, viewDate, weekStartsOn}: {events:
 
 };
 
-export const getMonthView: Function = ({events, viewDate, weekStartsOn}: {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
+export const getMonthView: Function = ({events = [], viewDate, weekStartsOn}:
+  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
   : MonthView => {
 
   const start: Date = startOfWeek(startOfMonth(viewDate), {weekStartsOn});
@@ -310,7 +312,7 @@ interface GetDayViewArgs {
   segmentHeight: number;
 }
 
-export const getDayView: Function = ({events, viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs)
+export const getDayView: Function = ({events = [], viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs)
   : DayView => {
 
   const startOfView: Date = setMinutes(setHours(startOfDay(viewDate), dayStart.hour), dayStart.minute);
