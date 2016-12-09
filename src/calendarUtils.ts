@@ -54,6 +54,7 @@ export interface CalendarEvent {
     beforeStart?: boolean;
     afterEnd?: boolean;
   };
+  draggable?: boolean;
 }
 
 export interface WeekViewEvent {
