@@ -60,7 +60,7 @@
     "tslint": "~4.2.0",
     "tslint-loader": "~3.3.0",
     "typescript": "~2.0.0",
-    "webpack": "~2.1.0-beta.25",
+    "webpack": "~2.2.0-rc.3",
     "webpack-fix-default-import-plugin": "~1.0.1"
   }
 }
