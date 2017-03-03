@@ -46,6 +46,12 @@ afterEach(() => {
 });
 
 describe('getWeekViewHeader', () => {
+  it('get all except excluded days of the week for the given date', () => {
+    expect(getWeekViewHeader({
+      viewDate: new Date('2016-06-28'),
+      excluded: [0, 1, 2, 3, 4, 5]
+    }).length).to.eq(1);
+  });
 
   it('get all days of the week for the given date', () => {
     const days: WeekDay[] = getWeekViewHeader({
@@ -320,6 +326,15 @@ describe('getMonthView', () => {
     }];
 
     result = getMonthView({viewDate: new Date('2016-07-03'), events});
+  });
+
+  it('should exclude days from month view', () => {
+    const different: MonthView = getMonthView({
+      viewDate: new Date('2016-07-03'),
+      excluded: [0, 6],
+      events
+    });
+    expect(different.days.length).to.equal(5 * 6); // 4 + 2 weeks / a 5days
   });
 
   it('should get the row offsets', () => {

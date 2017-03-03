@@ -188,13 +188,15 @@ const getWeekDay: Function = ({date}: {date: Date}): WeekDay => {
   };
 };
 
-export const getWeekViewHeader: Function = ({viewDate, weekStartsOn}: {viewDate: Date, weekStartsOn: number}): WeekDay[] => {
-
+export const getWeekViewHeader: Function = ({viewDate, weekStartsOn, excluded = []}:
+    {viewDate: Date, weekStartsOn: number, excluded: number[]}): WeekDay[] => {
   const start: Date = startOfWeek(viewDate, {weekStartsOn});
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
-    const date: Date = addDays(start, i);
-    days.push(getWeekDay({date}));
+    if (!excluded.some(e => i === e)) {
+      const date: Date = addDays(start, i);
+      days.push(getWeekDay({date}));
+    }
   }
 
   return days;
@@ -258,8 +260,8 @@ export const getWeekView: Function = ({events = [], viewDate, weekStartsOn}:
 
 };
 
-export const getMonthView: Function = ({events = [], viewDate, weekStartsOn}:
-  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
+export const getMonthView: Function = ({events = [], viewDate, weekStartsOn, excluded = []}:
+  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded: number[]})
   : MonthView => {
 
   const start: Date = startOfWeek(startOfMonth(viewDate), {weekStartsOn});
@@ -272,16 +274,18 @@ export const getMonthView: Function = ({events = [], viewDate, weekStartsOn}:
   const days: MonthViewDay[] = [];
   for (let i: number = 0; i < differenceInDays(end, start) + 1; i++) {
     const date: Date = addDays(start, i);
-    const day: MonthViewDay = getWeekDay({date});
-    const events: CalendarEvent[] = getEventsInPeriod({
-      events: eventsInMonth,
-      periodStart: startOfDay(date),
-      periodEnd: endOfDay(date)
-    });
-    day.inMonth = isSameMonth(date, viewDate);
-    day.events = events;
-    day.badgeTotal = events.length;
-    days.push(day);
+    if (!excluded.some(e => date.getDay() === e)) {
+      const day: MonthViewDay = getWeekDay({date});
+      const events: CalendarEvent[] = getEventsInPeriod({
+        events: eventsInMonth,
+        periodStart: startOfDay(date),
+        periodEnd: endOfDay(date)
+      });
+      day.inMonth = isSameMonth(date, viewDate);
+      day.events = events;
+      day.badgeTotal = events.length;
+      days.push(day);
+    }
   }
 
   const rows: number = Math.floor(days.length / 7);
