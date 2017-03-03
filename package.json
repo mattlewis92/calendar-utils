@@ -10,8 +10,8 @@
     "dist/umd"
   ],
   "scripts": {
-    "test": "karma start",
-    "test:watch": "npm test -- --watch",
+    "test": "karma start --single-run",
+    "test:watch": "npm test  --auto-watch",
     "start": "npm run test:watch",
     "build:umd": "webpack",
     "build:esm": "tsc --module es2015",
