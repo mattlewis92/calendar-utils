@@ -3,11 +3,10 @@
   "version": "0.0.39",
   "description": "Utility functions to generate views for calendars",
   "main": "dist/umd/calendarUtils.js",
-  "module": "dist/src/calendarUtils.js",
-  "typings": "dist/src/calendarUtils.d.ts",
+  "module": "dist/calendarUtils.js",
+  "typings": "dist/calendarUtils.d.ts",
   "files": [
-    "dist/src",
-    "dist/umd"
+    "dist"
   ],
   "scripts": {
     "test": "karma start --single-run",
