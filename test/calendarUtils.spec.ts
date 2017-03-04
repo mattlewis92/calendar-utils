@@ -32,7 +32,8 @@ import {
   DayView,
   DayViewHour,
   getDayViewHourGrid,
-  DayViewHourSegment
+  DayViewHourSegment,
+  getWeekViewEventOffset
 } from '../src/calendarUtils';
 
 let clock: any, timezoneOffset: number;
@@ -383,6 +384,22 @@ describe('getWeekView', () => {
     }];
     const eventCount: number = getWeekView({events, viewDate: new Date('2016-01-05'), excluded: [0, 4, 5, 6]}).length;
     expect(eventCount).to.equal(0);
+  });
+
+});
+
+describe('getWeekViewEventOffset', () => {
+
+  it('should be backwards compatible without excluded days', () => {
+    const offset: number = getWeekViewEventOffset({
+        start: new Date('2016-01-06'),
+        end: new Date('2016-01-15'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      },
+      new Date('2016-01-04')
+    );
+    expect(offset).to.equal(2);
   });
 
 });
