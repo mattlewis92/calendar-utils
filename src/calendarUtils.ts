@@ -80,6 +80,7 @@ export interface MonthViewDay extends WeekDay {
 export interface MonthView {
   rowOffsets: number[];
   days: MonthViewDay[];
+  totalDaysVisibleInWeek: number;
 }
 
 export interface DayViewEvent {
@@ -303,15 +304,16 @@ export const getMonthView: Function = ({events = [], viewDate, weekStartsOn, exc
     }
   }
 
-  const daysInWeek: number = DAYS_IN_WEEK - excluded.length;
-  const rows: number = Math.floor(days.length / daysInWeek);
+  const totalDaysVisibleInWeek: number = DAYS_IN_WEEK - excluded.length;
+  const rows: number = Math.floor(days.length / totalDaysVisibleInWeek);
   const rowOffsets: number[] = [];
   for (let i: number = 0; i < rows; i++) {
-    rowOffsets.push(i * daysInWeek);
+    rowOffsets.push(i * totalDaysVisibleInWeek);
   }
 
   return {
     rowOffsets,
+    totalDaysVisibleInWeek,
     days
   };
 

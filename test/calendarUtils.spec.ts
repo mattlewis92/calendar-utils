@@ -449,6 +449,15 @@ describe('getMonthView', () => {
     expect(result.rowOffsets).to.deep.equal([0, 7, 14, 21, 28, 35]);
   });
 
+  it('should set totalDaysVisibleInWeek', () => {
+    const different: MonthView = getMonthView({
+      viewDate: new Date('2016-07-01'),
+      excluded: [0, 6],
+      events
+    });
+    expect(different.totalDaysVisibleInWeek).to.equal(5);
+  });
+
   it('should get all days in the month plus the ones at the start and end of the week', () => {
     expect(result.days.length).to.equal(42);
   });
