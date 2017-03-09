@@ -54,6 +54,18 @@ describe('getWeekViewHeader', () => {
     }).length).to.eq(1);
   });
 
+  it('get all except excluded days even if week doesnt start at sunday', () => {
+    const days: number[] = getWeekViewHeader({
+      viewDate: new Date('2016-06-25'),
+      weekStartsOn: 3,
+      excluded: [0, 6]
+    }).map(d => d.date.getDay());
+
+    expect(days.length).to.eq(5);
+    expect(days.indexOf(0)).to.eq(-1);
+    expect(days.indexOf(6)).to.eq(-1);
+  });
+
   it('get all days of the week for the given date', () => {
     const days: WeekDay[] = getWeekViewHeader({
       viewDate: new Date('2016-06-28')

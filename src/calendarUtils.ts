@@ -209,8 +209,8 @@ export const getWeekViewHeader: Function = ({viewDate, weekStartsOn, excluded = 
   const start: Date = startOfWeek(viewDate, {weekStartsOn});
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
-    if (!excluded.some(e => i === e)) {
-      const date: Date = addDays(start, i);
+    const date: Date = addDays(start, i);
+    if (!excluded.some(e => date.getDay() === e)) {
       days.push(getWeekDay({date}));
     }
   }
