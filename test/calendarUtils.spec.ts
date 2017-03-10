@@ -32,7 +32,8 @@ import {
   DayView,
   DayViewHour,
   getDayViewHourGrid,
-  DayViewHourSegment
+  DayViewHourSegment,
+  getWeekViewEventOffset
 } from '../src/calendarUtils';
 
 let clock: any, timezoneOffset: number;
@@ -46,6 +47,24 @@ afterEach(() => {
 });
 
 describe('getWeekViewHeader', () => {
+  it('get all except excluded days of the week for the given date', () => {
+    expect(getWeekViewHeader({
+      viewDate: new Date('2016-06-28'),
+      excluded: [0, 1, 2, 3, 4, 5]
+    }).length).to.eq(1);
+  });
+
+  it('get all except excluded days even if week doesnt start at sunday', () => {
+    const days: number[] = getWeekViewHeader({
+      viewDate: new Date('2016-06-25'),
+      weekStartsOn: 3,
+      excluded: [0, 6]
+    }).map(d => d.date.getDay());
+
+    expect(days.length).to.eq(5);
+    expect(days.indexOf(0)).to.eq(-1);
+    expect(days.indexOf(6)).to.eq(-1);
+  });
 
   it('get all days of the week for the given date', () => {
     const days: WeekDay[] = getWeekViewHeader({
@@ -281,7 +300,7 @@ describe('getWeekView', () => {
     expect(result[0].row[0].event).to.deep.equal(events[0]);
   });
 
-  it('should include events that end the end end of the week', () => {
+  it('should include events that end at the end of the week', () => {
     const events: CalendarEvent[] = [{
       start: new Date('2016-04-01'),
       end: endOfWeek(new Date('2016-06-27')),
@@ -295,6 +314,104 @@ describe('getWeekView', () => {
   it('should not throw if no events are provided', () => {
     const result: WeekViewEventRow[] = getWeekView({viewDate: new Date('2016-06-27')});
     expect(result).to.deep.equal([]);
+  });
+
+  it('should not increase span for excluded days', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-01-04'),
+      end: new Date('2016-01-09'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: WeekViewEventRow[] = getWeekView({
+      events,
+      viewDate: new Date('2016-01-04'),
+      excluded: [0, 1, 4]
+    });
+    expect(result[0].row[0].span).to.equal(6 - 2);
+  });
+
+  it('should limit span and offset to available days in viewDate week', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-01-01'),
+      end: new Date('2016-01-10'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: WeekViewEventRow[] = getWeekView({
+      events,
+      viewDate: new Date('2016-01-05'),
+      excluded: [0, 6]
+    });
+    expect(result[0].row[0].span).to.equal(7 - 2);
+    expect(result[0].row[0].offset).to.equal(0);
+    expect(result[0].row[0].endsAfterWeek).to.equal(true);
+    expect(result[0].row[0].startsBeforeWeek).to.equal(true);
+  });
+
+  it('should limit span to available days in week including offset', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-01-05'),
+      end: new Date('2016-01-20'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: WeekViewEventRow[] = getWeekView({
+      events,
+      viewDate: new Date('2016-01-04'),
+      excluded: [0, 3]
+    });
+    expect(result[0].row[0].span).to.equal(4); // thuesday, thursday, friday, saturday
+    expect(result[0].row[0].offset).to.equal(1); // skip monday
+    expect(result[0].row[0].endsAfterWeek).to.equal(true);
+    expect(result[0].row[0].startsBeforeWeek).to.equal(false);
+  });
+
+  it('should not reduce offset if excluded days are in the future', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-01-04'),
+      end: new Date('2016-01-05'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const result: WeekViewEventRow[] = getWeekView({
+      events,
+      viewDate: new Date('2016-01-05'),
+      excluded: [4, 5, 6]
+    });
+    expect(result[0].row[0].offset).to.equal(1); // sunday
+  });
+
+  it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-01-08'),
+      end: new Date('2016-01-15'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }, {
+      start: new Date('2016-01-08'),
+      end: new Date('2016-01-09'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const eventCount: number = getWeekView({events, viewDate: new Date('2016-01-05'), excluded: [0, 4, 5, 6]}).length;
+    expect(eventCount).to.equal(0);
+  });
+
+});
+
+describe('getWeekViewEventOffset', () => {
+
+  it('should be backwards compatible without excluded days', () => {
+    const offset: number = getWeekViewEventOffset({
+        start: new Date('2016-01-06'),
+        end: new Date('2016-01-15'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      },
+      new Date('2016-01-04')
+    );
+    expect(offset).to.equal(2);
   });
 
 });
@@ -322,8 +439,35 @@ describe('getMonthView', () => {
     result = getMonthView({viewDate: new Date('2016-07-03'), events});
   });
 
+  it('should exclude days from month view', () => {
+    const different: MonthView = getMonthView({
+      viewDate: new Date('2016-07-03'),
+      excluded: [0, 6],
+      events
+    });
+    expect(different.days.length).to.equal(5 * 6); // 4 + 2 weeks / a 5days
+  });
+
+  it('should not increase offset for excluded days', () => {
+    const different: MonthView = getMonthView({
+      viewDate: new Date('2016-07-01'),
+      excluded: [0],
+      events
+    });
+    expect(different.rowOffsets).to.deep.equal([0, 6, 12, 18, 24, 30]);
+  });
+
   it('should get the row offsets', () => {
     expect(result.rowOffsets).to.deep.equal([0, 7, 14, 21, 28, 35]);
+  });
+
+  it('should set totalDaysVisibleInWeek', () => {
+    const different: MonthView = getMonthView({
+      viewDate: new Date('2016-07-01'),
+      excluded: [0, 6],
+      events
+    });
+    expect(different.totalDaysVisibleInWeek).to.equal(5);
   });
 
   it('should get all days in the month plus the ones at the start and end of the week', () => {

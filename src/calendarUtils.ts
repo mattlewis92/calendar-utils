@@ -80,6 +80,7 @@ export interface MonthViewDay extends WeekDay {
 export interface MonthView {
   rowOffsets: number[];
   days: MonthViewDay[];
+  totalDaysVisibleInWeek: number;
 }
 
 export interface DayViewEvent {
@@ -108,28 +109,43 @@ export interface DayViewHour {
   segments: DayViewHourSegment[];
 }
 
-const getWeekViewEventSpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Date): number => {
+const getExcludedDays: Function = (startDate: Date, days: number, excluded: number[]): number => {
+  if (excluded.length < 1) {
+    return 0;
+  }
+  let day: number = startDate.getDay();
+  let reduce: number = 0;
+  for (let i: number = 0; i < days; i++) {
+    if (day === DAYS_IN_WEEK) {
+      day = 0;
+    }
+    if (excluded.some(e => e === day)) {
+      reduce++;
+    }
+    day++;
+  }
+  return reduce;
+};
+
+const getWeekViewEventSpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Date, excluded: number[]): number => {
   let span: number = 1;
   if (event.end) {
     const begin: Date = event.start < startOfWeek ? startOfWeek : event.start;
     span = differenceInDays(addMinutes(endOfDay(event.end), 1), startOfDay(begin));
-    if (span > DAYS_IN_WEEK) {
-      span = DAYS_IN_WEEK;
-    }
   }
   const totalLength: number = offset + span;
   if (totalLength > DAYS_IN_WEEK) {
-    span -= (totalLength - DAYS_IN_WEEK);
+    span = DAYS_IN_WEEK - offset;
   }
-  return span;
+  return span - getExcludedDays(event.start, span, excluded);
 };
 
-export const getWeekViewEventOffset: Function = (event: CalendarEvent, startOfWeek: Date): number => {
-  let offset: number = 0;
-  if (startOfDay(event.start) > startOfWeek) {
-    offset = differenceInDays(startOfDay(event.start), startOfWeek);
+export const getWeekViewEventOffset: Function = (event: CalendarEvent, startOfWeek: Date, excluded: number[] = []): number => {
+  if (event.start < startOfWeek) {
+    return 0;
   }
-  return offset;
+  const distance: number = differenceInDays(event.start, startOfWeek);
+  return distance - getExcludedDays(startOfWeek, distance, excluded);
 };
 
 interface IsEventInPeriodArgs {
@@ -188,37 +204,40 @@ const getWeekDay: Function = ({date}: {date: Date}): WeekDay => {
   };
 };
 
-export const getWeekViewHeader: Function = ({viewDate, weekStartsOn}: {viewDate: Date, weekStartsOn: number}): WeekDay[] => {
-
+export const getWeekViewHeader: Function = ({viewDate, weekStartsOn, excluded = []}:
+    {viewDate: Date, weekStartsOn: number, excluded: number[]}): WeekDay[] => {
   const start: Date = startOfWeek(viewDate, {weekStartsOn});
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
     const date: Date = addDays(start, i);
-    days.push(getWeekDay({date}));
+    if (!excluded.some(e => date.getDay() === e)) {
+      days.push(getWeekDay({date}));
+    }
   }
 
   return days;
 
 };
 
-export const getWeekView: Function = ({events = [], viewDate, weekStartsOn}:
-  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
+export const getWeekView: Function = ({events = [], viewDate, weekStartsOn, excluded = []}:
+  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded: number[]})
   : WeekViewEventRow[] => {
 
   const startOfViewWeek: Date = startOfWeek(viewDate, {weekStartsOn});
   const endOfViewWeek: Date = endOfWeek(viewDate, {weekStartsOn});
+  const maxRange: number = DAYS_IN_WEEK - excluded.length;
 
   const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
-    const offset: number = getWeekViewEventOffset(event, startOfViewWeek);
-    const span: number = getWeekViewEventSpan(event, offset, startOfViewWeek);
-    return {
-      event,
-      offset,
-      span,
-      startsBeforeWeek: event.start < startOfViewWeek,
-      endsAfterWeek: (event.end || event.start) > endOfViewWeek
-    };
-  }).sort((itemA, itemB): number => {
+    const offset: number = getWeekViewEventOffset(event, startOfViewWeek, excluded);
+    const span: number = getWeekViewEventSpan(event, offset, startOfViewWeek, excluded);
+    return {event, offset, span};
+  }).filter(e => e.offset < maxRange).filter(e => e.span > 0).map(entry => ({
+      event: entry.event,
+      offset: entry.offset,
+      span: entry.span,
+      startsBeforeWeek: entry.event.start < startOfViewWeek,
+      endsAfterWeek: (entry.event.end || entry.event.start) > endOfViewWeek
+  })).sort((itemA, itemB): number => {
     const startSecondsDiff: number = differenceInSeconds(itemA.event.start, itemB.event.start);
     if (startSecondsDiff === 0) {
       return differenceInSeconds(itemB.event.end || itemB.event.start, itemA.event.end || itemA.event.start);
@@ -255,11 +274,10 @@ export const getWeekView: Function = ({events = [], viewDate, weekStartsOn}:
   });
 
   return eventRows;
-
 };
 
-export const getMonthView: Function = ({events = [], viewDate, weekStartsOn}:
-  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number})
+export const getMonthView: Function = ({events = [], viewDate, weekStartsOn, excluded = []}:
+  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded: number[]})
   : MonthView => {
 
   const start: Date = startOfWeek(startOfMonth(viewDate), {weekStartsOn});
@@ -272,26 +290,30 @@ export const getMonthView: Function = ({events = [], viewDate, weekStartsOn}:
   const days: MonthViewDay[] = [];
   for (let i: number = 0; i < differenceInDays(end, start) + 1; i++) {
     const date: Date = addDays(start, i);
-    const day: MonthViewDay = getWeekDay({date});
-    const events: CalendarEvent[] = getEventsInPeriod({
-      events: eventsInMonth,
-      periodStart: startOfDay(date),
-      periodEnd: endOfDay(date)
-    });
-    day.inMonth = isSameMonth(date, viewDate);
-    day.events = events;
-    day.badgeTotal = events.length;
-    days.push(day);
+    if (!excluded.some(e => date.getDay() === e)) {
+      const day: MonthViewDay = getWeekDay({date});
+      const events: CalendarEvent[] = getEventsInPeriod({
+        events: eventsInMonth,
+        periodStart: startOfDay(date),
+        periodEnd: endOfDay(date)
+      });
+      day.inMonth = isSameMonth(date, viewDate);
+      day.events = events;
+      day.badgeTotal = events.length;
+      days.push(day);
+    }
   }
 
-  const rows: number = Math.floor(days.length / 7);
+  const totalDaysVisibleInWeek: number = DAYS_IN_WEEK - excluded.length;
+  const rows: number = Math.floor(days.length / totalDaysVisibleInWeek);
   const rowOffsets: number[] = [];
   for (let i: number = 0; i < rows; i++) {
-    rowOffsets.push(i * 7);
+    rowOffsets.push(i * totalDaysVisibleInWeek);
   }
 
   return {
     rowOffsets,
+    totalDaysVisibleInWeek,
     days
   };
 
