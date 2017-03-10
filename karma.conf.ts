@@ -60,7 +60,13 @@ module.exports = function(config) {
 
     coverageIstanbulReporter: {
       reports: ['text-summary', 'html', 'lcovonly'],
-      fixWebpackSourcePaths: true
+      fixWebpackSourcePaths: true,
+      thresholds: {
+        statements: 100,
+        lines: 100,
+        branches: 97,
+        functions: 100
+      }
     },
 
     // test results reporter to use
