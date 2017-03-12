@@ -128,16 +128,16 @@ const getExcludedDays: Function = (startDate: Date, days: number, excluded: numb
 };
 
 const getWeekViewEventSpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Date, excluded: number[]): number => {
+  const begin: Date = event.start < startOfWeek ? startOfWeek : event.start;
   let span: number = 1;
   if (event.end) {
-    const begin: Date = event.start < startOfWeek ? startOfWeek : event.start;
     span = differenceInDays(addMinutes(endOfDay(event.end), 1), startOfDay(begin));
   }
   const totalLength: number = offset + span;
   if (totalLength > DAYS_IN_WEEK) {
     span = DAYS_IN_WEEK - offset;
   }
-  return span - getExcludedDays(event.start, span, excluded);
+  return span - getExcludedDays(begin, span, excluded);
 };
 
 export const getWeekViewEventOffset: Function = (event: CalendarEvent, startOfWeek: Date, excluded: number[] = []): number => {

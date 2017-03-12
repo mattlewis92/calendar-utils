@@ -191,6 +191,17 @@ describe('getWeekView', () => {
 
   });
 
+  it('should not include events that dont appear on the view when days are excluded', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date('2016-01-08'),
+      end: new Date('2016-01-10'),
+      title: '',
+      color: {primary: '', secondary: ''}
+    }];
+    const eventCount: number = getWeekView({events, viewDate: new Date('2016-01-12'), excluded: [0, 6]}).length;
+    expect(eventCount).to.equal(0);
+  });
+
   it('should get the correct span, offset and extends values for events that start before the week and end after it', () => {
 
     const events: CalendarEvent[] = [{
