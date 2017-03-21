@@ -141,7 +141,8 @@ function getWeekViewEventSpan(
   return span - getExcludedDays({startDate: begin, days: span, excluded});
 }
 
-export function getWeekViewEventOffset(event: CalendarEvent, startOfWeek: Date, excluded: number[] = []): number {
+export function getWeekViewEventOffset(
+  {event, startOfWeek, excluded = []}: {event: CalendarEvent, startOfWeek: Date, excluded?: number[]}): number {
   if (event.start < startOfWeek) {
     return 0;
   }
@@ -229,7 +230,7 @@ export function getWeekView({events = [], viewDate, weekStartsOn, excluded = []}
   const maxRange: number = DAYS_IN_WEEK - excluded.length;
 
   const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
-    const offset: number = getWeekViewEventOffset(event, startOfViewWeek, excluded);
+    const offset: number = getWeekViewEventOffset({event, startOfWeek: startOfViewWeek, excluded});
     const span: number = getWeekViewEventSpan({event, offset, startOfWeek: startOfViewWeek, excluded});
     return {event, offset, span};
   }).filter(e => e.offset < maxRange).filter(e => e.span > 0).map(entry => ({

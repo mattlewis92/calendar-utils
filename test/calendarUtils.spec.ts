@@ -426,13 +426,14 @@ describe('getWeekViewEventOffset', () => {
 
   it('should be backwards compatible without excluded days', () => {
     const offset: number = getWeekViewEventOffset({
+      event: {
         start: new Date('2016-01-06'),
         end: new Date('2016-01-15'),
         title: '',
         color: {primary: '', secondary: ''}
       },
-      new Date('2016-01-04')
-    );
+      startOfWeek: new Date('2016-01-04')
+    });
     expect(offset).to.equal(2);
   });
 
