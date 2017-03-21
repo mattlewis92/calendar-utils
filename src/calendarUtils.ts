@@ -109,7 +109,7 @@ export interface DayViewHour {
   segments: DayViewHourSegment[];
 }
 
-const getExcludedDays: Function = (startDate: Date, days: number, excluded: number[]): number => {
+function getExcludedDays(startDate: Date, days: number, excluded: number[]): number {
   if (excluded.length < 1) {
     return 0;
   }
@@ -125,9 +125,9 @@ const getExcludedDays: Function = (startDate: Date, days: number, excluded: numb
     day++;
   }
   return reduce;
-};
+}
 
-const getWeekViewEventSpan: Function = (event: CalendarEvent, offset: number, startOfWeek: Date, excluded: number[]): number => {
+function getWeekViewEventSpan(event: CalendarEvent, offset: number, startOfWeek: Date, excluded: number[]): number {
   const begin: Date = event.start < startOfWeek ? startOfWeek : event.start;
   let span: number = 1;
   if (event.end) {
@@ -138,15 +138,15 @@ const getWeekViewEventSpan: Function = (event: CalendarEvent, offset: number, st
     span = DAYS_IN_WEEK - offset;
   }
   return span - getExcludedDays(begin, span, excluded);
-};
+}
 
-export const getWeekViewEventOffset: Function = (event: CalendarEvent, startOfWeek: Date, excluded: number[] = []): number => {
+export function getWeekViewEventOffset(event: CalendarEvent, startOfWeek: Date, excluded: number[] = []): number {
   if (event.start < startOfWeek) {
     return 0;
   }
   const distance: number = differenceInDays(event.start, startOfWeek);
   return distance - getExcludedDays(startOfWeek, distance, excluded);
-};
+}
 
 interface IsEventInPeriodArgs {
   event: CalendarEvent;
@@ -154,7 +154,7 @@ interface IsEventInPeriodArgs {
   periodEnd: Date;
 }
 
-const isEventIsPeriod: Function = ({event, periodStart, periodEnd}: IsEventInPeriodArgs): boolean => {
+function isEventIsPeriod({event, periodStart, periodEnd}: IsEventInPeriodArgs): boolean {
 
   const eventStart: Date = event.start;
   const eventEnd: Date = event.end || event.start;
@@ -181,7 +181,7 @@ const isEventIsPeriod: Function = ({event, periodStart, periodEnd}: IsEventInPer
 
   return false;
 
-};
+}
 
 interface GetEventsInPeriodArgs {
   events: CalendarEvent[];
@@ -189,11 +189,11 @@ interface GetEventsInPeriodArgs {
   periodEnd: Date;
 }
 
-const getEventsInPeriod: Function = ({events, periodStart, periodEnd}: GetEventsInPeriodArgs): CalendarEvent[] => {
+function getEventsInPeriod({events, periodStart, periodEnd}: GetEventsInPeriodArgs): CalendarEvent[] {
   return events.filter((event: CalendarEvent) => isEventIsPeriod({event, periodStart, periodEnd}));
-};
+}
 
-const getWeekDay: Function = ({date}: {date: Date}): WeekDay => {
+function getWeekDay({date}: {date: Date}): WeekDay {
   const today: Date = startOfDay(new Date());
   return {
     date,
@@ -202,10 +202,10 @@ const getWeekDay: Function = ({date}: {date: Date}): WeekDay => {
     isFuture: date > today,
     isWeekend: WEEKEND_DAY_NUMBERS.indexOf(getDay(date)) > -1
   };
-};
+}
 
-export const getWeekViewHeader: Function = ({viewDate, weekStartsOn, excluded = []}:
-    {viewDate: Date, weekStartsOn: number, excluded: number[]}): WeekDay[] => {
+export function getWeekViewHeader({viewDate, weekStartsOn, excluded = []}:
+    {viewDate: Date, weekStartsOn: number, excluded?: number[]}): WeekDay[] {
   const start: Date = startOfWeek(viewDate, {weekStartsOn});
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
@@ -217,11 +217,11 @@ export const getWeekViewHeader: Function = ({viewDate, weekStartsOn, excluded = 
 
   return days;
 
-};
+}
 
-export const getWeekView: Function = ({events = [], viewDate, weekStartsOn, excluded = []}:
-  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded: number[]})
-  : WeekViewEventRow[] => {
+export function getWeekView({events = [], viewDate, weekStartsOn, excluded = []}:
+  {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[]})
+  : WeekViewEventRow[] {
 
   const startOfViewWeek: Date = startOfWeek(viewDate, {weekStartsOn});
   const endOfViewWeek: Date = endOfWeek(viewDate, {weekStartsOn});
@@ -274,11 +274,11 @@ export const getWeekView: Function = ({events = [], viewDate, weekStartsOn, excl
   });
 
   return eventRows;
-};
+}
 
-export const getMonthView: Function = ({events = [], viewDate, weekStartsOn, excluded = []}:
-  {events: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded: number[]})
-  : MonthView => {
+export function getMonthView({events = [], viewDate, weekStartsOn, excluded = []}:
+  {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[]})
+  : MonthView {
 
   const start: Date = startOfWeek(startOfMonth(viewDate), {weekStartsOn});
   const end: Date = endOfWeek(endOfMonth(viewDate), {weekStartsOn});
@@ -291,7 +291,7 @@ export const getMonthView: Function = ({events = [], viewDate, weekStartsOn, exc
   for (let i: number = 0; i < differenceInDays(end, start) + 1; i++) {
     const date: Date = addDays(start, i);
     if (!excluded.some(e => date.getDay() === e)) {
-      const day: MonthViewDay = getWeekDay({date});
+      const day: MonthViewDay = getWeekDay({date}) as MonthViewDay;
       const events: CalendarEvent[] = getEventsInPeriod({
         events: eventsInMonth,
         periodStart: startOfDay(date),
@@ -317,10 +317,10 @@ export const getMonthView: Function = ({events = [], viewDate, weekStartsOn, exc
     days
   };
 
-};
+}
 
-interface GetDayViewArgs {
-  events: CalendarEvent[];
+export interface GetDayViewArgs {
+  events?: CalendarEvent[];
   viewDate: Date;
   hourSegments: number;
   dayStart: {
@@ -335,8 +335,8 @@ interface GetDayViewArgs {
   segmentHeight: number;
 }
 
-export const getDayView: Function = ({events = [], viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs)
-  : DayView => {
+export function getDayView({events = [], viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs)
+  : DayView {
 
   const startOfView: Date = setMinutes(setHours(startOfDay(viewDate), dayStart.hour), dayStart.minute);
   const endOfView: Date = setMinutes(setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour), dayEnd.minute);
@@ -424,9 +424,12 @@ export const getDayView: Function = ({events = [], viewDate, hourSegments, daySt
     allDayEvents
   };
 
-};
+}
 
-export const getDayViewHourGrid: Function = ({viewDate, hourSegments, dayStart, dayEnd}): DayViewHour[] => {
+export function getDayViewHourGrid(
+  {viewDate, hourSegments, dayStart, dayEnd}:
+    {viewDate: Date, hourSegments: number, dayStart: any, dayEnd: any}
+): DayViewHour[] {
 
   const hours: DayViewHour[] = [];
 
@@ -452,4 +455,4 @@ export const getDayViewHourGrid: Function = ({viewDate, hourSegments, dayStart, 
   }
 
   return hours;
-};
+}
