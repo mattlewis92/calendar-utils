@@ -109,7 +109,7 @@ export interface DayViewHour {
   segments: DayViewHourSegment[];
 }
 
-function getExcludedDays(startDate: Date, days: number, excluded: number[]): number {
+function getExcludedDays({startDate, days, excluded}: {startDate: Date, days: number, excluded: number[]}): number {
   if (excluded.length < 1) {
     return 0;
   }
@@ -137,7 +137,7 @@ function getWeekViewEventSpan(event: CalendarEvent, offset: number, startOfWeek:
   if (totalLength > DAYS_IN_WEEK) {
     span = DAYS_IN_WEEK - offset;
   }
-  return span - getExcludedDays(begin, span, excluded);
+  return span - getExcludedDays({startDate: begin, days: span, excluded});
 }
 
 export function getWeekViewEventOffset(event: CalendarEvent, startOfWeek: Date, excluded: number[] = []): number {
@@ -145,7 +145,7 @@ export function getWeekViewEventOffset(event: CalendarEvent, startOfWeek: Date, 
     return 0;
   }
   const distance: number = differenceInDays(event.start, startOfWeek);
-  return distance - getExcludedDays(startOfWeek, distance, excluded);
+  return distance - getExcludedDays({startDate: startOfWeek, days: distance, excluded});
 }
 
 interface IsEventInPeriodArgs {
