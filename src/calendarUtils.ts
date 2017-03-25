@@ -225,6 +225,10 @@ export function getWeekView({events = [], viewDate, weekStartsOn, excluded = []}
   {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[]})
   : WeekViewEventRow[] {
 
+  if (!events) {
+    events = [];
+  }
+
   const startOfViewWeek: Date = startOfWeek(viewDate, {weekStartsOn});
   const endOfViewWeek: Date = endOfWeek(viewDate, {weekStartsOn});
   const maxRange: number = DAYS_IN_WEEK - excluded.length;
@@ -281,6 +285,10 @@ export function getWeekView({events = [], viewDate, weekStartsOn, excluded = []}
 export function getMonthView({events = [], viewDate, weekStartsOn, excluded = []}:
   {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[]})
   : MonthView {
+
+  if (!events) {
+    events = [];
+  }
 
   const start: Date = startOfWeek(startOfMonth(viewDate), {weekStartsOn});
   const end: Date = endOfWeek(endOfMonth(viewDate), {weekStartsOn});
@@ -339,6 +347,10 @@ export interface GetDayViewArgs {
 
 export function getDayView({events = [], viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs)
   : DayView {
+
+  if (!events) {
+    events = [];
+  }
 
   const startOfView: Date = setMinutes(setHours(startOfDay(viewDate), dayStart.hour), dayStart.minute);
   const endOfView: Date = setMinutes(setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour), dayEnd.minute);

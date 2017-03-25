@@ -329,6 +329,11 @@ describe('getWeekView', () => {
     expect(result).to.deep.equal([]);
   });
 
+  it('should not throw if events are null', () => {
+    const result: WeekViewEventRow[] = getWeekView({viewDate: new Date('2016-06-27'), weekStartsOn: 0, events: null});
+    expect(result).to.deep.equal([]);
+  });
+
   it('should not increase span for excluded days', () => {
     const events: CalendarEvent[] = [{
       start: new Date('2016-01-04'),
@@ -575,6 +580,10 @@ describe('getMonthView', () => {
 
   it('should not throw if no events are provided', () => {
     expect(() => getMonthView({viewDate: new Date('2016-07-03'), weekStartsOn: 0})).not.to.throw();
+  });
+
+  it('should not throw if no events are null', () => {
+    expect(() => getMonthView({viewDate: new Date('2016-07-03'), weekStartsOn: 0, events: null})).not.to.throw();
   });
 
 });
@@ -1193,6 +1202,21 @@ describe('getDayView', () => {
       dayEnd: {hour: 23, minute: 59},
       eventWidth: 100,
       segmentHeight: 30
+    });
+    expect(result.events).to.deep.equal([]);
+
+  });
+
+  it('should not throw if events are null', () => {
+
+    const result: DayView = getDayView({
+      viewDate: new Date(),
+      hourSegments: 2,
+      dayStart: {hour: 6, minute: 0},
+      dayEnd: {hour: 23, minute: 59},
+      eventWidth: 100,
+      segmentHeight: 30,
+      events: null
     });
     expect(result.events).to.deep.equal([]);
 
