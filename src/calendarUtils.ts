@@ -128,11 +128,15 @@ function getExcludedDays({startDate, days, excluded}: {startDate: Date, days: nu
 }
 
 function getWeekViewEventSpan(
-  {event, offset, startOfWeek, excluded}: {event: CalendarEvent, offset: number, startOfWeek: Date, excluded: number[]}): number {
+  {event, offset, startOfWeek, excluded}: {event: CalendarEvent, offset: number, startOfWeek: Date, excluded: number[]}, minutePrecision: boolean=true): number {
   const begin: Date = event.start < startOfWeek ? startOfWeek : event.start;
   let span: number = 1;
   if (event.end) {
-    span = differenceInDays(addMinutes(endOfDay(event.end), 1), startOfDay(begin));
+    if (minutePrecision){
+      span = differenceInMinutes(event.end, begin) / MINUTES_IN_HOUR / HOURS_IN_DAY;
+    } else {
+      span = differenceInDays(addMinutes(endOfDay(event.end), 1), startOfDay(begin));
+    }
   }
   const totalLength: number = offset + span;
   if (totalLength > DAYS_IN_WEEK) {
@@ -142,11 +146,17 @@ function getWeekViewEventSpan(
 }
 
 export function getWeekViewEventOffset(
-  {event, startOfWeek, excluded = []}: {event: CalendarEvent, startOfWeek: Date, excluded?: number[]}): number {
+  {event, startOfWeek, excluded = []}: {event: CalendarEvent, startOfWeek: Date, excluded?: number[]}, minutePrecision: boolean=true): number {
   if (event.start < startOfWeek) {
     return 0;
   }
-  const distance: number = differenceInDays(event.start, startOfWeek);
+  let distance: number;
+  if (minutePrecision){
+    distance = differenceInMinutes(event.start, startOfWeek) / MINUTES_IN_HOUR / HOURS_IN_DAY;
+  } else{
+    distance = differenceInDays(event.start, startOfWeek);
+  }
+
   return distance - getExcludedDays({startDate: startOfWeek, days: distance, excluded});
 }
 
