@@ -32,7 +32,11 @@ module.exports = function(config) {
           test: /\.ts$/,
           loader: 'tslint-loader',
           exclude: /node_modules/,
-          enforce: 'pre'
+          enforce: 'pre',
+          options: {
+            emitErrors: config.singleRun,
+            failOnHint: false
+          }
         }, {
           test: /\.ts$/,
           loader: 'awesome-typescript-loader',
@@ -46,15 +50,7 @@ module.exports = function(config) {
       },
       plugins: [
         ...(config.singleRun ? [new webpack.NoEmitOnErrorsPlugin()] : []),
-        new FixDefaultImportPlugin(),
-        new webpack.LoaderOptionsPlugin({
-          options: {
-            tslint: {
-              emitErrors: config.singleRun,
-              failOnHint: false
-            }
-          }
-        })
+        new FixDefaultImportPlugin()
       ]
     },
 
@@ -80,6 +76,16 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS']
+    browsers: ['PhantomJS'],
+
+    phantomjsLauncher: {
+      // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
+      exitOnResourceError: true
+    },
+
+    browserConsoleLogOptions: {
+      terminal: true,
+      level: 'log'
+    }
   });
 };

@@ -672,6 +672,12 @@ describe('getMonthView', () => {
     expect(() => getMonthView({viewDate: new Date('2016-07-03'), weekStartsOn: 0, events: null})).not.to.throw();
   });
 
+  it('should handle changes in DST', () => {
+    const view: MonthView = getMonthView({viewDate: new Date('2015-10-03'), weekStartsOn: 0});
+    expect(view.days[28].date).to.deep.equal(startOfDay(new Date('2015-10-25')));
+    expect(view.days[29].date).to.deep.equal(startOfDay(new Date('2015-10-26')));
+  });
+
 });
 
 describe('getDayView', () => {
