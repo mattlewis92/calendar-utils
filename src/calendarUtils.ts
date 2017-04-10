@@ -303,7 +303,11 @@ export function getMonthView({events = [], viewDate, weekStartsOn, excluded = []
     // hacky fix for https://github.com/mattlewis92/angular-calendar/issues/173
     let date: Date;
     if (previousDate) {
-      date = previousDate = startOfDay(addHours(previousDate, HOURS_IN_DAY));
+      date = startOfDay(addHours(previousDate, HOURS_IN_DAY));
+      if (previousDate.getTime() === date.getTime()) { // DST change, so need to add 25 hours
+        date = startOfDay(addHours(previousDate, HOURS_IN_DAY + 1));
+      }
+      previousDate = date;
     } else {
       date = previousDate = start;
     }
