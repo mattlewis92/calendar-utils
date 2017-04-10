@@ -136,7 +136,18 @@ describe('getWeekView', () => {
       color: {primary: '', secondary: ''}
     }];
 
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
+    let result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
+    expect(result).to.deep.equal([{
+      row: [{
+        event: events[0],
+        offset: 1 - timezoneOffset / 1000 / 60 / 60 / 24,
+        span: 2,
+        startsBeforeWeek: false,
+        endsAfterWeek: false
+      }]
+    }]);
+
+    result = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: false});
     expect(result).to.deep.equal([{
       row: [{
         event: events[0],
@@ -158,7 +169,18 @@ describe('getWeekView', () => {
       color: {primary: '', secondary: ''}
     }];
 
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
+    let result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
+    expect(result).to.deep.equal([{
+      row: [{
+        event: events[0],
+        offset: 0,
+        span: 3 - timezoneOffset / 1000 / 60 / 60 / 24,
+        startsBeforeWeek: true,
+        endsAfterWeek: false
+      }]
+    }]);
+
+    result = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: false});
     expect(result).to.deep.equal([{
       row: [{
         event: events[0],
@@ -180,7 +202,18 @@ describe('getWeekView', () => {
       color: {primary: '', secondary: ''}
     }];
 
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
+    let result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
+    expect(result).to.deep.equal([{
+      row: [{
+        event: events[0],
+        offset: 1 - timezoneOffset / 1000 / 60 / 60 / 24,
+        span: 6 + timezoneOffset / 1000 / 60 / 60 / 24,
+        startsBeforeWeek: false,
+        endsAfterWeek: true
+      }]
+    }]);
+
+    result = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: false});
     expect(result).to.deep.equal([{
       row: [{
         event: events[0],
@@ -190,6 +223,7 @@ describe('getWeekView', () => {
         endsAfterWeek: true
       }]
     }]);
+
 
   });
 
@@ -253,6 +287,22 @@ describe('getWeekView', () => {
       title: 'Event 1',
       start: startOfWeek(new Date()),
       end: addHours(startOfWeek(new Date()), 5),
+      color: {primary: '', secondary: ''}
+    }];
+    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0});
+    expect(result[0].row[0].event).to.deep.equal(events[0]);
+    expect(result[1].row[0].event).to.deep.equal(events[1]);
+  });
+
+
+  it('should put events in the next row when they have same start and ends are not defined', () => {
+    const events: CalendarEvent[] = [{
+      title: 'Event 0',
+      start: startOfWeek(new Date()),
+      color: {primary: '', secondary: ''}
+    }, {
+      title: 'Event 1',
+      start: startOfWeek(new Date()),
       color: {primary: '', secondary: ''}
     }];
     const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0});
@@ -356,11 +406,20 @@ describe('getWeekView', () => {
       title: '',
       color: {primary: '', secondary: ''}
     }];
-    const result: WeekViewEventRow[] = getWeekView({
+    let result: WeekViewEventRow[] = getWeekView({
       events,
       viewDate: new Date('2016-01-04'),
       excluded: [0, 1, 4],
       weekStartsOn: 0
+    });
+    expect(result[0].row[0].span).to.equal(6 - 3 - (timezoneOffset - events[0].end.getTimezoneOffset() * 60 * 1000) / 1000 / 60 / 60 / 24);
+
+    result = getWeekView({
+      events,
+      viewDate: new Date('2016-01-04'),
+      excluded: [0, 1, 4],
+      weekStartsOn: 0,
+      precision: false
     });
     expect(result[0].row[0].span).to.equal(6 - 2);
   });
@@ -391,11 +450,27 @@ describe('getWeekView', () => {
       title: '',
       color: {primary: '', secondary: ''}
     }];
-    const result: WeekViewEventRow[] = getWeekView({
+    let result: WeekViewEventRow[] = getWeekView({
       events,
       viewDate: new Date('2016-01-04'),
       excluded: [0, 3],
       weekStartsOn: 0
+    });
+    expect(result[0].row[0].span).to.equal(
+      4 + (timezoneOffset - events[0].start.getTimezoneOffset() * 60 * 1000) / 1000 / 60 / 60 / 24
+    ); // thuesday, thursday, friday, saturday
+    expect(result[0].row[0].offset).to.equal(
+      1 - (timezoneOffset - events[0].end.getTimezoneOffset() * 60 * 1000) / 1000 / 60 / 60 / 24
+    ); // skip monday
+    expect(result[0].row[0].endsAfterWeek).to.equal(true);
+    expect(result[0].row[0].startsBeforeWeek).to.equal(false);
+
+    result = getWeekView({
+      events,
+      viewDate: new Date('2016-01-04'),
+      excluded: [0, 3],
+      weekStartsOn: 0,
+      precision: false
     });
     expect(result[0].row[0].span).to.equal(4); // thuesday, thursday, friday, saturday
     expect(result[0].row[0].offset).to.equal(1); // skip monday
@@ -410,11 +485,22 @@ describe('getWeekView', () => {
       title: '',
       color: {primary: '', secondary: ''}
     }];
-    const result: WeekViewEventRow[] = getWeekView({
+    let result: WeekViewEventRow[] = getWeekView({
       events,
       viewDate: new Date('2016-01-05'),
       excluded: [4, 5, 6],
       weekStartsOn: 0
+    });
+    expect(result[0].row[0].offset).to.equal(
+      1 - (timezoneOffset - events[0].end.getTimezoneOffset() * 60 * 1000) / 1000 / 60 / 60 / 24
+    ); // sunday
+
+    result = getWeekView({
+      events,
+      viewDate: new Date('2016-01-05'),
+      excluded: [4, 5, 6],
+      weekStartsOn: 0,
+      precision: false
     });
     expect(result[0].row[0].offset).to.equal(1); // sunday
   });
