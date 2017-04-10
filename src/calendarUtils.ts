@@ -221,8 +221,8 @@ export function getWeekViewHeader({viewDate, weekStartsOn, excluded = []}:
 
 }
 
-export function getWeekView({events = [], viewDate, weekStartsOn, excluded = []}:
-  {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[]})
+export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [], precision = true}:
+  {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[], precision?: boolean})
   : WeekViewEventRow[] {
 
   if (!events) {
@@ -234,8 +234,31 @@ export function getWeekView({events = [], viewDate, weekStartsOn, excluded = []}
   const maxRange: number = DAYS_IN_WEEK - excluded.length;
 
   const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
-    const offset: number = getWeekViewEventOffset({event, startOfWeek: startOfViewWeek, excluded});
-    const span: number = getWeekViewEventSpan({event, offset, startOfWeek: startOfViewWeek, excluded});
+    let offset: number = getWeekViewEventOffset({event, startOfWeek: startOfViewWeek, excluded});
+    let span: number = getWeekViewEventSpan({event, offset, startOfWeek: startOfViewWeek, excluded});
+
+    if (precision) {
+      if (event.start >= startOfViewWeek) {
+        offset += differenceInSeconds(event.start, startOfDay(event.start)) / 60 / 60 / 24;
+      }
+      if (event.start >= startOfViewWeek) {
+        span -= differenceInSeconds(event.start, startOfDay(event.start)) / 60 / 60 / 24;
+      }
+      if (event.end && event.end <= endOfViewWeek) {
+        span -= (
+          differenceInSeconds(endOfDay(event.end), event.end) + 1
+          ) / 60 / 60 / 24; // since one day difference is actually 60*60*24 - 1
+      }
+
+      if (event.start >= startOfViewWeek && excluded && excluded.indexOf(getDay(event.start)) !== -1) {
+        span += differenceInSeconds(event.start, startOfDay(event.start)) / 60 / 60 / 24;
+      }
+
+      if (event.end <= endOfViewWeek && excluded && excluded.indexOf(getDay(event.end)) !== -1) {
+        span += differenceInSeconds(endOfDay(event.end), event.end) / 60 / 60 / 24;
+      }
+    }
+
     return {event, offset, span};
   }).filter(e => e.offset < maxRange).filter(e => e.span > 0).map(entry => ({
       event: entry.event,
