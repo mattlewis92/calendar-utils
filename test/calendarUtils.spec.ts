@@ -289,6 +289,21 @@ describe('getWeekView', () => {
 
   });
 
+  it('should put events in the next row when they have same start and ends are not defined', () => {
+    const events: CalendarEvent[] = [{
+      title: 'Event 0',
+      start: startOfWeek(new Date()),
+      color: {primary: '', secondary: ''}
+    }, {
+      title: 'Event 1',
+      start: startOfWeek(new Date()),
+      color: {primary: '', secondary: ''}
+    }];
+    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0});
+    expect(result[0].row[0].event).to.deep.equal(events[0]);
+    expect(result[1].row[0].event).to.deep.equal(events[1]);
+  });
+
   it('should exclude any events without an end date that dont occur in the event period', () => {
 
     const events: CalendarEvent[] = [{
