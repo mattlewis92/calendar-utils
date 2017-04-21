@@ -18,7 +18,8 @@ import {
   setMinutes,
   endOfMonth,
   startOfYesterday,
-  startOfTomorrow
+  startOfTomorrow,
+  differenceInSeconds
 } from 'date-fns';
 import {
   getWeekViewHeader,
@@ -33,9 +34,9 @@ import {
   DayViewHour,
   getDayViewHourGrid,
   DayViewHourSegment,
-  getWeekViewEventOffset, SECONDS_IN_DAY
+  getWeekViewEventOffset,
+  SECONDS_IN_DAY
 } from '../src/calendarUtils';
-import { differenceInSeconds } from 'date-fns';
 
 let clock: any, timezoneOffset: number, timezoneOffsetDays: number;
 beforeEach(() => {
@@ -911,12 +912,8 @@ describe('getWeekView', () => {
         weekStartsOn: 0,
         precision: 'minutes'
       });
-      expect(result[0].row[0].span).to.equal(
-        4 + (timezoneOffset - events[0].start.getTimezoneOffset() * 60 * 1000) / 1000 / 60 / 60 / 24
-      ); // thuesday, thursday, friday, saturday
-      expect(result[0].row[0].offset).to.equal(
-        1 - (timezoneOffset - events[0].end.getTimezoneOffset() * 60 * 1000) / 1000 / 60 / 60 / 24
-      ); // skip monday
+      expect(result[0].row[0].span).to.equal(4); // thuesday, thursday, friday, saturday
+      expect(result[0].row[0].offset).to.equal(1); // skip monday
       expect(result[0].row[0].endsAfterWeek).to.equal(true);
       expect(result[0].row[0].startsBeforeWeek).to.equal(false);
     });
@@ -935,9 +932,7 @@ describe('getWeekView', () => {
         weekStartsOn: 0,
         precision: 'minutes'
       });
-      expect(result[0].row[0].offset).to.equal(
-        1 - (timezoneOffset - events[0].end.getTimezoneOffset() * 60 * 1000) / 1000 / 60 / 60 / 24
-      ); // sunday
+      expect(result[0].row[0].offset).to.equal(1); // sunday
     });
 
     it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
