@@ -2,8 +2,8 @@
 /// <reference types="mocha" />
 /// <reference types="sinon" />
 
-import {expect} from 'chai';
-import {useFakeTimers} from 'sinon';
+import { expect } from 'chai';
+import { useFakeTimers } from 'sinon';
 import {
   startOfWeek,
   addHours,
@@ -18,7 +18,8 @@ import {
   setMinutes,
   endOfMonth,
   startOfYesterday,
-  startOfTomorrow
+  startOfTomorrow,
+  differenceInSeconds
 } from 'date-fns';
 import {
   getWeekViewHeader,
@@ -33,13 +34,15 @@ import {
   DayViewHour,
   getDayViewHourGrid,
   DayViewHourSegment,
-  getWeekViewEventOffset
+  getWeekViewEventOffset,
+  SECONDS_IN_DAY
 } from '../src/calendarUtils';
 
-let clock: any, timezoneOffset: number;
+let clock: any, timezoneOffset: number, timezoneOffsetDays: number;
 beforeEach(() => {
   clock = useFakeTimers(new Date('2016-06-28').getTime());
   timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
+  timezoneOffsetDays = new Date().getTimezoneOffset() / 60 / 24;
 });
 
 afterEach(() => {
@@ -127,302 +130,833 @@ describe('getWeekViewHeader', () => {
 
 describe('getWeekView', () => {
 
-  it('should get the correct span, offset and extends values for events that start within the week', () => {
+  describe('precision = "days"', () => {
 
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-06-27'),
-      end: new Date('2016-06-29'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
+    it('should get the correct span, offset and extends values for events that start within the week', () => {
 
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result).to.deep.equal([{
-      row: [{
-        event: events[0],
-        offset: 1,
-        span: 3,
-        startsBeforeWeek: false,
-        endsAfterWeek: false
-      }]
-    }]);
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-27'),
+        end: new Date('2016-06-29'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
 
-  });
 
-  it('should get the correct span, offset and extends values for events that start before the week and end within it', () => {
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result).to.deep.equal([{
+        row: [{
+          event: events[0],
+          offset: 1,
+          span: 3,
+          startsBeforeWeek: false,
+          endsAfterWeek: false
+        }]
+      }]);
 
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-06-24'),
-      end: new Date('2016-06-29'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result).to.deep.equal([{
-      row: [{
-        event: events[0],
-        offset: 0,
-        span: 4,
-        startsBeforeWeek: true,
-        endsAfterWeek: false
-      }]
-    }]);
-
-  });
-
-  it('should get the correct span, offset and extends values for events that start within the week and end after it', () => {
-
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-06-27'),
-      end: new Date('2016-07-10'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result).to.deep.equal([{
-      row: [{
-        event: events[0],
-        offset: 1,
-        span: 6,
-        startsBeforeWeek: false,
-        endsAfterWeek: true
-      }]
-    }]);
-
-  });
-
-  it('should not include events that dont appear on the view when days are excluded', () => {
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-01-08'),
-      end: new Date('2016-01-10'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-    const eventCount: number = getWeekView({events, viewDate: new Date('2016-01-12'), excluded: [0, 6], weekStartsOn: 0}).length;
-    expect(eventCount).to.equal(0);
-  });
-
-  it('should get the correct span, offset and extends values for events that start before the week and end after it', () => {
-
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-06-24'),
-      end: new Date('2016-07-10'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result).to.deep.equal([{
-      row: [{
-        event: events[0],
-        offset: 0,
-        span: 7,
-        startsBeforeWeek: true,
-        endsAfterWeek: true
-      }]
-    }]);
-
-  });
-
-  it('should put events in the same row that don\'t overlap', () => {
-    const events: CalendarEvent[] = [{
-      title: 'Event 0',
-      start: startOfWeek(new Date()),
-      end: addHours(startOfWeek(new Date()), 5),
-      color: {primary: '', secondary: ''}
-    }, {
-      title: 'Event 1',
-      start: addDays(startOfWeek(new Date()), 2),
-      end: addHours(addDays(startOfWeek(new Date()), 2), 5),
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0});
-    expect(result[0].row[0].event).to.deep.equal(events[0]);
-    expect(result[0].row[1].event).to.deep.equal(events[1]);
-  });
-
-  it('should put events in the next row when they overlap', () => {
-    const events: CalendarEvent[] = [{
-      title: 'Event 0',
-      start: startOfWeek(new Date()),
-      end: addHours(startOfWeek(new Date()), 5),
-      color: {primary: '', secondary: ''}
-    }, {
-      title: 'Event 1',
-      start: startOfWeek(new Date()),
-      end: addHours(startOfWeek(new Date()), 5),
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0});
-    expect(result[0].row[0].event).to.deep.equal(events[0]);
-    expect(result[1].row[0].event).to.deep.equal(events[1]);
-  });
-
-  it('should sort events by start date when all events are in the same column', () => {
-    const events: CalendarEvent[] = [{
-      title: 'Event 1',
-      start: addHours(new Date(), 1),
-      color: {primary: '', secondary: ''}
-    }, {
-      title: 'Event 0',
-      start: new Date(),
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0});
-    expect(result[0].row[0].event).to.deep.equal(events[1]);
-    expect(result[1].row[0].event).to.deep.equal(events[0]);
-  });
-
-  it('should exclude any events that dont occur in the event period', () => {
-
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-06-24'),
-      end: new Date('2016-05-25'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result).to.deep.equal([]);
-
-  });
-
-  it('should exclude any events without an end date that dont occur in the event period', () => {
-
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-06-24'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result).to.deep.equal([]);
-
-  });
-
-  it('should include events that start on the beginning on the week', () => {
-    const events: CalendarEvent[] = [{
-      start: startOfWeek(new Date('2016-06-27')),
-      end: new Date('2016-08-01'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result[0].row[0].event).to.deep.equal(events[0]);
-  });
-
-  it('should include events that end at the end of the week', () => {
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-04-01'),
-      end: endOfWeek(new Date('2016-06-27')),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result[0].row[0].event).to.deep.equal(events[0]);
-  });
-
-  it('should not throw if no events are provided', () => {
-    const result: WeekViewEventRow[] = getWeekView({viewDate: new Date('2016-06-27'), weekStartsOn: 0});
-    expect(result).to.deep.equal([]);
-  });
-
-  it('should not throw if events are null', () => {
-    const result: WeekViewEventRow[] = getWeekView({viewDate: new Date('2016-06-27'), weekStartsOn: 0, events: null});
-    expect(result).to.deep.equal([]);
-  });
-
-  it('should not increase span for excluded days', () => {
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-01-04'),
-      end: new Date('2016-01-09'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({
-      events,
-      viewDate: new Date('2016-01-04'),
-      excluded: [0, 1, 4],
-      weekStartsOn: 0
     });
-    expect(result[0].row[0].span).to.equal(6 - 2);
-  });
 
-  it('should limit span and offset to available days in viewDate week', () => {
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-01-01'),
-      end: new Date('2016-01-10'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({
-      events,
-      viewDate: new Date('2016-01-05'),
-      excluded: [0, 6],
-      weekStartsOn: 0
+    it('should get the correct span, offset and extends values for events that start before the week and end within it', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-24'),
+        end: new Date('2016-06-29'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result).to.deep.equal([{
+        row: [{
+          event: events[0],
+          offset: 0,
+          span: 4,
+          startsBeforeWeek: true,
+          endsAfterWeek: false
+        }]
+      }]);
+
     });
-    expect(result[0].row[0].span).to.equal(7 - 2);
-    expect(result[0].row[0].offset).to.equal(0);
-    expect(result[0].row[0].endsAfterWeek).to.equal(true);
-    expect(result[0].row[0].startsBeforeWeek).to.equal(true);
-  });
 
-  it('should limit span to available days in week including offset', () => {
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-01-05'),
-      end: new Date('2016-01-20'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({
-      events,
-      viewDate: new Date('2016-01-04'),
-      excluded: [0, 3],
-      weekStartsOn: 0
+    it('should get the correct span, offset and extends values for events that start within the week and end after it', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-27'),
+        end: new Date('2016-07-10'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result).to.deep.equal([{
+        row: [{
+          event: events[0],
+          offset: 1,
+          span: 6,
+          startsBeforeWeek: false,
+          endsAfterWeek: true
+        }]
+      }]);
+
+
     });
-    expect(result[0].row[0].span).to.equal(4); // thuesday, thursday, friday, saturday
-    expect(result[0].row[0].offset).to.equal(1); // skip monday
-    expect(result[0].row[0].endsAfterWeek).to.equal(true);
-    expect(result[0].row[0].startsBeforeWeek).to.equal(false);
-  });
 
-  it('should not reduce offset if excluded days are in the future', () => {
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-01-04'),
-      end: new Date('2016-01-05'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-    const result: WeekViewEventRow[] = getWeekView({
-      events,
-      viewDate: new Date('2016-01-05'),
-      excluded: [4, 5, 6],
-      weekStartsOn: 0
+    it('should not include events that dont appear on the view when days are excluded', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-08'),
+        end: new Date('2016-01-10'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const eventCount: number = getWeekView(
+        {events, viewDate: new Date('2016-01-12'), excluded: [0, 6], weekStartsOn: 0, precision: 'days'}
+      ).length;
+      expect(eventCount).to.equal(0);
     });
-    expect(result[0].row[0].offset).to.equal(1); // sunday
+
+    it('should get the correct span, offset and extends values for events that start before the week and end after it', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-24'),
+        end: new Date('2016-07-10'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result).to.deep.equal([{
+        row: [{
+          event: events[0],
+          offset: 0,
+          span: 7,
+          startsBeforeWeek: true,
+          endsAfterWeek: true
+        }]
+      }]);
+
+    });
+
+    it('should put events in the same row that don\'t overlap', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        end: addHours(startOfWeek(new Date()), 5),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: addDays(startOfWeek(new Date()), 2),
+        end: addHours(addDays(startOfWeek(new Date()), 2), 5),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[0].row[1].event).to.deep.equal(events[1]);
+    });
+
+    it('should put events in the next row when they overlap', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        end: addHours(startOfWeek(new Date()), 5),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: startOfWeek(new Date()),
+        end: addHours(startOfWeek(new Date()), 5),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[1].row[0].event).to.deep.equal(events[1]);
+    });
+
+
+    it('should put events in the next row when they have same start and ends are not defined', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: startOfWeek(new Date()),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[1].row[0].event).to.deep.equal(events[1]);
+    });
+
+    it('should sort events by start date when all events are in the same column', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 1',
+        start: addHours(new Date(), 1),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 0',
+        start: new Date(),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[1]);
+      expect(result[1].row[0].event).to.deep.equal(events[0]);
+    });
+
+    it('should exclude any events that dont occur in the event period', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-24'),
+        end: new Date('2016-05-25'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result).to.deep.equal([]);
+
+    });
+
+    it('should put events in the next row when they have same start and ends are not defined', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: startOfWeek(new Date()),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[1].row[0].event).to.deep.equal(events[1]);
+    });
+
+    it('should exclude any events without an end date that dont occur in the event period', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-24'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result).to.deep.equal([]);
+
+    });
+
+    it('should include events that start on the beginning on the week', () => {
+      const events: CalendarEvent[] = [{
+        start: startOfWeek(new Date('2016-06-27')),
+        end: new Date('2016-08-01'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+    });
+
+    it('should include events that end at the end of the week', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-04-01'),
+        end: endOfWeek(new Date('2016-06-27')),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+    });
+
+    it('should not throw if no events are provided', () => {
+      const result: WeekViewEventRow[] = getWeekView({
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should not throw if events are null', () => {
+      const result: WeekViewEventRow[] = getWeekView({viewDate: new Date('2016-06-27'), weekStartsOn: 0, events: null});
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should not increase span for excluded days', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-04'),
+        end: new Date('2016-01-09'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-01-04'),
+        excluded: [0, 1, 4],
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].span).to.equal(6 - 2);
+    });
+
+    it('should limit span and offset to available days in viewDate week', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-01'),
+        end: new Date('2016-01-10'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-01-05'),
+        excluded: [0, 6],
+        weekStartsOn: 0
+      });
+      expect(result[0].row[0].span).to.equal(7 - 2);
+      expect(result[0].row[0].offset).to.equal(0);
+      expect(result[0].row[0].endsAfterWeek).to.equal(true);
+      expect(result[0].row[0].startsBeforeWeek).to.equal(true);
+    });
+
+    it('should limit span to available days in week including offset', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-05'),
+        end: new Date('2016-01-20'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-01-04'),
+        excluded: [0, 3],
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].span).to.equal(4); // thuesday, thursday, friday, saturday
+      expect(result[0].row[0].offset).to.equal(1); // skip monday
+      expect(result[0].row[0].endsAfterWeek).to.equal(true);
+      expect(result[0].row[0].startsBeforeWeek).to.equal(false);
+    });
+
+    it('should not reduce offset if excluded days are in the future', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-04'),
+        end: new Date('2016-01-05'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-01-05'),
+        excluded: [4, 5, 6],
+        weekStartsOn: 0,
+        precision: 'days'
+      });
+      expect(result[0].row[0].offset).to.equal(1); // sunday
+    });
+
+    it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-08'),
+        end: new Date('2016-01-15'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }, {
+        start: new Date('2016-01-08'),
+        end: new Date('2016-01-09'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const eventCount: number = getWeekView({
+        events,
+        viewDate: new Date('2016-01-05'),
+        excluded: [0, 4, 5, 6],
+        weekStartsOn: 0
+      }).length;
+      expect(eventCount).to.equal(0);
+    });
+
   });
 
-  it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
-    const events: CalendarEvent[] = [{
-      start: new Date('2016-01-08'),
-      end: new Date('2016-01-15'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }, {
-      start: new Date('2016-01-08'),
-      end: new Date('2016-01-09'),
-      title: '',
-      color: {primary: '', secondary: ''}
-    }];
-    const eventCount: number = getWeekView({
-      events,
-      viewDate: new Date('2016-01-05'),
-      excluded: [0, 4, 5, 6],
-      weekStartsOn: 0
-    }).length;
-    expect(eventCount).to.equal(0);
+  describe('precision = "minutes"', () => {
+
+    it('should get the correct span, offset and extends values for events that start within the week', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-27'),
+        end: new Date('2016-06-29'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result).to.deep.equal([{
+        row: [{
+          event: events[0],
+          offset: 1 - timezoneOffsetDays,
+          span: 2,
+          startsBeforeWeek: false,
+          endsAfterWeek: false
+        }]
+      }]);
+
+    });
+
+    it('should get the correct span, offset and extends values for events that start before the week and end within it', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-24'),
+        end: new Date('2016-06-29'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result).to.deep.equal([{
+        row: [{
+          event: events[0],
+          offset: 0,
+          span: 3 - timezoneOffsetDays,
+          startsBeforeWeek: true,
+          endsAfterWeek: false
+        }]
+      }]);
+
+    });
+
+    it('should get the correct span, offset and extends values for events that start within the week and end after it', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-27'),
+        end: new Date('2016-07-10'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].offset).to.equal(1 - timezoneOffsetDays);
+      expect(result[0].row[0].span).to.equal(6 + timezoneOffsetDays);
+      expect(result).to.deep.equal([{
+        row: [{
+          event: events[0],
+          offset: 1 - timezoneOffsetDays,
+          span: 6 + timezoneOffsetDays,
+          startsBeforeWeek: false,
+          endsAfterWeek: true
+        }]
+      }]);
+
+    });
+
+    it('should not include events that dont appear on the view when days are excluded', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-08'),
+        end: new Date('2016-01-10'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const eventCount: number = getWeekView({
+        events,
+        viewDate: new Date('2016-01-12'),
+        excluded: [0, 6],
+        weekStartsOn: 0,
+        precision: 'minutes'
+      }).length;
+      expect(eventCount).to.equal(0);
+    });
+
+    it('should get the correct span, offset and extends values for events that start before the week and end after it', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-24'),
+        end: new Date('2016-07-10'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result).to.deep.equal([{
+        row: [{
+          event: events[0],
+          offset: 0,
+          span: 7,
+          startsBeforeWeek: true,
+          endsAfterWeek: true
+        }]
+      }]);
+
+    });
+
+    it('should put events in the same row that don\'t overlap', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        end: addHours(startOfWeek(new Date()), 5),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: addDays(startOfWeek(new Date()), 2),
+        end: addHours(addDays(startOfWeek(new Date()), 2), 5),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[0].row[1].event).to.deep.equal(events[1]);
+    });
+
+    it('should put events in the next row when they overlap', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        end: addHours(startOfWeek(new Date()), 5),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: startOfWeek(new Date()),
+        end: addHours(startOfWeek(new Date()), 5),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[1].row[0].event).to.deep.equal(events[1]);
+    });
+
+
+    it('should put events in the next row when they have same start and ends are not defined', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: startOfWeek(new Date()),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[1].row[0].event).to.deep.equal(events[1]);
+    });
+
+    it('should sort events by start date when all events are in the same column', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 1',
+        start: addHours(new Date(), 1),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 0',
+        start: new Date(),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[1]);
+      expect(result[1].row[0].event).to.deep.equal(events[0]);
+    });
+
+    it('should exclude any events that dont occur in the event period', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-24'),
+        end: new Date('2016-05-25'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result).to.deep.equal([]);
+
+    });
+
+    it('should put events in the next row when they have same start and ends are not defined', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: startOfWeek(new Date()),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[1].row[0].event).to.deep.equal(events[1]);
+    });
+
+    it('should exclude any events without an end date that dont occur in the event period', () => {
+
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-24'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result).to.deep.equal([]);
+
+    });
+
+    it('should include events that start on the beginning on the week', () => {
+      const events: CalendarEvent[] = [{
+        start: startOfWeek(new Date('2016-06-27')),
+        end: new Date('2016-08-01'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+    });
+
+    it('should include events that end at the end of the week', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-04-01'),
+        end: endOfWeek(new Date('2016-06-27')),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+    });
+
+    it('should not throw if no events are provided', () => {
+      const result: WeekViewEventRow[] = getWeekView({
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should not throw if events are null', () => {
+      const result: WeekViewEventRow[] = getWeekView({
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        events: null,
+        precision: 'minutes'
+      });
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should not increase span for excluded days', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-04'),
+        end: new Date('2016-01-09'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-01-04'),
+        excluded: [0, 1, 4],
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].span).to.equal(3 + differenceInSeconds(events[0].end, startOfDay(events[0].end)) / SECONDS_IN_DAY);
+    });
+
+    it('should limit span and offset to available days in viewDate week', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-01'),
+        end: new Date('2016-01-10'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-01-05'),
+        excluded: [0, 6],
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].span).to.equal(7 - 2);
+      expect(result[0].row[0].offset).to.equal(0);
+      expect(result[0].row[0].endsAfterWeek).to.equal(true);
+      expect(result[0].row[0].startsBeforeWeek).to.equal(true);
+    });
+
+    it('should limit span to available days in week including offset', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-05'),
+        end: new Date('2016-01-20'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-01-04'),
+        excluded: [0, 3],
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].span).to.equal(4); // thuesday, thursday, friday, saturday
+      expect(result[0].row[0].offset).to.equal(1); // skip monday
+      expect(result[0].row[0].endsAfterWeek).to.equal(true);
+      expect(result[0].row[0].startsBeforeWeek).to.equal(false);
+    });
+
+    it('should not reduce offset if excluded days are in the future', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-04'),
+        end: new Date('2016-01-05'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-01-05'),
+        excluded: [4, 5, 6],
+        weekStartsOn: 0,
+        precision: 'minutes'
+      });
+      expect(result[0].row[0].offset).to.equal(1); // sunday
+    });
+
+    it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-01-08'),
+        end: new Date('2016-01-15'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }, {
+        start: new Date('2016-01-08'),
+        end: new Date('2016-01-09'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+      const eventCount: number = getWeekView({
+        events,
+        viewDate: new Date('2016-01-05'),
+        excluded: [0, 4, 5, 6],
+        weekStartsOn: 0,
+        precision: 'minutes'
+      }).length;
+      expect(eventCount).to.equal(0);
+    });
+
   });
 
 });
@@ -437,7 +971,8 @@ describe('getWeekViewEventOffset', () => {
         title: '',
         color: {primary: '', secondary: ''}
       },
-      startOfWeek: new Date('2016-01-04')
+      startOfWeek: new Date('2016-01-04'),
+      precision: 'minutes'
     });
     expect(offset).to.equal(2);
   });
