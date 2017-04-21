@@ -9,8 +9,8 @@
     "dist"
   ],
   "scripts": {
-    "test": "karma start --single-run",
-    "test:watch": "karma start --auto-watch",
+    "test": "TZ=Europe/Berlin karma start --single-run",
+    "test:watch": "TZ=Europe/Berlin karma start --auto-watch",
     "start": "npm run test:watch",
     "build:umd": "webpack",
     "build:esm": "tsc --module es2015",
