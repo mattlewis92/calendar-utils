@@ -2,8 +2,8 @@
 /// <reference types="mocha" />
 /// <reference types="sinon" />
 
-import {expect} from 'chai';
-import {useFakeTimers} from 'sinon';
+import { expect } from 'chai';
+import { useFakeTimers } from 'sinon';
 import {
   startOfWeek,
   addHours,
@@ -35,7 +35,7 @@ import {
   DayViewHourSegment,
   getWeekViewEventOffset, SECONDS_IN_DAY
 } from '../src/calendarUtils';
-import {differenceInSeconds} from 'date-fns';
+import { differenceInSeconds } from 'date-fns';
 
 let clock: any, timezoneOffset: number, timezoneOffsetDays: number;
 beforeEach(() => {
@@ -141,7 +141,12 @@ describe('getWeekView', () => {
       }];
 
 
-      const result:  WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result).to.deep.equal([{
         row: [{
           event: events[0],
@@ -163,7 +168,12 @@ describe('getWeekView', () => {
         color: {primary: '', secondary: ''}
       }];
 
-      const result:  WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result).to.deep.equal([{
         row: [{
           event: events[0],
@@ -185,7 +195,12 @@ describe('getWeekView', () => {
         color: {primary: '', secondary: ''}
       }];
 
-      const result:  WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result).to.deep.equal([{
         row: [{
           event: events[0],
@@ -221,7 +236,12 @@ describe('getWeekView', () => {
         color: {primary: '', secondary: ''}
       }];
 
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result).to.deep.equal([{
         row: [{
           event: events[0],
@@ -246,7 +266,12 @@ describe('getWeekView', () => {
         end: addHours(addDays(startOfWeek(new Date()), 2), 5),
         color: {primary: '', secondary: ''}
       }];
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result[0].row[0].event).to.deep.equal(events[0]);
       expect(result[0].row[1].event).to.deep.equal(events[1]);
     });
@@ -263,7 +288,12 @@ describe('getWeekView', () => {
         end: addHours(startOfWeek(new Date()), 5),
         color: {primary: '', secondary: ''}
       }];
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result[0].row[0].event).to.deep.equal(events[0]);
       expect(result[1].row[0].event).to.deep.equal(events[1]);
     });
@@ -279,7 +309,12 @@ describe('getWeekView', () => {
         start: startOfWeek(new Date()),
         color: {primary: '', secondary: ''}
       }];
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result[0].row[0].event).to.deep.equal(events[0]);
       expect(result[1].row[0].event).to.deep.equal(events[1]);
     });
@@ -294,7 +329,12 @@ describe('getWeekView', () => {
         start: new Date(),
         color: {primary: '', secondary: ''}
       }];
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result[0].row[0].event).to.deep.equal(events[1]);
       expect(result[1].row[0].event).to.deep.equal(events[0]);
     });
@@ -308,7 +348,12 @@ describe('getWeekView', () => {
         color: {primary: '', secondary: ''}
       }];
 
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result).to.deep.equal([]);
 
     });
@@ -323,7 +368,12 @@ describe('getWeekView', () => {
         start: startOfWeek(new Date()),
         color: {primary: '', secondary: ''}
       }];
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date(), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result[0].row[0].event).to.deep.equal(events[0]);
       expect(result[1].row[0].event).to.deep.equal(events[1]);
     });
@@ -336,7 +386,12 @@ describe('getWeekView', () => {
         color: {primary: '', secondary: ''}
       }];
 
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result).to.deep.equal([]);
 
     });
@@ -348,7 +403,12 @@ describe('getWeekView', () => {
         title: '',
         color: {primary: '', secondary: ''}
       }];
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result[0].row[0].event).to.deep.equal(events[0]);
     });
 
@@ -359,12 +419,21 @@ describe('getWeekView', () => {
         title: '',
         color: {primary: '', secondary: ''}
       }];
-      const result: WeekViewEventRow[] = getWeekView({events, viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result[0].row[0].event).to.deep.equal(events[0]);
     });
 
     it('should not throw if no events are provided', () => {
-      const result: WeekViewEventRow[] = getWeekView({viewDate: new Date('2016-06-27'), weekStartsOn: 0, precision: 'days'});
+      const result: WeekViewEventRow[] = getWeekView({
+        viewDate: new Date('2016-06-27'),
+        weekStartsOn: 0,
+        precision: 'days'
+      });
       expect(result).to.deep.equal([]);
     });
 
@@ -380,7 +449,7 @@ describe('getWeekView', () => {
         title: '',
         color: {primary: '', secondary: ''}
       }];
-      const result:  WeekViewEventRow[] = getWeekView({
+      const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-04'),
         excluded: [0, 1, 4],
@@ -416,7 +485,7 @@ describe('getWeekView', () => {
         title: '',
         color: {primary: '', secondary: ''}
       }];
-      const result:  WeekViewEventRow[] = getWeekView({
+      const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-04'),
         excluded: [0, 3],
@@ -436,7 +505,7 @@ describe('getWeekView', () => {
         title: '',
         color: {primary: '', secondary: ''}
       }];
-      const result:  WeekViewEventRow[] = getWeekView({
+      const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-05'),
         excluded: [4, 5, 6],
