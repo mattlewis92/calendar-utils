@@ -113,7 +113,7 @@ export interface DayViewHour {
   segments: DayViewHourSegment[];
 }
 
-function getExcludedSeconds({startDate, seconds, excluded, precision = 'minutes'}:
+function getExcludedSeconds({startDate, seconds, excluded, precision = 'days'}:
   {startDate: Date, seconds: number, excluded: number[], precision?: 'minutes' | 'days'}): number {
   if (excluded.length < 1) {
     return 0;
@@ -151,7 +151,7 @@ function getExcludedSeconds({startDate, seconds, excluded, precision = 'minutes'
 }
 
 function getWeekViewEventSpan(
-  {event, offset, startOfWeekDate, excluded, precision = 'minutes'}:
+  {event, offset, startOfWeekDate, excluded, precision = 'days'}:
     {event: CalendarEvent, offset: number, startOfWeekDate: Date, excluded: number[], precision?: 'minutes' | 'days'}): number {
 
   offset = Math.round(offset * SECONDS_IN_DAY);
@@ -182,7 +182,7 @@ function getWeekViewEventSpan(
   return span / SECONDS_IN_DAY;
 }
 
-export function getWeekViewEventOffset({event, startOfWeek, excluded = [], precision = 'minutes'}:
+export function getWeekViewEventOffset({event, startOfWeek, excluded = [], precision = 'days'}:
   {event: CalendarEvent, startOfWeek: Date, excluded?: number[], precision?: 'minutes' | 'days'}): number {
   if (event.start < startOfWeek) {
     return 0;
@@ -281,7 +281,7 @@ export function getWeekViewHeader({viewDate, weekStartsOn, excluded = []}:
 
 }
 
-export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [], precision = 'minutes'}:
+export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [], precision = 'days'}:
   {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[], precision?: 'minutes' | 'days'})
   : WeekViewEventRow[] {
 
