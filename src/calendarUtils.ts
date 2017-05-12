@@ -359,7 +359,7 @@ export interface GetMonthViewArgs {
   weekStartsOn: number;
   excluded?: number[];
   viewStart?: Date;
-  viewEnd?: Date
+  viewEnd?: Date;
 }
 
 export function getMonthView({
