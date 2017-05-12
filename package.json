@@ -60,7 +60,7 @@
     "ts-node": "^3.0.0",
     "tslint": "^5.0.0",
     "tslint-loader": "^3.3.0",
-    "typescript": "~2.2.1",
+    "typescript": "~2.3.2",
     "webpack": "^2.2.0",
     "webpack-date-fns-externals": "^1.0.2",
     "webpack-fix-default-import-plugin": "^1.0.1"
