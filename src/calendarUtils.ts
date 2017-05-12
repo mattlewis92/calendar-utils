@@ -266,8 +266,13 @@ function getWeekDay({date}: {date: Date}): WeekDay {
   };
 }
 
-export function getWeekViewHeader({viewDate, weekStartsOn, excluded = []}:
-    {viewDate: Date, weekStartsOn: number, excluded?: number[]}): WeekDay[] {
+export interface GetWeekViewHeaderArgs {
+  viewDate: Date;
+  weekStartsOn: number;
+  excluded?: number[];
+}
+
+export function getWeekViewHeader({viewDate, weekStartsOn, excluded = []}: GetWeekViewHeaderArgs): WeekDay[] {
   const start: Date = startOfWeek(viewDate, {weekStartsOn});
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
@@ -278,12 +283,17 @@ export function getWeekViewHeader({viewDate, weekStartsOn, excluded = []}:
   }
 
   return days;
-
 }
 
-export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [], precision = 'days'}:
-  {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[], precision?: 'minutes' | 'days'})
-  : WeekViewEventRow[] {
+export interface GetWeekViewArgs {
+  events?: CalendarEvent[];
+  viewDate: Date;
+  weekStartsOn: number;
+  excluded?: number[];
+  precision?: 'minutes' | 'days';
+}
+
+export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [], precision = 'days'}: GetWeekViewArgs): WeekViewEventRow[] {
 
   if (!events) {
     events = [];
@@ -343,10 +353,23 @@ export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [],
   return eventRows;
 }
 
-export function getMonthView(
-  {events = [], viewDate, weekStartsOn, excluded = [], viewStart = startOfMonth(viewDate), viewEnd = endOfMonth(viewDate)}:
-  {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[], viewStart?: Date, viewEnd?: Date})
-  : MonthView {
+export interface GetMonthViewArgs {
+  events?: CalendarEvent[];
+  viewDate: Date;
+  weekStartsOn: number;
+  excluded?: number[];
+  viewStart?: Date;
+  viewEnd?: Date
+}
+
+export function getMonthView({
+  events = [],
+  viewDate,
+  weekStartsOn,
+  excluded = [],
+  viewStart = startOfMonth(viewDate),
+  viewEnd = endOfMonth(viewDate)
+}: GetMonthViewArgs): MonthView {
 
   if (!events) {
     events = [];
@@ -419,8 +442,7 @@ export interface GetDayViewArgs {
   segmentHeight: number;
 }
 
-export function getDayView({events = [], viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs)
-  : DayView {
+export function getDayView({events = [], viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs): DayView {
 
   if (!events) {
     events = [];
@@ -514,10 +536,14 @@ export function getDayView({events = [], viewDate, hourSegments, dayStart, dayEn
 
 }
 
-export function getDayViewHourGrid(
-  {viewDate, hourSegments, dayStart, dayEnd}:
-    {viewDate: Date, hourSegments: number, dayStart: any, dayEnd: any}
-): DayViewHour[] {
+export interface GetDayViewHourGridArgs {
+  viewDate: Date;
+  hourSegments: number;
+  dayStart: any;
+  dayEnd: any;
+}
+
+export function getDayViewHourGrid({viewDate, hourSegments, dayStart, dayEnd}: GetDayViewHourGridArgs): DayViewHour[] {
 
   const hours: DayViewHour[] = [];
 
