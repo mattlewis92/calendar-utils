@@ -1127,6 +1127,19 @@ describe('getMonthView', () => {
     expect(view.days[29].date).to.deep.equal(startOfDay(new Date('2015-10-26')));
   });
 
+  it('should allow the view start and end dates to be customised', () => {
+    const view: MonthView = getMonthView({
+      viewDate: new Date('2015-10-03'),
+      weekStartsOn: 0,
+      viewStart: new Date('2015-10-03'),
+      viewEnd: new Date('2015-10-10')
+    });
+    expect(view.days.length).to.equal(14);
+    expect(view.rowOffsets).to.deep.equal([0, 7]);
+    expect(view.days[0].date).to.deep.equal(startOfDay(new Date('2015-09-27')));
+    expect(view.days[13].date).to.deep.equal(startOfDay(new Date('2015-10-10')));
+  });
+
 });
 
 describe('getDayView', () => {

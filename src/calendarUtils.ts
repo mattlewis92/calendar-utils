@@ -343,16 +343,17 @@ export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [],
   return eventRows;
 }
 
-export function getMonthView({events = [], viewDate, weekStartsOn, excluded = []}:
-  {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[]})
+export function getMonthView(
+  {events = [], viewDate, weekStartsOn, excluded = [], viewStart = startOfMonth(viewDate), viewEnd = endOfMonth(viewDate)}:
+  {events?: CalendarEvent[], viewDate: Date, weekStartsOn: number, excluded?: number[], viewStart?: Date, viewEnd?: Date})
   : MonthView {
 
   if (!events) {
     events = [];
   }
 
-  const start: Date = startOfWeek(startOfMonth(viewDate), {weekStartsOn});
-  const end: Date = endOfWeek(endOfMonth(viewDate), {weekStartsOn});
+  const start: Date = startOfWeek(viewStart, {weekStartsOn});
+  const end: Date = endOfWeek(viewEnd, {weekStartsOn});
   const eventsInMonth: CalendarEvent[] = getEventsInPeriod({
     events,
     periodStart: start,
