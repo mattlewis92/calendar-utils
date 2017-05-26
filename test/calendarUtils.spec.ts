@@ -159,7 +159,7 @@ describe('getWeekView', () => {
 
     });
 
-    it('should calculate correct span even if moved by offset due to excludedDay', () => {
+    it('should calculate correct span even if moved to another week by offset due to excludedDay', () => {
         const events: CalendarEvent[] = [{
           start: new Date('2017-05-31'),
           end: new Date('2017-05-31'),
@@ -170,6 +170,40 @@ describe('getWeekView', () => {
         const result: WeekViewEventRow[] = getWeekView({
           events, viewDate: new Date('2017-05-26'), weekStartsOn: 5, excluded: [0, 6], precision: 'days'
         });
+        expect(result).to.deep.equal([{
+          row: [{
+              event: events[0],
+              offset: 3,
+              span: 1,
+              startsBeforeWeek: false,
+              endsAfterWeek: false
+          }]
+        }]);
+    });
+
+    it('should calculate correct span if multiple weeks are shown', () => {
+        const events: CalendarEvent[] = [{
+          start: new Date('2017-05-31'),
+          end: new Date('2017-05-31'),
+          title: '',
+          color: {primary: '', secondary: ''}
+        }];
+
+        const weekStartsOn: number = 5;
+        const viewDate: Date = new Date('2017-05-26');
+        const result: WeekViewEventRow[] = getWeekView({
+          events, viewDate, weekStartsOn, precision: 'days'
+        });
+
+        const header: WeekDay[] = getWeekViewHeader({weekStartsOn, viewDate});
+        expect(header[0].date).eq(new Date('2017-05-26'));
+        expect(header[1].date).eq(new Date('2017-05-27'));
+        expect(header[2].date).eq(new Date('2017-05-28'));
+        expect(header[3].date).eq(new Date('2017-05-29'));
+        expect(header[4].date).eq(new Date('2017-05-30'));
+        expect(header[5].date).eq(new Date('2017-05-31'));
+        expect(header[6].date).eq(new Date('2017-06-01'));
+
         expect(result).to.deep.equal([{
           row: [{
               event: events[0],
