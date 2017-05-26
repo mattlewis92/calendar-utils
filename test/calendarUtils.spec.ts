@@ -196,13 +196,15 @@ describe('getWeekView', () => {
         });
 
         const header: WeekDay[] = getWeekViewHeader({weekStartsOn, viewDate});
-        expect(header[0].date).eq(new Date('2017-05-26'));
-        expect(header[1].date).eq(new Date('2017-05-27'));
-        expect(header[2].date).eq(new Date('2017-05-28'));
-        expect(header[3].date).eq(new Date('2017-05-29'));
-        expect(header[4].date).eq(new Date('2017-05-30'));
-        expect(header[5].date).eq(new Date('2017-05-31'));
-        expect(header[6].date).eq(new Date('2017-06-01'));
+        const date: Date = startOfWeek(viewDate, {weekStartsOn});
+
+        expect(header[0].date.toISOString()).eq(date.toISOString());
+        expect(header[1].date.toISOString()).eq(addDays(date, 1).toISOString());
+        expect(header[2].date.toISOString()).eq(addDays(date, 2).toISOString());
+        expect(header[3].date.toISOString()).eq(addDays(date, 3).toISOString());
+        expect(header[4].date.toISOString()).eq(addDays(date, 4).toISOString());
+        expect(header[5].date.toISOString()).eq(addDays(date, 5).toISOString());
+        expect(header[6].date.toISOString()).eq(addDays(date, 6).toISOString());
 
         expect(result).to.deep.equal([{
           row: [{
