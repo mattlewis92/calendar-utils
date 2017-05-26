@@ -141,7 +141,6 @@ describe('getWeekView', () => {
         color: {primary: '', secondary: ''}
       }];
 
-
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-06-27'),
@@ -160,8 +159,29 @@ describe('getWeekView', () => {
 
     });
 
-    it('should get the correct span, offset and extends values for events that start before the week and end within it', () => {
+    it('should calculate correct span even if moved by offset due to excludedDay', () => {
+        const events: CalendarEvent[] = [{
+          start: new Date('2017-05-31'),
+          end: new Date('2017-05-31'),
+          title: '',
+          color: {primary: '', secondary: ''}
+        }];
 
+        const result: WeekViewEventRow[] = getWeekView({
+          events, viewDate: new Date('2017-05-26'), weekStartsOn: 5, excluded: [0, 6], precision: 'days'
+        });
+        expect(result).to.deep.equal([{
+          row: [{
+              event: events[0],
+              offset: 3,
+              span: 1,
+              startsBeforeWeek: false,
+              endsAfterWeek: false
+          }]
+        }]);
+    });
+
+    it('should get the correct span, offset and extends values for events that start before the week and end within it', () => {
       const events: CalendarEvent[] = [{
         start: new Date('2016-06-24'),
         end: new Date('2016-06-29'),

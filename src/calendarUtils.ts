@@ -156,7 +156,6 @@ function getWeekViewEventSpan(
   {event: CalendarEvent, offset: number, startOfWeekDate: Date, excluded: number[], precision?: 'minutes' | 'days', weekStartsOn: number}
 ): number {
 
-  offset = Math.round(offset * SECONDS_IN_DAY);
   let span: number = SECONDS_IN_DAY;
   const begin: Date = max(event.start, startOfWeekDate);
   const endOfWeekDate: Date = endOfWeek(startOfWeekDate, {weekStartsOn});
