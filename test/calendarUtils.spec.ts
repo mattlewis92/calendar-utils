@@ -159,6 +159,27 @@ describe('getWeekView', () => {
 
     });
 
+    it('should filter event if it exceeds the the view', () => {
+      const events: CalendarEvent[] = [{
+        start: new Date('2016-06-27'),
+        end: new Date('2016-06-27'),
+        title: '',
+        color: {primary: '', secondary: ''}
+      }];
+
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date('2016-06-23'),
+        weekStartsOn: 4,
+        precision: 'days',
+        excluded: [1, 2, 3, 6]
+      });
+
+      expect(result).to.deep.equal([{
+        row: []
+      }]);
+    });
+
     it('should calculate correct span even if moved to another week by offset due to excludedDay', () => {
         const events: CalendarEvent[] = [{
           start: new Date('2017-05-31'),
