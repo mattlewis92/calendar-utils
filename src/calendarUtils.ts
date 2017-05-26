@@ -178,7 +178,9 @@ function getWeekViewEventSpan(
 
   }
 
+  console.log(span / SECONDS_IN_DAY);
   span -= getExcludedSeconds({startDate: begin, seconds: span, excluded, precision});
+  console.log(span / SECONDS_IN_DAY);
 
   return span / SECONDS_IN_DAY;
 }
