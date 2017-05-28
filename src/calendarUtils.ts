@@ -18,7 +18,6 @@ import startOfMinute from 'date-fns/start_of_minute';
 import differenceInMinutes from 'date-fns/difference_in_minutes';
 import addHours from 'date-fns/add_hours';
 import addSeconds from 'date-fns/add_seconds';
-import min from 'date-fns/min';
 import max from 'date-fns/max';
 
 const WEEKEND_DAY_NUMBERS: number[] = [0, 6];
@@ -26,6 +25,7 @@ const DAYS_IN_WEEK: number = 7;
 const HOURS_IN_DAY: number = 24;
 const MINUTES_IN_HOUR: number = 60;
 export const SECONDS_IN_DAY: number = 60 * 60 * 24;
+export const SECONDS_IN_WEEK: number = SECONDS_IN_DAY * DAYS_IN_WEEK;
 
 export interface WeekDay {
   date: Date;
@@ -119,14 +119,13 @@ function getExcludedSeconds({startDate, seconds, excluded, precision = 'days'}:
   if (excluded.length < 1) {
     return 0;
   }
+  const endDate: Date = addSeconds(startDate, seconds - 1);
   let result: number = 0; // Calculated in seconds
-  let endDate: Date;
   let dayStart: number ;
   let dayEnd: number;
 
   switch (precision) {
     case 'minutes':
-      endDate = addSeconds(startDate, seconds - 1);
       dayStart = getDay(startDate);
       dayEnd = getDay(addSeconds(endDate, 0));
       excluded.forEach(excludedDay => {
@@ -140,10 +139,13 @@ function getExcludedSeconds({startDate, seconds, excluded, precision = 'days'}:
       });
       break;
     case 'days':
-      endDate = addSeconds(startOfDay(startDate), seconds - 1);
-      dayStart = getDay(startOfDay(startDate));
-      dayEnd = getDay(endDate);
-      result += excluded.filter(excludedDay => excludedDay >= dayStart && excludedDay <= dayEnd).length * SECONDS_IN_DAY;
+      let current: Date = startDate;
+      while (current < endDate) {
+        if (excluded.some(day => getDay(current) === day)) {
+          result += SECONDS_IN_DAY;
+        }
+        current = addDays(current, 1);
+      }
       break;
   }
 
@@ -158,29 +160,28 @@ function getWeekViewEventSpan(
 
   let span: number = SECONDS_IN_DAY;
   const begin: Date = max(event.start, startOfWeekDate);
-  const endOfWeekDate: Date = endOfWeek(startOfWeekDate, {weekStartsOn});
 
   if (event.end) {
     switch (precision) {
-      case 'days':
-        span = (differenceInDays(
-          min(startOfDay(event.end), startOfDay(endOfWeekDate)),
-          startOfDay(begin)
-        ) + 1) * SECONDS_IN_DAY;
-        break;
       case 'minutes':
-        span = differenceInSeconds(
-          min(event.end, addSeconds(endOfWeekDate, 1)),
-          begin
-        );
+        span = differenceInSeconds(event.end, begin);
+        break;
+      default:
+        span = differenceInDays(addDays(event.end, 1), begin) * SECONDS_IN_DAY;
         break;
     }
-
   }
 
-  console.log(span / SECONDS_IN_DAY);
+  const offsetSeconds: number = offset * SECONDS_IN_DAY;
+  const totalLength: number = offsetSeconds + span;
+
+  // the best way to detect if an event is outside the week-view
+  // is to check if the total span beginning (from startOfWeekDay or event start) exceeds 7days
+  if (totalLength > SECONDS_IN_WEEK) {
+    span = SECONDS_IN_WEEK - offsetSeconds;
+  }
+
   span -= getExcludedSeconds({startDate: begin, seconds: span, excluded, precision});
-  console.log(span / SECONDS_IN_DAY);
 
   return span / SECONDS_IN_DAY;
 }
@@ -191,7 +192,7 @@ export function getWeekViewEventOffset({event, startOfWeek, excluded = [], preci
     return 0;
   }
 
-  let offset: number ;
+  let offset: number = 0;
 
   switch (precision) {
     case 'days':
@@ -317,7 +318,6 @@ export function getWeekView({
   const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
     let offset: number = getWeekViewEventOffset({event, startOfWeek: startOfViewWeek, excluded, precision});
     let span: number = getWeekViewEventSpan({event, offset, startOfWeekDate: startOfViewWeek, excluded, precision, weekStartsOn});
-
     return {event, offset, span};
   }).filter(e => e.offset < maxRange).filter(e => e.span > 0).map(entry => ({
       event: entry.event,
