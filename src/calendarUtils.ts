@@ -59,6 +59,7 @@ export interface CalendarEvent {
     afterEnd?: boolean;
   };
   draggable?: boolean;
+  meta?: any;
 }
 
 export interface WeekViewEvent {
