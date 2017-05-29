@@ -46,7 +46,7 @@ export interface EventAction {
   onClick({event}: {event: CalendarEvent}): any;
 }
 
-export interface CalendarEvent {
+export interface CalendarEvent<MetaType = any> {
   start: Date;
   end?: Date;
   title: string;
@@ -59,7 +59,7 @@ export interface CalendarEvent {
     afterEnd?: boolean;
   };
   draggable?: boolean;
-  meta?: any;
+  meta?: MetaType;
 }
 
 export interface WeekViewEvent {
