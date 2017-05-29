@@ -277,6 +277,33 @@ describe('getWeekView', () => {
       expect(result[0].row[1].event).to.deep.equal(events[1]);
     });
 
+    it('should put events in the same row that don\'t overlap and position them absolutely to each other', () => {
+      const events: CalendarEvent[] = [{
+        title: 'Event 0',
+        start: startOfWeek(new Date()),
+        end: addHours(startOfWeek(new Date()), 5),
+        color: {primary: '', secondary: ''}
+      }, {
+        title: 'Event 1',
+        start: addDays(startOfWeek(new Date()), 2),
+        end: addHours(addDays(startOfWeek(new Date()), 2), 5),
+        color: {primary: '', secondary: ''}
+      }];
+      const result: WeekViewEventRow[] = getWeekView({
+        events,
+        viewDate: new Date(),
+        weekStartsOn: 0,
+        precision: 'days',
+        absolutePositionedEvents: true
+      });
+      expect(result[0].row[0].event).to.deep.equal(events[0]);
+      expect(result[0].row[1].event).to.deep.equal(events[1]);
+      expect(result[0].row[0].span).to.equal(1);
+      expect(result[0].row[0].offset).to.equal(0);
+      expect(result[0].row[1].span).to.deep.equal(1);
+      expect(result[0].row[1].offset).to.equal(2);
+    });
+
     it('should put events in the next row when they overlap', () => {
       const events: CalendarEvent[] = [{
         title: 'Event 0',

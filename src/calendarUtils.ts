@@ -291,9 +291,17 @@ export interface GetWeekViewArgs {
   weekStartsOn: number;
   excluded?: number[];
   precision?: 'minutes' | 'days';
+  absolutePositionedEvents?: boolean;
 }
 
-export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [], precision = 'days'}: GetWeekViewArgs): WeekViewEventRow[] {
+export function getWeekView({
+  events = [],
+  viewDate,
+  weekStartsOn,
+  excluded = [],
+  precision = 'days',
+  absolutePositionedEvents = false
+}: GetWeekViewArgs): WeekViewEventRow[] {
 
   if (!events) {
     events = [];
@@ -335,8 +343,11 @@ export function getWeekView({events = [], viewDate, weekStartsOn, excluded = [],
           rowSpan + nextEvent.span <= DAYS_IN_WEEK &&
           allocatedEvents.indexOf(nextEvent) === -1
         ) {
-          nextEvent.offset -= rowSpan;
-          rowSpan += nextEvent.span + nextEvent.offset;
+          const nextEventOffset: number = nextEvent.offset - rowSpan;
+          if (!absolutePositionedEvents) {
+            nextEvent.offset = nextEventOffset;
+          }
+          rowSpan += nextEvent.span + nextEventOffset;
           allocatedEvents.push(nextEvent);
           return true;
         }
