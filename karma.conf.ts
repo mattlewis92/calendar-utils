@@ -21,6 +21,10 @@ export default function(config) {
       'test/calendarUtils.spec.ts': ['webpack', 'sourcemap']
     },
 
+    mime: {
+      'text/x-typescript': ['ts']
+    },
+
     webpack: {
       devtool: 'inline-source-map',
       resolve: {
@@ -80,11 +84,6 @@ export default function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
-
-    phantomjsLauncher: {
-      // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
-      exitOnResourceError: true
-    }
+    browsers: ['ChromeHeadless']
   });
 };
