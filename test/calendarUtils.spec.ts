@@ -212,7 +212,6 @@ describe('getWeekView', () => {
         }]
       }]);
 
-
     });
 
     it('should not include events that dont appear on the view when days are excluded', () => {
@@ -562,6 +561,35 @@ describe('getWeekView', () => {
         weekStartsOn: 0
       }).length;
       expect(eventCount).to.equal(0);
+    });
+
+    describe('weekStartsOn = 1', () => {
+      it('should get the correct span, offset and extends values for events that span the whole week', () => {
+
+        const events: CalendarEvent[] = [{
+          start: new Date('2016-05-27'),
+          end: new Date('2016-07-10'),
+          title: '',
+          color: {primary: '', secondary: ''}
+        }];
+
+        const result: WeekViewEventRow[] = getWeekView({
+          events,
+          viewDate: new Date('2016-06-27'),
+          weekStartsOn: 1,
+          precision: 'days'
+        });
+        expect(result).to.deep.equal([{
+          row: [{
+            event: events[0],
+            offset: 0,
+            span: 7,
+            startsBeforeWeek: true,
+            endsAfterWeek: true
+          }]
+        }]);
+
+      });
     });
 
   });

@@ -152,13 +152,14 @@ function getExcludedSeconds({startDate, seconds, excluded, precision = 'days'}:
 }
 
 function getWeekViewEventSpan(
-  {event, offset, startOfWeekDate, excluded, precision = 'days'}:
-    {event: CalendarEvent, offset: number, startOfWeekDate: Date, excluded: number[], precision?: 'minutes' | 'days'}): number {
+  {event, offset, startOfWeekDate, excluded, precision = 'days', weekStartsOn}:
+  {event: CalendarEvent, offset: number, startOfWeekDate: Date, excluded: number[], precision?: 'minutes' | 'days', weekStartsOn: number}
+): number {
 
   offset = Math.round(offset * SECONDS_IN_DAY);
   let span: number = SECONDS_IN_DAY;
   const begin: Date = max(event.start, startOfWeekDate);
-  const endOfWeekDate: Date = endOfWeek(startOfWeekDate);
+  const endOfWeekDate: Date = endOfWeek(startOfWeekDate, {weekStartsOn});
 
   if (event.end) {
     switch (precision) {
@@ -314,7 +315,7 @@ export function getWeekView({
 
   const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
     let offset: number = getWeekViewEventOffset({event, startOfWeek: startOfViewWeek, excluded, precision});
-    let span: number = getWeekViewEventSpan({event, offset, startOfWeekDate: startOfViewWeek, excluded, precision});
+    let span: number = getWeekViewEventSpan({event, offset, startOfWeekDate: startOfViewWeek, excluded, precision, weekStartsOn});
 
     return {event, offset, span};
   }).filter(e => e.offset < maxRange).filter(e => e.span > 0).map(entry => ({
