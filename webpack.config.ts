@@ -20,7 +20,10 @@ module.exports = {
     }, {
       test: /\.ts$/,
       loader: 'awesome-typescript-loader?module=es2015&declaration=false',
-      exclude: /node_modules/
+      exclude: /node_modules/,
+      options: {
+        module: 'es2015'
+      }
     }]
   },
   resolve: {

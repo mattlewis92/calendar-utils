@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const FixDefaultImportPlugin = require('webpack-fix-default-import-plugin');
 
 module.exports = function(config) {
   config.set({
@@ -40,17 +39,22 @@ module.exports = function(config) {
         }, {
           test: /\.ts$/,
           loader: 'awesome-typescript-loader',
-          exclude: /node_modules/
+          exclude: /node_modules/,
+          options: {
+            module: 'es2015'
+          }
         }, {
           test: /src\/.+\.ts$/,
           exclude: /(test|node_modules)/,
           loader: 'istanbul-instrumenter-loader',
-          enforce: 'post'
+          enforce: 'post',
+          options: {
+            esModules: true
+          }
         }]
       },
       plugins: [
-        ...(config.singleRun ? [new webpack.NoEmitOnErrorsPlugin()] : []),
-        new FixDefaultImportPlugin()
+        ...(config.singleRun ? [new webpack.NoEmitOnErrorsPlugin()] : [])
       ]
     },
 

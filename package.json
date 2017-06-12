@@ -62,7 +62,6 @@
     "tslint-loader": "^3.3.0",
     "typescript": "~2.3.2",
     "webpack": "^2.2.0",
-    "webpack-date-fns-externals": "^1.0.2",
-    "webpack-fix-default-import-plugin": "^1.0.1"
+    "webpack-date-fns-externals": "^1.0.2"
   }
 }
