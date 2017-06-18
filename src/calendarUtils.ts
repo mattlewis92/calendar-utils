@@ -120,37 +120,36 @@ function getExcludedSeconds({startDate, seconds, excluded, precision = 'days'}:
     return 0;
   }
   const endDate: Date = addSeconds(startDate, seconds - 1);
+  const dayStart: number = getDay(startDate);
+  const dayEnd: number = getDay(addSeconds(endDate, 0));
   let result: number = 0; // Calculated in seconds
-  let dayStart: number ;
-  let dayEnd: number;
+  let current: Date = startDate;
 
-  switch (precision) {
-    case 'minutes':
-      dayStart = getDay(startDate);
-      dayEnd = getDay(addSeconds(endDate, 0));
-      excluded.forEach(excludedDay => {
-        if (excludedDay === dayStart) {
-          result += differenceInSeconds(endOfDay(startDate), startDate) + 1;
-        } else if (excludedDay === dayEnd) {
-          result += differenceInSeconds(endDate, startOfDay(endDate)) + 1;
-        } else if (excludedDay > dayStart && excludedDay < dayEnd) {
-          result += SECONDS_IN_DAY;
-        }
-      });
-      break;
-    case 'days':
-      let current: Date = startDate;
-      while (current < endDate) {
-        if (excluded.some(day => getDay(current) === day)) {
-          result += SECONDS_IN_DAY;
-        }
-        current = addDays(current, 1);
-      }
-      break;
+  while (current < endDate) {
+    const day: number = getDay(current);
+
+    if (excluded.some(excludedDay => excludedDay === day)) {
+      result += calculateExcludedSeconds({dayStart, dayEnd, day, precision, startDate, endDate});
+    }
+
+    current = addDays(current, 1);
   }
 
   return result;
 
+}
+
+function calculateExcludedSeconds({precision, day, dayStart, dayEnd, startDate, endDate}:
+    {day: number, startDate: Date, endDate: Date, dayStart: number, dayEnd: number, precision?: 'minutes'|'days'}): number {
+  if (precision === 'minutes') {
+    if (day === dayStart) {
+      return differenceInSeconds(endOfDay(startDate), startDate) + 1;
+    } else if (day === dayEnd) {
+      return differenceInSeconds(endDate, startOfDay(endDate)) + 1;
+    }
+  }
+
+  return SECONDS_IN_DAY;
 }
 
 function getWeekViewEventSpan(
