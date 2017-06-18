@@ -153,8 +153,8 @@ function calculateExcludedSeconds({precision, day, dayStart, dayEnd, startDate, 
 }
 
 function getWeekViewEventSpan(
-  {event, offset, startOfWeekDate, excluded, precision = 'days', weekStartsOn}:
-  {event: CalendarEvent, offset: number, startOfWeekDate: Date, excluded: number[], precision?: 'minutes' | 'days', weekStartsOn: number}
+  {event, offset, startOfWeekDate, excluded, precision = 'days'}:
+  {event: CalendarEvent, offset: number, startOfWeekDate: Date, excluded: number[], precision?: 'minutes' | 'days'}
 ): number {
 
   let span: number = SECONDS_IN_DAY;
@@ -316,7 +316,7 @@ export function getWeekView({
 
   const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
     let offset: number = getWeekViewEventOffset({event, startOfWeek: startOfViewWeek, excluded, precision});
-    let span: number = getWeekViewEventSpan({event, offset, startOfWeekDate: startOfViewWeek, excluded, precision, weekStartsOn});
+    let span: number = getWeekViewEventSpan({event, offset, startOfWeekDate: startOfViewWeek, excluded, precision});
     return {event, offset, span};
   }).filter(e => e.offset < maxRange).filter(e => e.span > 0).map(entry => ({
       event: entry.event,
