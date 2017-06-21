@@ -395,7 +395,7 @@ export function getMonthView({
     periodStart: start,
     periodEnd: end
   });
-  const days: MonthViewDay[] = [];
+  const initialViewDays: MonthViewDay[] = [];
   let previousDate: Date;
   for (let i: number = 0; i < differenceInDays(end, start) + 1; i++) {
     // hacky fix for https://github.com/mattlewis92/angular-calendar/issues/173
@@ -420,11 +420,20 @@ export function getMonthView({
       day.inMonth = isSameMonth(date, viewDate);
       day.events = events;
       day.badgeTotal = events.length;
-      days.push(day);
+      initialViewDays.push(day);
     }
   }
 
+  let days: MonthViewDay[] = [];
   const totalDaysVisibleInWeek: number = DAYS_IN_WEEK - excluded.length;
+  for (let i: number = 0; i < initialViewDays.length; i += totalDaysVisibleInWeek) {
+    const row: MonthViewDay[] = initialViewDays.slice(i, i + totalDaysVisibleInWeek);
+    const isRowInMonth: boolean = row.some(day => day.date.getMonth() === viewDate.getMonth());
+    if (isRowInMonth) {
+      days = [...days, ...row];
+    }
+  }
+
   const rows: number = Math.floor(days.length / totalDaysVisibleInWeek);
   const rowOffsets: number[] = [];
   for (let i: number = 0; i < rows; i++) {

@@ -1059,12 +1059,14 @@ describe('getMonthView', () => {
 
   it('should exclude days from month view', () => {
     const different: MonthView = getMonthView({
-      viewDate: new Date('2016-07-03'),
+      viewDate: new Date('2017-07-03'),
       excluded: [0, 6],
       events,
       weekStartsOn: 0
     });
-    expect(different.days.length).to.equal(5 * 6); // 4 + 2 weeks / a 5days
+    expect(different.days.length).to.equal(5 * 5); // 4 + 2 weeks / a 5days
+    expect(different.days[0].date).to.deep.equal(startOfDay(new Date('2017-07-03')));
+    expect(different.days[different.days.length - 1].date).to.deep.equal(startOfDay(new Date('2017-08-04')));
   });
 
   it('should not increase offset for excluded days', () => {
@@ -1074,7 +1076,7 @@ describe('getMonthView', () => {
       events,
       weekStartsOn: 0
     });
-    expect(different.rowOffsets).to.deep.equal([0, 6, 12, 18, 24, 30]);
+    expect(different.rowOffsets).to.deep.equal([0, 6, 12, 18, 24]);
   });
 
   it('should get the row offsets', () => {
