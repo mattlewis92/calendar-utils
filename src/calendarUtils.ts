@@ -53,6 +53,7 @@ export interface CalendarEvent<MetaType = any> {
   color: EventColor;
   actions?: EventAction[];
   allDay?: boolean;
+  data?: any;
   cssClass?: string;
   resizable?: {
     beforeStart?: boolean;
