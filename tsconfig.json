@@ -4,8 +4,6 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "removeComments": false,
-    "noImplicitAny": false,
     "declaration": true,
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
@@ -17,6 +15,5 @@
   "exclude": [
     "node_modules",
     "dist"
-  ],
-  "compileOnSave": false
+  ]
 }
