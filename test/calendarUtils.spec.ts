@@ -54,7 +54,14 @@ describe('getWeekViewHeader', () => {
   it('get all except excluded days of the week for the given date', () => {
     expect(getWeekViewHeader({
       viewDate: new Date('2016-06-28'),
-      excluded: [0, 1, 2, 3, 4, 5],
+      excluded: [
+        DAYS_OF_WEEK.SUNDAY,
+        DAYS_OF_WEEK.MONDAY,
+        DAYS_OF_WEEK.TUESDAY,
+        DAYS_OF_WEEK.WEDNESDAY,
+        DAYS_OF_WEEK.THURSDAY,
+        DAYS_OF_WEEK.FRIDAY
+      ],
       weekStartsOn: DAYS_OF_WEEK.SUNDAY
     }).length).to.eq(1);
   });
@@ -303,8 +310,13 @@ describe('getWeekView', () => {
         title: '',
         color: {primary: '', secondary: ''}
       }];
-      const eventCount: number = getWeekView(
-        {events, viewDate: new Date('2016-01-12'), excluded: [0, 6], weekStartsOn: DAYS_OF_WEEK.SUNDAY, precision: 'days'}
+      const eventCount: number = getWeekView({
+        events,
+        viewDate: new Date('2016-01-12'),
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
+        weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+        precision: 'days'
+      }
       ).length;
       expect(eventCount).to.equal(0);
     });
@@ -565,7 +577,7 @@ describe('getWeekView', () => {
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-04'),
-        excluded: [0, 1, 4],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.MONDAY, DAYS_OF_WEEK.THURSDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'days'
       });
@@ -582,7 +594,7 @@ describe('getWeekView', () => {
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-05'),
-        excluded: [0, 6],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY
       });
       expect(result[0].row[0].span).to.equal(7 - 2);
@@ -601,7 +613,7 @@ describe('getWeekView', () => {
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-04'),
-        excluded: [0, 3],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.WEDNESDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'days'
       });
@@ -621,7 +633,7 @@ describe('getWeekView', () => {
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-05'),
-        excluded: [4, 5, 6],
+        excluded: [DAYS_OF_WEEK.THURSDAY, DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'days'
       });
@@ -643,7 +655,7 @@ describe('getWeekView', () => {
       const eventCount: number = getWeekView({
         events,
         viewDate: new Date('2016-01-05'),
-        excluded: [0, 4, 5, 6],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.THURSDAY, DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY
       }).length;
       expect(eventCount).to.equal(0);
@@ -775,7 +787,7 @@ describe('getWeekView', () => {
       const eventCount: number = getWeekView({
         events,
         viewDate: new Date('2016-01-12'),
-        excluded: [0, 6],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'minutes'
       }).length;
@@ -1012,7 +1024,7 @@ describe('getWeekView', () => {
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-04'),
-        excluded: [0, 1, 4],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.MONDAY, DAYS_OF_WEEK.THURSDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'minutes'
       });
@@ -1029,7 +1041,7 @@ describe('getWeekView', () => {
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-05'),
-        excluded: [0, 6],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'minutes'
       });
@@ -1049,7 +1061,7 @@ describe('getWeekView', () => {
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-04'),
-        excluded: [0, 3],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.WEDNESDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'minutes'
       });
@@ -1069,7 +1081,7 @@ describe('getWeekView', () => {
       const result: WeekViewEventRow[] = getWeekView({
         events,
         viewDate: new Date('2016-01-05'),
-        excluded: [4, 5, 6],
+        excluded: [DAYS_OF_WEEK.THURSDAY, DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'minutes'
       });
@@ -1091,7 +1103,7 @@ describe('getWeekView', () => {
       const eventCount: number = getWeekView({
         events,
         viewDate: new Date('2016-01-05'),
-        excluded: [0, 4, 5, 6],
+        excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.THURSDAY, DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY],
         weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         precision: 'minutes'
       }).length;
@@ -1146,7 +1158,7 @@ describe('getMonthView', () => {
   it('should exclude days from month view', () => {
     const different: MonthView = getMonthView({
       viewDate: new Date('2017-07-03'),
-      excluded: [0, 6],
+      excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
       events,
       weekStartsOn: DAYS_OF_WEEK.SUNDAY
     });
@@ -1158,7 +1170,7 @@ describe('getMonthView', () => {
   it('should not increase offset for excluded days', () => {
     const different: MonthView = getMonthView({
       viewDate: new Date('2016-07-01'),
-      excluded: [0],
+      excluded: [DAYS_OF_WEEK.SUNDAY],
       events,
       weekStartsOn: DAYS_OF_WEEK.SUNDAY
     });
@@ -1172,7 +1184,7 @@ describe('getMonthView', () => {
   it('should set totalDaysVisibleInWeek', () => {
     const different: MonthView = getMonthView({
       viewDate: new Date('2016-07-01'),
-      excluded: [0, 6],
+      excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
       events,
       weekStartsOn: DAYS_OF_WEEK.SUNDAY
     });
