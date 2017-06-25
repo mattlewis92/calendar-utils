@@ -37,7 +37,7 @@ import {
   getWeekViewEventOffset,
   SECONDS_IN_DAY,
   DAYS_OF_WEEK
-} from '../src/calendarUtils';
+} from '../src/calendar-utils';
 
 let clock: any, timezoneOffset: number, timezoneOffsetDays: number;
 beforeEach(() => {

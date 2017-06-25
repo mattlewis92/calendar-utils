@@ -12,13 +12,13 @@ export default function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'test/calendarUtils.spec.ts'
+      'test/calendar-utils.spec.ts'
     ],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/calendarUtils.spec.ts': ['webpack', 'sourcemap']
+      'test/calendar-utils.spec.ts': ['webpack', 'sourcemap']
     },
 
     mime: {

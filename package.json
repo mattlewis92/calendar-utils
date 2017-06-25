@@ -2,9 +2,9 @@
   "name": "calendar-utils",
   "version": "0.0.54",
   "description": "Utility functions to generate views for calendars",
-  "main": "dist/umd/calendarUtils.js",
-  "module": "dist/calendarUtils.js",
-  "typings": "dist/calendarUtils.d.ts",
+  "main": "dist/umd/calendar-utils.js",
+  "module": "dist/calendar-utils.js",
+  "typings": "dist/calendar-utils.d.ts",
   "files": [
     "dist"
   ],

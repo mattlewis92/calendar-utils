@@ -1,10 +1,10 @@
 import * as webpackDateFnsExternals from 'webpack-date-fns-externals';
 
 module.exports = {
-  entry: __dirname + '/src/calendarUtils.ts',
+  entry: __dirname + '/src/calendar-utils.ts',
   output: {
     path: __dirname + '/dist/umd',
-    filename: 'calendarUtils.js',
+    filename: 'calendar-utils.js',
     libraryTarget: 'umd',
     library: 'calendarUtils'
   },
