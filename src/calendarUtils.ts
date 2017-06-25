@@ -20,7 +20,17 @@ import addHours from 'date-fns/add_hours';
 import addSeconds from 'date-fns/add_seconds';
 import max from 'date-fns/max';
 
-const WEEKEND_DAY_NUMBERS: number[] = [0, 6];
+export enum DAYS_OF_WEEK {
+  SUNDAY = 0,
+  MONDAY = 1,
+  TUESDAY = 2,
+  WEDNESDAY = 3,
+  THURSDAY = 4,
+  FRIDAY = 5,
+  SATURDAY = 6
+}
+
+const DEFAULT_WEEKEND_DAYS: number[] = [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY];
 const DAYS_IN_WEEK: number = 7;
 const HOURS_IN_DAY: number = 24;
 const MINUTES_IN_HOUR: number = 60;
@@ -258,14 +268,14 @@ function getEventsInPeriod({events, periodStart, periodEnd}: GetEventsInPeriodAr
   return events.filter((event: CalendarEvent) => isEventIsPeriod({event, periodStart, periodEnd}));
 }
 
-function getWeekDay({date}: {date: Date}): WeekDay {
+function getWeekDay({date, weekendDays = DEFAULT_WEEKEND_DAYS}: {date: Date, weekendDays: number[]}): WeekDay {
   const today: Date = startOfDay(new Date());
   return {
     date,
     isPast: date < today,
     isToday: isSameDay(date, today),
     isFuture: date > today,
-    isWeekend: WEEKEND_DAY_NUMBERS.indexOf(getDay(date)) > -1
+    isWeekend: weekendDays.indexOf(getDay(date)) > -1
   };
 }
 
@@ -273,15 +283,16 @@ export interface GetWeekViewHeaderArgs {
   viewDate: Date;
   weekStartsOn: number;
   excluded?: number[];
+  weekendDays?: number[];
 }
 
-export function getWeekViewHeader({viewDate, weekStartsOn, excluded = []}: GetWeekViewHeaderArgs): WeekDay[] {
+export function getWeekViewHeader({viewDate, weekStartsOn, excluded = [], weekendDays}: GetWeekViewHeaderArgs): WeekDay[] {
   const start: Date = startOfWeek(viewDate, {weekStartsOn});
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
     const date: Date = addDays(start, i);
     if (!excluded.some(e => date.getDay() === e)) {
-      days.push(getWeekDay({date}));
+      days.push(getWeekDay({date, weekendDays}));
     }
   }
 
@@ -373,6 +384,7 @@ export interface GetMonthViewArgs {
   excluded?: number[];
   viewStart?: Date;
   viewEnd?: Date;
+  weekendDays?: number[];
 }
 
 export function getMonthView({
@@ -381,7 +393,8 @@ export function getMonthView({
   weekStartsOn,
   excluded = [],
   viewStart = startOfMonth(viewDate),
-  viewEnd = endOfMonth(viewDate)
+  viewEnd = endOfMonth(viewDate),
+  weekendDays
 }: GetMonthViewArgs): MonthView {
 
   if (!events) {
@@ -411,7 +424,7 @@ export function getMonthView({
     }
 
     if (!excluded.some(e => date.getDay() === e)) {
-      const day: MonthViewDay = getWeekDay({date}) as MonthViewDay;
+      const day: MonthViewDay = getWeekDay({date, weekendDays}) as MonthViewDay;
       const events: CalendarEvent[] = getEventsInPeriod({
         events: eventsInMonth,
         periodStart: startOfDay(date),

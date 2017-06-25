@@ -35,7 +35,8 @@ import {
   getDayViewHourGrid,
   DayViewHourSegment,
   getWeekViewEventOffset,
-  SECONDS_IN_DAY
+  SECONDS_IN_DAY,
+  DAYS_OF_WEEK
 } from '../src/calendarUtils';
 
 let clock: any, timezoneOffset: number, timezoneOffsetDays: number;
@@ -124,6 +125,26 @@ describe('getWeekViewHeader', () => {
       isWeekend: true
     }]);
 
+  });
+
+  it('should allow the weekend days to be customised', () => {
+    const days: WeekDay[] = getWeekViewHeader({
+      viewDate: new Date('2016-06-28'),
+      weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+      weekendDays: [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY]
+    });
+    days.forEach((day: any) => {
+      day.timestamp = day.date.valueOf();
+      delete day.date;
+    });
+
+    expect(days[0].isWeekend).to.be.false;
+    expect(days[1].isWeekend).to.be.false;
+    expect(days[2].isWeekend).to.be.false;
+    expect(days[3].isWeekend).to.be.false;
+    expect(days[4].isWeekend).to.be.false;
+    expect(days[5].isWeekend).to.be.true;
+    expect(days[6].isWeekend).to.be.true;
   });
 
 });
@@ -1189,6 +1210,22 @@ describe('getMonthView', () => {
   it('should set isWeekend on days', () => {
     expect(result.days[0].isWeekend).to.be.true;
     expect(result.days[2].isWeekend).to.be.false;
+    expect(result.days[6].isWeekend).to.be.true;
+  });
+
+  it('should allow the weekend days to be customised', () => {
+    result = getMonthView({
+      viewDate: new Date('2017-07-03'),
+      events,
+      weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+      weekendDays: [
+        DAYS_OF_WEEK.FRIDAY,
+        DAYS_OF_WEEK.SATURDAY
+      ]
+    });
+    expect(result.days[0].isWeekend).to.be.false;
+    expect(result.days[2].isWeekend).to.be.false;
+    expect(result.days[5].isWeekend).to.be.true;
     expect(result.days[6].isWeekend).to.be.true;
   });
 
