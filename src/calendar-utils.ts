@@ -43,6 +43,7 @@ export interface WeekDay {
   isToday: boolean;
   isFuture: boolean;
   isWeekend: boolean;
+  cssClass?: string;
 }
 
 export interface EventColor {
@@ -88,7 +89,6 @@ export interface MonthViewDay extends WeekDay {
   inMonth: boolean;
   events: CalendarEvent[];
   backgroundColor?: string;
-  cssClass?: string;
   badgeTotal: number;
 }
 
