@@ -85,11 +85,12 @@ export interface WeekViewEventRow {
   row: WeekViewEvent[];
 }
 
-export interface MonthViewDay extends WeekDay {
+export interface MonthViewDay<MetaType = any> extends WeekDay {
   inMonth: boolean;
   events: CalendarEvent[];
   backgroundColor?: string;
   badgeTotal: number;
+  meta?: MetaType;
 }
 
 export interface MonthView {
