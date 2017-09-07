@@ -1303,10 +1303,10 @@ describe('getMonthView', () => {
       viewDate: new Date('2015-10-03'),
       weekStartsOn: DAYS_OF_WEEK.SUNDAY,
       viewStart: new Date('2015-10-03'),
-      viewEnd: new Date('2015-10-10')
+      viewEnd: new Date('2015-11-10')
     });
-    expect(view.days.length).to.equal(14);
-    expect(view.rowOffsets).to.deep.equal([0, 7]);
+    expect(view.days.length).to.equal(49);
+    expect(view.rowOffsets).to.deep.equal([0, 7, 14, 21, 28, 35, 42]);
     expect(view.days[0].date).to.deep.equal(startOfDay(new Date('2015-09-27')));
     expect(view.days[13].date).to.deep.equal(startOfDay(new Date('2015-10-10')));
   });

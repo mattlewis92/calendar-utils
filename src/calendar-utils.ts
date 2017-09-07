@@ -440,12 +440,16 @@ export function getMonthView({
 
   let days: MonthViewDay[] = [];
   const totalDaysVisibleInWeek: number = DAYS_IN_WEEK - excluded.length;
-  for (let i: number = 0; i < initialViewDays.length; i += totalDaysVisibleInWeek) {
-    const row: MonthViewDay[] = initialViewDays.slice(i, i + totalDaysVisibleInWeek);
-    const isRowInMonth: boolean = row.some(day => day.date.getMonth() === viewDate.getMonth());
-    if (isRowInMonth) {
-      days = [...days, ...row];
+  if (totalDaysVisibleInWeek < DAYS_IN_WEEK) {
+    for (let i: number = 0; i < initialViewDays.length; i += totalDaysVisibleInWeek) {
+      const row: MonthViewDay[] = initialViewDays.slice(i, i + totalDaysVisibleInWeek);
+      const isRowInMonth: boolean = row.some(day => day.date.getMonth() === viewDate.getMonth());
+      if (isRowInMonth) {
+        days = [...days, ...row];
+      }
     }
+  } else {
+    days = initialViewDays;
   }
 
   const rows: number = Math.floor(days.length / totalDaysVisibleInWeek);
