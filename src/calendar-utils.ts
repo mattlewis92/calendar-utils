@@ -1,25 +1,25 @@
-import endOfDay from 'date-fns/end_of_day';
-import addMinutes from 'date-fns/add_minutes';
-import differenceInDays from 'date-fns/difference_in_days';
-import startOfDay from 'date-fns/start_of_day';
-import isSameDay from 'date-fns/is_same_day';
-import getDay from 'date-fns/get_day';
-import startOfWeek from 'date-fns/start_of_week';
 import addDays from 'date-fns/add_days';
-import endOfWeek from 'date-fns/end_of_week';
+import addHours from 'date-fns/add_hours';
+import addMinutes from 'date-fns/add_minutes';
+import addSeconds from 'date-fns/add_seconds';
+import differenceInDays from 'date-fns/difference_in_days';
+import differenceInMinutes from 'date-fns/difference_in_minutes';
 import differenceInSeconds from 'date-fns/difference_in_seconds';
-import startOfMonth from 'date-fns/start_of_month';
+import endOfDay from 'date-fns/end_of_day';
 import endOfMonth from 'date-fns/end_of_month';
+import endOfWeek from 'date-fns/end_of_week';
+import getDay from 'date-fns/get_day';
+import isDate from 'date-fns/is_date';
+import isSameDay from 'date-fns/is_same_day';
 import isSameMonth from 'date-fns/is_same_month';
 import isSameSecond from 'date-fns/is_same_second';
+import max from 'date-fns/max';
 import setHours from 'date-fns/set_hours';
 import setMinutes from 'date-fns/set_minutes';
+import startOfDay from 'date-fns/start_of_day';
 import startOfMinute from 'date-fns/start_of_minute';
-import differenceInMinutes from 'date-fns/difference_in_minutes';
-import addHours from 'date-fns/add_hours';
-import addSeconds from 'date-fns/add_seconds';
-import max from 'date-fns/max';
-import isDate from 'date-fns/is_date';
+import startOfMonth from 'date-fns/start_of_month';
+import startOfWeek from 'date-fns/start_of_week';
 
 export enum DAYS_OF_WEEK {
   SUNDAY = 0,
@@ -31,7 +31,10 @@ export enum DAYS_OF_WEEK {
   SATURDAY = 6
 }
 
-const DEFAULT_WEEKEND_DAYS: number[] = [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY];
+const DEFAULT_WEEKEND_DAYS: number[] = [
+  DAYS_OF_WEEK.SUNDAY,
+  DAYS_OF_WEEK.SATURDAY
+];
 const DAYS_IN_WEEK: number = 7;
 const HOURS_IN_DAY: number = 24;
 const MINUTES_IN_HOUR: number = 60;
@@ -55,7 +58,7 @@ export interface EventColor {
 export interface EventAction {
   label: string;
   cssClass?: string;
-  onClick({event}: {event: CalendarEvent}): any;
+  onClick({ event }: { event: CalendarEvent }): any;
 }
 
 export interface CalendarEvent<MetaType = any> {
@@ -126,8 +129,17 @@ export interface DayViewHour {
   segments: DayViewHourSegment[];
 }
 
-function getExcludedSeconds({startDate, seconds, excluded, precision = 'days'}:
-  {startDate: Date, seconds: number, excluded: number[], precision?: 'minutes' | 'days'}): number {
+function getExcludedSeconds({
+  startDate,
+  seconds,
+  excluded,
+  precision = 'days'
+}: {
+  startDate: Date;
+  seconds: number;
+  excluded: number[];
+  precision?: 'minutes' | 'days';
+}): number {
   if (excluded.length < 1) {
     return 0;
   }
@@ -141,18 +153,37 @@ function getExcludedSeconds({startDate, seconds, excluded, precision = 'days'}:
     const day: number = getDay(current);
 
     if (excluded.some(excludedDay => excludedDay === day)) {
-      result += calculateExcludedSeconds({dayStart, dayEnd, day, precision, startDate, endDate});
+      result += calculateExcludedSeconds({
+        dayStart,
+        dayEnd,
+        day,
+        precision,
+        startDate,
+        endDate
+      });
     }
 
     current = addDays(current, 1);
   }
 
   return result;
-
 }
 
-function calculateExcludedSeconds({precision, day, dayStart, dayEnd, startDate, endDate}:
-    {day: number, startDate: Date, endDate: Date, dayStart: number, dayEnd: number, precision?: 'minutes'|'days'}): number {
+function calculateExcludedSeconds({
+  precision,
+  day,
+  dayStart,
+  dayEnd,
+  startDate,
+  endDate
+}: {
+  day: number;
+  startDate: Date;
+  endDate: Date;
+  dayStart: number;
+  dayEnd: number;
+  precision?: 'minutes' | 'days';
+}): number {
   if (precision === 'minutes') {
     if (day === dayStart) {
       return differenceInSeconds(endOfDay(startDate), startDate) + 1;
@@ -164,11 +195,19 @@ function calculateExcludedSeconds({precision, day, dayStart, dayEnd, startDate, 
   return SECONDS_IN_DAY;
 }
 
-function getWeekViewEventSpan(
-  {event, offset, startOfWeekDate, excluded, precision = 'days'}:
-  {event: CalendarEvent, offset: number, startOfWeekDate: Date, excluded: number[], precision?: 'minutes' | 'days'}
-): number {
-
+function getWeekViewEventSpan({
+  event,
+  offset,
+  startOfWeekDate,
+  excluded,
+  precision = 'days'
+}: {
+  event: CalendarEvent;
+  offset: number;
+  startOfWeekDate: Date;
+  excluded: number[];
+  precision?: 'minutes' | 'days';
+}): number {
   let span: number = SECONDS_IN_DAY;
   const begin: Date = max(event.start, startOfWeekDate);
 
@@ -192,14 +231,28 @@ function getWeekViewEventSpan(
     span = SECONDS_IN_WEEK - offsetSeconds;
   }
 
-  span -= getExcludedSeconds({startDate: begin, seconds: span, excluded, precision});
+  span -= getExcludedSeconds({
+    startDate: begin,
+    seconds: span,
+    excluded,
+    precision
+  });
 
   return span / SECONDS_IN_DAY;
 }
 
-export function getWeekViewEventOffset({event, startOfWeek, excluded = [], precision = 'days'}:
-  {event: CalendarEvent, startOfWeek: Date, excluded?: number[], precision?: 'minutes' | 'days'}): number {
-  if (event.start < startOfWeek) {
+export function getWeekViewEventOffset({
+  event,
+  startOfWeek: startOfWeekDate,
+  excluded = [],
+  precision = 'days'
+}: {
+  event: CalendarEvent;
+  startOfWeek: Date;
+  excluded?: number[];
+  precision?: 'minutes' | 'days';
+}): number {
+  if (event.start < startOfWeekDate) {
     return 0;
   }
 
@@ -207,20 +260,21 @@ export function getWeekViewEventOffset({event, startOfWeek, excluded = [], preci
 
   switch (precision) {
     case 'days':
-      offset = differenceInDays(
-        startOfDay(event.start),
-        startOfWeek
-      ) * SECONDS_IN_DAY;
+      offset =
+        differenceInDays(startOfDay(event.start), startOfWeekDate) *
+        SECONDS_IN_DAY;
       break;
     case 'minutes':
-      offset = differenceInSeconds(
-        event.start,
-        startOfWeek
-      );
+      offset = differenceInSeconds(event.start, startOfWeekDate);
       break;
   }
 
-  offset -= getExcludedSeconds({startDate: startOfWeek, seconds: offset, excluded, precision});
+  offset -= getExcludedSeconds({
+    startDate: startOfWeekDate,
+    seconds: offset,
+    excluded,
+    precision
+  });
 
   return offset / SECONDS_IN_DAY;
 }
@@ -231,8 +285,11 @@ interface IsEventInPeriodArgs {
   periodEnd: Date;
 }
 
-function isEventIsPeriod({event, periodStart, periodEnd}: IsEventInPeriodArgs): boolean {
-
+function isEventIsPeriod({
+  event,
+  periodStart,
+  periodEnd
+}: IsEventInPeriodArgs): boolean {
   const eventStart: Date = event.start;
   const eventEnd: Date = event.end || event.start;
 
@@ -248,16 +305,21 @@ function isEventIsPeriod({event, periodStart, periodEnd}: IsEventInPeriodArgs): 
     return true;
   }
 
-  if (isSameSecond(eventStart, periodStart) || isSameSecond(eventStart, periodEnd)) {
+  if (
+    isSameSecond(eventStart, periodStart) ||
+    isSameSecond(eventStart, periodEnd)
+  ) {
     return true;
   }
 
-  if (isSameSecond(eventEnd, periodStart) || isSameSecond(eventEnd, periodEnd)) {
+  if (
+    isSameSecond(eventEnd, periodStart) ||
+    isSameSecond(eventEnd, periodEnd)
+  ) {
     return true;
   }
 
   return false;
-
 }
 
 interface GetEventsInPeriodArgs {
@@ -266,11 +328,23 @@ interface GetEventsInPeriodArgs {
   periodEnd: Date;
 }
 
-function getEventsInPeriod({events, periodStart, periodEnd}: GetEventsInPeriodArgs): CalendarEvent[] {
-  return events.filter((event: CalendarEvent) => isEventIsPeriod({event, periodStart, periodEnd}));
+function getEventsInPeriod({
+  events,
+  periodStart,
+  periodEnd
+}: GetEventsInPeriodArgs): CalendarEvent[] {
+  return events.filter((event: CalendarEvent) =>
+    isEventIsPeriod({ event, periodStart, periodEnd })
+  );
 }
 
-function getWeekDay({date, weekendDays = DEFAULT_WEEKEND_DAYS}: {date: Date, weekendDays: number[]}): WeekDay {
+function getWeekDay({
+  date,
+  weekendDays = DEFAULT_WEEKEND_DAYS
+}: {
+  date: Date;
+  weekendDays: number[];
+}): WeekDay {
   const today: Date = startOfDay(new Date());
   return {
     date,
@@ -288,13 +362,18 @@ export interface GetWeekViewHeaderArgs {
   weekendDays?: number[];
 }
 
-export function getWeekViewHeader({viewDate, weekStartsOn, excluded = [], weekendDays}: GetWeekViewHeaderArgs): WeekDay[] {
-  const start: Date = startOfWeek(viewDate, {weekStartsOn});
+export function getWeekViewHeader({
+  viewDate,
+  weekStartsOn,
+  excluded = [],
+  weekendDays
+}: GetWeekViewHeaderArgs): WeekDay[] {
+  const start: Date = startOfWeek(viewDate, { weekStartsOn });
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
     const date: Date = addDays(start, i);
     if (!excluded.some(e => date.getDay() === e)) {
-      days.push(getWeekDay({date, weekendDays}));
+      days.push(getWeekDay({ date, weekendDays }));
     }
   }
 
@@ -318,32 +397,57 @@ export function getWeekView({
   precision = 'days',
   absolutePositionedEvents = false
 }: GetWeekViewArgs): WeekViewEventRow[] {
-
   if (!events) {
     events = [];
   }
 
-  const startOfViewWeek: Date = startOfWeek(viewDate, {weekStartsOn});
-  const endOfViewWeek: Date = endOfWeek(viewDate, {weekStartsOn});
+  const startOfViewWeek: Date = startOfWeek(viewDate, { weekStartsOn });
+  const endOfViewWeek: Date = endOfWeek(viewDate, { weekStartsOn });
   const maxRange: number = DAYS_IN_WEEK - excluded.length;
 
-  const eventsMapped: WeekViewEvent[] = getEventsInPeriod({events, periodStart: startOfViewWeek, periodEnd: endOfViewWeek}).map(event => {
-    let offset: number = getWeekViewEventOffset({event, startOfWeek: startOfViewWeek, excluded, precision});
-    let span: number = getWeekViewEventSpan({event, offset, startOfWeekDate: startOfViewWeek, excluded, precision});
-    return {event, offset, span};
-  }).filter(e => e.offset < maxRange).filter(e => e.span > 0).map(entry => ({
+  const eventsMapped: WeekViewEvent[] = getEventsInPeriod({
+    events,
+    periodStart: startOfViewWeek,
+    periodEnd: endOfViewWeek
+  })
+    .map(event => {
+      const offset: number = getWeekViewEventOffset({
+        event,
+        startOfWeek: startOfViewWeek,
+        excluded,
+        precision
+      });
+      const span: number = getWeekViewEventSpan({
+        event,
+        offset,
+        startOfWeekDate: startOfViewWeek,
+        excluded,
+        precision
+      });
+      return { event, offset, span };
+    })
+    .filter(e => e.offset < maxRange)
+    .filter(e => e.span > 0)
+    .map(entry => ({
       event: entry.event,
       offset: entry.offset,
       span: entry.span,
       startsBeforeWeek: entry.event.start < startOfViewWeek,
       endsAfterWeek: (entry.event.end || entry.event.start) > endOfViewWeek
-  })).sort((itemA, itemB): number => {
-    const startSecondsDiff: number = differenceInSeconds(itemA.event.start, itemB.event.start);
-    if (startSecondsDiff === 0) {
-      return differenceInSeconds(itemB.event.end || itemB.event.start, itemA.event.end || itemA.event.start);
-    }
-    return startSecondsDiff;
-  });
+    }))
+    .sort((itemA, itemB): number => {
+      const startSecondsDiff: number = differenceInSeconds(
+        itemA.event.start,
+        itemB.event.start
+      );
+      if (startSecondsDiff === 0) {
+        return differenceInSeconds(
+          itemB.event.end || itemB.event.start,
+          itemA.event.end || itemA.event.start
+        );
+      }
+      return startSecondsDiff;
+    });
 
   const eventRows: WeekViewEventRow[] = [];
   const allocatedEvents: WeekViewEvent[] = [];
@@ -352,26 +456,25 @@ export function getWeekView({
     if (allocatedEvents.indexOf(event) === -1) {
       allocatedEvents.push(event);
       let rowSpan: number = event.span + event.offset;
-      const otherRowEvents: WeekViewEvent[] = eventsMapped.slice(index + 1).filter(nextEvent => {
-        if (
-          nextEvent.offset >= rowSpan &&
-          rowSpan + nextEvent.span <= DAYS_IN_WEEK &&
-          allocatedEvents.indexOf(nextEvent) === -1
-        ) {
-          const nextEventOffset: number = nextEvent.offset - rowSpan;
-          if (!absolutePositionedEvents) {
-            nextEvent.offset = nextEventOffset;
+      const otherRowEvents: WeekViewEvent[] = eventsMapped
+        .slice(index + 1)
+        .filter(nextEvent => {
+          if (
+            nextEvent.offset >= rowSpan &&
+            rowSpan + nextEvent.span <= DAYS_IN_WEEK &&
+            allocatedEvents.indexOf(nextEvent) === -1
+          ) {
+            const nextEventOffset: number = nextEvent.offset - rowSpan;
+            if (!absolutePositionedEvents) {
+              nextEvent.offset = nextEventOffset;
+            }
+            rowSpan += nextEvent.span + nextEventOffset;
+            allocatedEvents.push(nextEvent);
+            return true;
           }
-          rowSpan += nextEvent.span + nextEventOffset;
-          allocatedEvents.push(nextEvent);
-          return true;
-        }
-      });
+        });
       eventRows.push({
-        row: [
-          event,
-          ...otherRowEvents
-        ]
+        row: [event, ...otherRowEvents]
       });
     }
   });
@@ -398,13 +501,12 @@ export function getMonthView({
   viewEnd = endOfMonth(viewDate),
   weekendDays
 }: GetMonthViewArgs): MonthView {
-
   if (!events) {
     events = [];
   }
 
-  const start: Date = startOfWeek(viewStart, {weekStartsOn});
-  const end: Date = endOfWeek(viewEnd, {weekStartsOn});
+  const start: Date = startOfWeek(viewStart, { weekStartsOn });
+  const end: Date = endOfWeek(viewEnd, { weekStartsOn });
   const eventsInMonth: CalendarEvent[] = getEventsInPeriod({
     events,
     periodStart: start,
@@ -417,7 +519,8 @@ export function getMonthView({
     let date: Date;
     if (previousDate) {
       date = startOfDay(addHours(previousDate, HOURS_IN_DAY));
-      if (previousDate.getTime() === date.getTime()) { // DST change, so need to add 25 hours
+      if (previousDate.getTime() === date.getTime()) {
+        // DST change, so need to add 25 hours
         date = startOfDay(addHours(previousDate, HOURS_IN_DAY + 1));
       }
       previousDate = date;
@@ -426,15 +529,18 @@ export function getMonthView({
     }
 
     if (!excluded.some(e => date.getDay() === e)) {
-      const day: MonthViewDay = getWeekDay({date, weekendDays}) as MonthViewDay;
-      const events: CalendarEvent[] = getEventsInPeriod({
+      const day: MonthViewDay = getWeekDay({
+        date,
+        weekendDays
+      }) as MonthViewDay;
+      const eventsInPeriod: CalendarEvent[] = getEventsInPeriod({
         events: eventsInMonth,
         periodStart: startOfDay(date),
         periodEnd: endOfDay(date)
       });
       day.inMonth = isSameMonth(date, viewDate);
-      day.events = events;
-      day.badgeTotal = events.length;
+      day.events = eventsInPeriod;
+      day.badgeTotal = eventsInPeriod.length;
       initialViewDays.push(day);
     }
   }
@@ -442,9 +548,18 @@ export function getMonthView({
   let days: MonthViewDay[] = [];
   const totalDaysVisibleInWeek: number = DAYS_IN_WEEK - excluded.length;
   if (totalDaysVisibleInWeek < DAYS_IN_WEEK) {
-    for (let i: number = 0; i < initialViewDays.length; i += totalDaysVisibleInWeek) {
-      const row: MonthViewDay[] = initialViewDays.slice(i, i + totalDaysVisibleInWeek);
-      const isRowInMonth: boolean = row.some(day => day.date.getMonth() === viewDate.getMonth());
+    for (
+      let i: number = 0;
+      i < initialViewDays.length;
+      i += totalDaysVisibleInWeek
+    ) {
+      const row: MonthViewDay[] = initialViewDays.slice(
+        i,
+        i + totalDaysVisibleInWeek
+      );
+      const isRowInMonth: boolean = row.some(
+        day => day.date.getMonth() === viewDate.getMonth()
+      );
       if (isRowInMonth) {
         days = [...days, ...row];
       }
@@ -464,7 +579,6 @@ export function getMonthView({
     totalDaysVisibleInWeek,
     days
   };
-
 }
 
 export interface GetDayViewArgs {
@@ -483,86 +597,109 @@ export interface GetDayViewArgs {
   segmentHeight: number;
 }
 
-export function getDayView({events = [], viewDate, hourSegments, dayStart, dayEnd, eventWidth, segmentHeight}: GetDayViewArgs): DayView {
-
+export function getDayView({
+  events = [],
+  viewDate,
+  hourSegments,
+  dayStart,
+  dayEnd,
+  eventWidth,
+  segmentHeight
+}: GetDayViewArgs): DayView {
   if (!events) {
     events = [];
   }
 
-  const startOfView: Date = setMinutes(setHours(startOfDay(viewDate), dayStart.hour), dayStart.minute);
-  const endOfView: Date = setMinutes(setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour), dayEnd.minute);
+  const startOfView: Date = setMinutes(
+    setHours(startOfDay(viewDate), dayStart.hour),
+    dayStart.minute
+  );
+  const endOfView: Date = setMinutes(
+    setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour),
+    dayEnd.minute
+  );
   const previousDayEvents: DayViewEvent[] = [];
 
   const dayViewEvents: DayViewEvent[] = getEventsInPeriod({
     events: events.filter((event: CalendarEvent) => !event.allDay),
     periodStart: startOfView,
     periodEnd: endOfView
-  }).sort((eventA: CalendarEvent, eventB: CalendarEvent) => {
-    return eventA.start.valueOf() - eventB.start.valueOf();
-  }).map((event: CalendarEvent) => {
+  })
+    .sort((eventA: CalendarEvent, eventB: CalendarEvent) => {
+      return eventA.start.valueOf() - eventB.start.valueOf();
+    })
+    .map((event: CalendarEvent) => {
+      const eventStart: Date = event.start;
+      const eventEnd: Date = event.end || eventStart;
+      const startsBeforeDay: boolean = eventStart < startOfView;
+      const endsAfterDay: boolean = eventEnd > endOfView;
+      const hourHeightModifier: number =
+        hourSegments * segmentHeight / MINUTES_IN_HOUR;
 
-    const eventStart: Date = event.start;
-    const eventEnd: Date = event.end || eventStart;
-    const startsBeforeDay: boolean = eventStart < startOfView;
-    const endsAfterDay: boolean = eventEnd > endOfView;
-    const hourHeightModifier: number = (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
+      let top: number = 0;
+      if (eventStart > startOfView) {
+        top += differenceInMinutes(eventStart, startOfView);
+      }
+      top *= hourHeightModifier;
 
-    let top: number = 0;
-    if (eventStart > startOfView) {
-      top += differenceInMinutes(eventStart, startOfView);
-    }
-    top *= hourHeightModifier;
-
-    const startDate: Date = startsBeforeDay ? startOfView : eventStart;
-    const endDate: Date = endsAfterDay ? endOfView : eventEnd;
-    let height: number = differenceInMinutes(endDate, startDate);
-    if (!event.end) {
-      height = segmentHeight;
-    } else {
-      height *= hourHeightModifier;
-    }
-
-    const bottom: number = top + height;
-
-    const overlappingPreviousEvents: DayViewEvent[] = previousDayEvents.filter((previousEvent: DayViewEvent) => {
-      const previousEventTop: number = previousEvent.top;
-      const previousEventBottom: number = previousEvent.top + previousEvent.height;
-
-      if (top < previousEventBottom && previousEventBottom < bottom) {
-        return true;
-      } else if (previousEventTop <= top && bottom <= previousEventBottom) {
-        return true;
+      const startDate: Date = startsBeforeDay ? startOfView : eventStart;
+      const endDate: Date = endsAfterDay ? endOfView : eventEnd;
+      let height: number = differenceInMinutes(endDate, startDate);
+      if (!event.end) {
+        height = segmentHeight;
+      } else {
+        height *= hourHeightModifier;
       }
 
-      return false;
+      const bottom: number = top + height;
 
-    });
+      const overlappingPreviousEvents: DayViewEvent[] = previousDayEvents.filter(
+        (previousEvent: DayViewEvent) => {
+          const previousEventTop: number = previousEvent.top;
+          const previousEventBottom: number =
+            previousEvent.top + previousEvent.height;
 
-    let left: number = 0;
+          if (top < previousEventBottom && previousEventBottom < bottom) {
+            return true;
+          } else if (previousEventTop <= top && bottom <= previousEventBottom) {
+            return true;
+          }
 
-    while (overlappingPreviousEvents.some(previousEvent => previousEvent.left === left)) {
-      left += eventWidth;
-    }
+          return false;
+        }
+      );
 
-    const dayEvent: DayViewEvent = {
-      event,
-      height,
-      width: eventWidth,
-      top,
-      left,
-      startsBeforeDay,
-      endsAfterDay
-    };
+      let left: number = 0;
 
-    if (height > 0) {
-      previousDayEvents.push(dayEvent);
-    }
+      while (
+        overlappingPreviousEvents.some(
+          previousEvent => previousEvent.left === left
+        )
+      ) {
+        left += eventWidth;
+      }
 
-    return dayEvent;
+      const dayEvent: DayViewEvent = {
+        event,
+        height,
+        width: eventWidth,
+        top,
+        left,
+        startsBeforeDay,
+        endsAfterDay
+      };
 
-  }).filter((dayEvent: DayViewEvent) => dayEvent.height > 0);
+      if (height > 0) {
+        previousDayEvents.push(dayEvent);
+      }
 
-  const width: number = Math.max(...dayViewEvents.map((event: DayViewEvent) => event.left + event.width));
+      return dayEvent;
+    })
+    .filter((dayEvent: DayViewEvent) => dayEvent.height > 0);
+
+  const width: number = Math.max(
+    ...dayViewEvents.map((event: DayViewEvent) => event.left + event.width)
+  );
   const allDayEvents: CalendarEvent[] = getEventsInPeriod({
     events: events.filter((event: CalendarEvent) => event.allDay),
     periodStart: startOfDay(startOfView),
@@ -574,7 +711,6 @@ export function getDayView({events = [], viewDate, hourSegments, dayStart, dayEn
     width,
     allDayEvents
   };
-
 }
 
 export interface GetDayViewHourGridArgs {
@@ -584,19 +720,32 @@ export interface GetDayViewHourGridArgs {
   dayEnd: any;
 }
 
-export function getDayViewHourGrid({viewDate, hourSegments, dayStart, dayEnd}: GetDayViewHourGridArgs): DayViewHour[] {
-
+export function getDayViewHourGrid({
+  viewDate,
+  hourSegments,
+  dayStart,
+  dayEnd
+}: GetDayViewHourGridArgs): DayViewHour[] {
   const hours: DayViewHour[] = [];
 
-  const startOfView: Date = setMinutes(setHours(startOfDay(viewDate), dayStart.hour), dayStart.minute);
-  const endOfView: Date = setMinutes(setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour), dayEnd.minute);
+  const startOfView: Date = setMinutes(
+    setHours(startOfDay(viewDate), dayStart.hour),
+    dayStart.minute
+  );
+  const endOfView: Date = setMinutes(
+    setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour),
+    dayEnd.minute
+  );
   const segmentDuration: number = MINUTES_IN_HOUR / hourSegments;
   const startOfViewDay: Date = startOfDay(viewDate);
 
   for (let i: number = 0; i < HOURS_IN_DAY; i++) {
     const segments: DayViewHourSegment[] = [];
     for (let j: number = 0; j < hourSegments; j++) {
-      const date: Date = addMinutes(addHours(startOfViewDay, i), j * segmentDuration);
+      const date: Date = addMinutes(
+        addHours(startOfViewDay, i),
+        j * segmentDuration
+      );
       if (date >= startOfView && date < endOfView) {
         segments.push({
           date,
@@ -605,7 +754,7 @@ export function getDayViewHourGrid({viewDate, hourSegments, dayStart, dayEnd}: G
       }
     }
     if (segments.length > 0) {
-      hours.push({segments});
+      hours.push({ segments });
     }
   }
 
@@ -620,8 +769,10 @@ export enum EventValidationErrorMessage {
   EndsBeforeStart = 'Event `start` property occurs after the `end`'
 }
 
-export function validateEvents(events: CalendarEvent[], log: (...args: any[]) => void): boolean {
-
+export function validateEvents(
+  events: CalendarEvent[],
+  log: (...args: any[]) => void
+): boolean {
   let isValid: boolean = true;
 
   function isError(msg: string, event: CalendarEvent): void {
@@ -652,5 +803,4 @@ export function validateEvents(events: CalendarEvent[], log: (...args: any[]) =>
   });
 
   return isValid;
-
 }
