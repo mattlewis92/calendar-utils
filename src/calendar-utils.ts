@@ -19,6 +19,7 @@ import differenceInMinutes from 'date-fns/difference_in_minutes';
 import addHours from 'date-fns/add_hours';
 import addSeconds from 'date-fns/add_seconds';
 import max from 'date-fns/max';
+import isDate from 'date-fns/is_date';
 
 export enum DAYS_OF_WEEK {
   SUNDAY = 0,
@@ -609,4 +610,47 @@ export function getDayViewHourGrid({viewDate, hourSegments, dayStart, dayEnd}: G
   }
 
   return hours;
+}
+
+export enum EventValidationErrorMessage {
+  NotArray = 'Events must be an array',
+  StartPropertyMissing = 'Event is missing the `start` property',
+  StartPropertyNotDate = 'Event `start` property should be a javascript date object. Do `new Date(event.start)` to fix it.',
+  EndPropertyNotDate = 'Event `end` property should be a javascript date object. Do `new Date(event.end)` to fix it.',
+  EndsBeforeStart = 'Event `start` property occurs after the `end`'
+}
+
+export function validateEvents(events: CalendarEvent[], log: (...args: any[]) => void): boolean {
+
+  let isValid: boolean = true;
+
+  function isError(msg: string, event: CalendarEvent): void {
+    log(msg, event);
+    isValid = false;
+  }
+
+  if (!Array.isArray(events)) {
+    log(EventValidationErrorMessage.NotArray, events);
+    return false;
+  }
+
+  events.forEach(event => {
+    if (!event.start) {
+      isError(EventValidationErrorMessage.StartPropertyMissing, event);
+    } else if (!isDate(event.start)) {
+      isError(EventValidationErrorMessage.StartPropertyNotDate, event);
+    }
+
+    if (event.end) {
+      if (!isDate(event.end)) {
+        isError(EventValidationErrorMessage.EndPropertyNotDate, event);
+      }
+      if (event.start > event.end) {
+        isError(EventValidationErrorMessage.EndsBeforeStart, event);
+      }
+    }
+  });
+
+  return isValid;
+
 }

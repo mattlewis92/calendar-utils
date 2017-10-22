@@ -1,9 +1,11 @@
 /// <reference types="chai" />
 /// <reference types="mocha" />
 /// <reference types="sinon" />
+/// <reference types="sinon-chai" />
 
-import { expect } from 'chai';
-import { useFakeTimers } from 'sinon';
+import { expect, use } from 'chai';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
 import {
   startOfWeek,
   addHours,
@@ -36,12 +38,14 @@ import {
   DayViewHourSegment,
   getWeekViewEventOffset,
   SECONDS_IN_DAY,
-  DAYS_OF_WEEK
+  DAYS_OF_WEEK, validateEvents, EventValidationErrorMessage
 } from '../src/calendar-utils';
+
+use(sinonChai);
 
 let clock: any, timezoneOffset: number, timezoneOffsetDays: number;
 beforeEach(() => {
-  clock = useFakeTimers(new Date('2016-06-28').getTime());
+  clock = sinon.useFakeTimers(new Date('2016-06-28').getTime());
   timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
   timezoneOffsetDays = new Date().getTimezoneOffset() / 60 / 24;
 });
@@ -2034,6 +2038,97 @@ describe('getDayViewHourGrid', () => {
       ]
     }]);
 
+  });
+
+});
+
+describe('validateEvents', () => {
+
+  let log: sinon.SinonSpy;
+  beforeEach(() => {
+    log = sinon.spy();
+  });
+
+  it('should not log an error when all events are valid', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date(),
+      end: addHours(new Date(), 1),
+      title: 'foo',
+      color: {primary: '', secondary: ''}
+    }];
+    expect(validateEvents(events, log)).to.be.true;
+    expect(log).not.to.have.been.called;
+  });
+
+  it('should not log an error when the event end is not missing', () => {
+    const events: CalendarEvent[] = [{
+      start: new Date(),
+      title: 'foo',
+      color: {primary: '', secondary: ''}
+    }];
+    expect(validateEvents(events, log)).to.be.true;
+    expect(log).not.to.have.been.called;
+  });
+
+  it('should be invalid when at least one event is invalid', () => {
+    const events: any = [{
+      start: new Date(),
+      title: 'foo',
+      color: {primary: '', secondary: ''}
+      }, {
+      start: '2017-01-01',
+      title: 'foo',
+      color: {primary: '', secondary: ''}
+    }];
+    expect(validateEvents(events, log)).to.be.false;
+    expect(log).to.have.been.calledOnce;
+  });
+
+  it('should log a warning when not passed an array of events', () => {
+    const events: any = {};
+    expect(validateEvents(events, log)).to.be.false;
+    expect(log).to.have.been.calledWith(EventValidationErrorMessage.NotArray);
+  });
+
+  it('should not a warning when events are missing a start date', () => {
+    const events: any = [{
+      title: 'foo',
+      color: {primary: '', secondary: ''}
+    }];
+    expect(validateEvents(events, log)).to.be.false;
+    expect(log).to.have.been.calledWith(EventValidationErrorMessage.StartPropertyMissing);
+  });
+
+  it('should log a warning when the event start is not a date', () => {
+    const events: any = [{
+      start: '2017-01-01',
+      title: 'foo',
+      color: {primary: '', secondary: ''}
+    }];
+    expect(validateEvents(events, log)).to.be.false;
+    expect(log).to.have.been.calledWith(EventValidationErrorMessage.StartPropertyNotDate);
+  });
+
+  it('should log a warning when the event end is not a date', () => {
+    const events: any = [{
+      start: new Date(),
+      end: '2017-01-01',
+      title: 'foo',
+      color: {primary: '', secondary: ''}
+    }];
+    expect(validateEvents(events, log)).to.be.false;
+    expect(log).to.have.been.calledWith(EventValidationErrorMessage.EndPropertyNotDate);
+  });
+
+  it('should log a warning when the event starts after it ends', () => {
+    const events: CalendarEvent[] = [{
+      start: addHours(new Date(), 1),
+      end: new Date(),
+      title: 'foo',
+      color: {primary: '', secondary: ''}
+    }];
+    expect(validateEvents(events, log)).to.be.false;
+    expect(log).to.have.been.calledWith(EventValidationErrorMessage.EndsBeforeStart);
   });
 
 });
