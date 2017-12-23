@@ -322,13 +322,13 @@ function isEventIsPeriod({
   return false;
 }
 
-interface GetEventsInPeriodArgs {
+export interface GetEventsInPeriodArgs {
   events: CalendarEvent[];
   periodStart: Date;
   periodEnd: Date;
 }
 
-function getEventsInPeriod({
+export function getEventsInPeriod({
   events,
   periodStart,
   periodEnd
