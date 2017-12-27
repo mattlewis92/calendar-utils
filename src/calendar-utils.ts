@@ -761,15 +761,13 @@ export function getDayViewHourGrid({
   return hours;
 }
 
-export const EventValidationErrorMessage = {
-  NotArray: 'Events must be an array',
-  StartPropertyMissing: 'Event is missing the `start` property',
-  StartPropertyNotDate:
-    'Event `start` property should be a javascript date object. Do `new Date(event.start)` to fix it.',
-  EndPropertyNotDate:
-    'Event `end` property should be a javascript date object. Do `new Date(event.end)` to fix it.',
-  EndsBeforeStart: 'Event `start` property occurs after the `end`'
-};
+export enum EventValidationErrorMessage {
+  NotArray = 'Events must be an array',
+  StartPropertyMissing = 'Event is missing the `start` property',
+  StartPropertyNotDate = 'Event `start` property should be a javascript date object. Do `new Date(event.start)` to fix it.',
+  EndPropertyNotDate = 'Event `end` property should be a javascript date object. Do `new Date(event.end)` to fix it.',
+  EndsBeforeStart = 'Event `start` property occurs after the `end`'
+}
 
 export function validateEvents(
   events: CalendarEvent[],
