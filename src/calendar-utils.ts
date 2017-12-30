@@ -89,6 +89,11 @@ export interface WeekViewEventRow {
   row: WeekViewEvent[];
 }
 
+export interface WeekView {
+  period: ViewPeriod;
+  eventRows: WeekViewEventRow[];
+}
+
 export interface MonthViewDay<MetaType = any> extends WeekDay {
   inMonth: boolean;
   events: CalendarEvent[];
@@ -101,6 +106,7 @@ export interface MonthView {
   rowOffsets: number[];
   days: MonthViewDay[];
   totalDaysVisibleInWeek: number;
+  period: ViewPeriod;
 }
 
 export interface DayViewEvent {
@@ -117,6 +123,7 @@ export interface DayView {
   events: DayViewEvent[];
   width: number;
   allDayEvents: CalendarEvent[];
+  period: ViewPeriod;
 }
 
 export interface DayViewHourSegment {
@@ -127,6 +134,12 @@ export interface DayViewHourSegment {
 
 export interface DayViewHour {
   segments: DayViewHourSegment[];
+}
+
+export interface ViewPeriod {
+  start: Date;
+  end: Date;
+  events: CalendarEvent[];
 }
 
 function getExcludedSeconds({
@@ -396,7 +409,7 @@ export function getWeekView({
   excluded = [],
   precision = 'days',
   absolutePositionedEvents = false
-}: GetWeekViewArgs): WeekViewEventRow[] {
+}: GetWeekViewArgs): WeekView {
   if (!events) {
     events = [];
   }
@@ -404,12 +417,13 @@ export function getWeekView({
   const startOfViewWeek: Date = startOfWeek(viewDate, { weekStartsOn });
   const endOfViewWeek: Date = endOfWeek(viewDate, { weekStartsOn });
   const maxRange: number = DAYS_IN_WEEK - excluded.length;
-
-  const eventsMapped: WeekViewEvent[] = getEventsInPeriod({
+  const eventsInPeriod = getEventsInPeriod({
     events,
     periodStart: startOfViewWeek,
     periodEnd: endOfViewWeek
-  })
+  });
+
+  const eventsMapped: WeekViewEvent[] = eventsInPeriod
     .map(event => {
       const offset: number = getWeekViewEventOffset({
         event,
@@ -479,7 +493,14 @@ export function getWeekView({
     }
   });
 
-  return eventRows;
+  return {
+    eventRows,
+    period: {
+      events: eventsInPeriod,
+      start: startOfViewWeek,
+      end: endOfViewWeek
+    }
+  };
 }
 
 export interface GetMonthViewArgs {
@@ -577,7 +598,12 @@ export function getMonthView({
   return {
     rowOffsets,
     totalDaysVisibleInWeek,
-    days
+    days,
+    period: {
+      start,
+      end,
+      events: eventsInMonth
+    }
   };
 }
 
@@ -619,12 +645,13 @@ export function getDayView({
     dayEnd.minute
   );
   const previousDayEvents: DayViewEvent[] = [];
-
-  const dayViewEvents: DayViewEvent[] = getEventsInPeriod({
+  const eventsInPeriod = getEventsInPeriod({
     events: events.filter((event: CalendarEvent) => !event.allDay),
     periodStart: startOfView,
     periodEnd: endOfView
-  })
+  });
+
+  const dayViewEvents: DayViewEvent[] = eventsInPeriod
     .sort((eventA: CalendarEvent, eventB: CalendarEvent) => {
       return eventA.start.valueOf() - eventB.start.valueOf();
     })
@@ -709,7 +736,12 @@ export function getDayView({
   return {
     events: dayViewEvents,
     width,
-    allDayEvents
+    allDayEvents,
+    period: {
+      events: eventsInPeriod,
+      start: startOfView,
+      end: endOfView
+    }
   };
 }
 
