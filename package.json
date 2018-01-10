@@ -47,7 +47,7 @@
   "devDependencies": {
     "@types/chai": "^4.0.10",
     "@types/mocha": "^2.2.45",
-    "@types/node": "^8.5.2",
+    "@types/node": "^9.3.0",
     "@types/sinon": "^4.1.2",
     "@types/sinon-chai": "^2.7.29",
     "awesome-typescript-loader": "^3.4.1",
