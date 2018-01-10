@@ -230,7 +230,9 @@ function getWeekViewEventSpan({
         span = differenceInSeconds(event.end, begin);
         break;
       default:
-        span = differenceInDays(addDays(event.end, 1), begin) * SECONDS_IN_DAY;
+        span =
+          differenceInDays(addDays(endOfDay(event.end), 1), begin) *
+          SECONDS_IN_DAY;
         break;
     }
   }

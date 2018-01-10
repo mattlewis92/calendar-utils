@@ -812,6 +812,35 @@ describe('getWeekView', () => {
         ]);
       });
     });
+
+    it('should handle events where the end date time is before the start date time', () => {
+      const events: CalendarEvent[] = [
+        {
+          start: new Date('2018-01-09T11:00:00.000Z'),
+          end: new Date('2018-01-11T10:00:00.000Z'),
+          title: '',
+          color: { primary: '', secondary: '' }
+        }
+      ];
+      const result = getWeekView({
+        events,
+        viewDate: new Date('2018-01-10T11:00:00.000Z'),
+        weekStartsOn: DAYS_OF_WEEK.SUNDAY
+      });
+      expect(result.eventRows).to.deep.equal([
+        {
+          row: [
+            {
+              event: events[0],
+              offset: 2,
+              span: 3,
+              startsBeforeWeek: false,
+              endsAfterWeek: false
+            }
+          ]
+        }
+      ]);
+    });
   });
 
   describe('precision = "minutes"', () => {
