@@ -62,6 +62,7 @@ export interface EventAction {
 }
 
 export interface CalendarEvent<MetaType = any> {
+  id?: string | number;
   start: Date;
   end?: Date;
   title: string;
