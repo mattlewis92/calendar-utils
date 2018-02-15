@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/mattlewis92/calendar-utils#readme",
   "peerDependencies": {
-    "date-fns": "^1.3.0"
+    "date-fns": "^2.0.0-alpha.7"
   },
   "devDependencies": {
     "@types/chai": "^4.1.0",
