@@ -54,7 +54,7 @@
     "chai": "^4.0.0",
     "codecov-lite": "^0.1.3",
     "concurrently": "^3.5.1",
-    "date-fns": "^1.29.0",
+    "date-fns": "^2.0.0-alpha.7",
     "husky": "^0.14.3",
     "istanbul-instrumenter-loader": "^3.0.0",
     "karma": "^2.0.0",

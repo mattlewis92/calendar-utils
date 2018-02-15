@@ -1,25 +1,21 @@
 /// <reference types="mocha" />
 
 import { expect, use } from 'chai';
-import {
-  addDays,
-  addHours,
-  addMinutes,
-  differenceInSeconds,
-  endOfDay,
-  endOfMonth,
-  endOfWeek,
-  setHours,
-  setMilliseconds,
-  setMinutes,
-  setSeconds,
-  startOfDay,
-  startOfTomorrow,
-  startOfWeek,
-  startOfYesterday,
-  subDays,
-  subHours
-} from 'date-fns';
+import addDays from 'date-fns/esm/addDays';
+import addHours from 'date-fns/esm/addHours';
+import addMinutes from 'date-fns/esm/addMinutes';
+import differenceInSeconds from 'date-fns/esm/differenceInSeconds';
+import endOfDay from 'date-fns/esm/endOfDay';
+import endOfMonth from 'date-fns/esm/endOfMonth';
+import endOfWeek from 'date-fns/esm/endOfWeek';
+import setHours from 'date-fns/esm/setHours';
+import setMilliseconds from 'date-fns/esm/setMilliseconds';
+import setMinutes from 'date-fns/esm/setMinutes';
+import setSeconds from 'date-fns/esm/setSeconds';
+import startOfDay from 'date-fns/esm/startOfDay';
+import startOfWeek from 'date-fns/esm/startOfWeek';
+import subDays from 'date-fns/esm/subDays';
+import subHours from 'date-fns/esm/subHours';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import {
@@ -274,7 +270,7 @@ describe('getWeekView', () => {
         }
       ];
 
-      const weekStartsOn: number = DAYS_OF_WEEK.SATURDAY;
+      const weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6 = DAYS_OF_WEEK.SATURDAY;
       const viewDate: Date = new Date('2017-05-27');
       const result = getWeekView({
         events,
@@ -2231,8 +2227,8 @@ describe('getDayView', () => {
         color: { primary: '', secondary: '' }
       },
       {
-        start: startOfYesterday(),
-        end: setHours(startOfTomorrow(), 11),
+        start: startOfDay(subDays(new Date(), 1)),
+        end: setHours(startOfDay(addDays(new Date(), 1)), 11),
         title: 'Day column 1 - event 1',
         color: { primary: '', secondary: '' }
       },
@@ -2246,7 +2242,7 @@ describe('getDayView', () => {
 
     const result: DayView = getDayView({
       events,
-      viewDate: startOfTomorrow(),
+      viewDate: startOfDay(addDays(new Date(), 1)),
       hourSegments: 2,
       dayStart: { hour: 0, minute: 0 },
       dayEnd: { hour: 23, minute: 59 },

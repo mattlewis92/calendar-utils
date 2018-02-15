@@ -1,25 +1,24 @@
-import addDays from 'date-fns/add_days';
-import addHours from 'date-fns/add_hours';
-import addMinutes from 'date-fns/add_minutes';
-import addSeconds from 'date-fns/add_seconds';
-import differenceInDays from 'date-fns/difference_in_days';
-import differenceInMinutes from 'date-fns/difference_in_minutes';
-import differenceInSeconds from 'date-fns/difference_in_seconds';
-import endOfDay from 'date-fns/end_of_day';
-import endOfMonth from 'date-fns/end_of_month';
-import endOfWeek from 'date-fns/end_of_week';
-import getDay from 'date-fns/get_day';
-import isDate from 'date-fns/is_date';
-import isSameDay from 'date-fns/is_same_day';
-import isSameMonth from 'date-fns/is_same_month';
-import isSameSecond from 'date-fns/is_same_second';
-import max from 'date-fns/max';
-import setHours from 'date-fns/set_hours';
-import setMinutes from 'date-fns/set_minutes';
-import startOfDay from 'date-fns/start_of_day';
-import startOfMinute from 'date-fns/start_of_minute';
-import startOfMonth from 'date-fns/start_of_month';
-import startOfWeek from 'date-fns/start_of_week';
+import addDays from 'date-fns/esm/addDays';
+import addHours from 'date-fns/esm/addHours';
+import addMinutes from 'date-fns/esm/addMinutes';
+import addSeconds from 'date-fns/esm/addSeconds';
+import differenceInDays from 'date-fns/esm/differenceInDays';
+import differenceInMinutes from 'date-fns/esm/differenceInMinutes';
+import differenceInSeconds from 'date-fns/esm/differenceInSeconds';
+import endOfDay from 'date-fns/esm/endOfDay';
+import endOfMonth from 'date-fns/esm/endOfMonth';
+import endOfWeek from 'date-fns/esm/endOfWeek';
+import getDay from 'date-fns/esm/getDay';
+import isSameDay from 'date-fns/esm/isSameDay';
+import isSameMonth from 'date-fns/esm/isSameMonth';
+import isSameSecond from 'date-fns/esm/isSameSecond';
+import max from 'date-fns/esm/max';
+import setHours from 'date-fns/esm/setHours';
+import setMinutes from 'date-fns/esm/setMinutes';
+import startOfDay from 'date-fns/esm/startOfDay';
+import startOfMinute from 'date-fns/esm/startOfMinute';
+import startOfMonth from 'date-fns/esm/startOfMonth';
+import startOfWeek from 'date-fns/esm/startOfWeek';
 
 export enum DAYS_OF_WEEK {
   SUNDAY = 0,
@@ -223,7 +222,7 @@ function getWeekViewEventSpan({
   precision?: 'minutes' | 'days';
 }): number {
   let span: number = SECONDS_IN_DAY;
-  const begin: Date = max(event.start, startOfWeekDate);
+  const begin: Date = max([event.start, startOfWeekDate]);
 
   if (event.end) {
     switch (precision) {
@@ -373,7 +372,7 @@ function getWeekDay({
 
 export interface GetWeekViewHeaderArgs {
   viewDate: Date;
-  weekStartsOn: number;
+  weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   excluded?: number[];
   weekendDays?: number[];
 }
@@ -399,7 +398,7 @@ export function getWeekViewHeader({
 export interface GetWeekViewArgs {
   events?: CalendarEvent[];
   viewDate: Date;
-  weekStartsOn: number;
+  weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   excluded?: number[];
   precision?: 'minutes' | 'days';
   absolutePositionedEvents?: boolean;
@@ -509,7 +508,7 @@ export function getWeekView({
 export interface GetMonthViewArgs {
   events?: CalendarEvent[];
   viewDate: Date;
-  weekStartsOn: number;
+  weekStartsOn: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   excluded?: number[];
   viewStart?: Date;
   viewEnd?: Date;
@@ -823,12 +822,12 @@ export function validateEvents(
   events.forEach(event => {
     if (!event.start) {
       isError(EventValidationErrorMessage.StartPropertyMissing, event);
-    } else if (!isDate(event.start)) {
+    } else if (!(event.start instanceof Date)) {
       isError(EventValidationErrorMessage.StartPropertyNotDate, event);
     }
 
     if (event.end) {
-      if (!isDate(event.end)) {
+      if (!(event.end instanceof Date)) {
         isError(EventValidationErrorMessage.EndPropertyNotDate, event);
       }
       if (event.start > event.end) {
