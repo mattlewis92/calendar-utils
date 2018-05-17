@@ -42,10 +42,12 @@ export default function(config) {
           }
         }, {
           test: /\.ts$/,
-          loader: 'awesome-typescript-loader',
+          loader: 'ts-loader',
           exclude: /node_modules/,
           options: {
-            module: 'es2015'
+            compilerOptions: {
+              module: 'es2015'
+            }
           }
         }, {
           test: /src\/.+\.ts$/,

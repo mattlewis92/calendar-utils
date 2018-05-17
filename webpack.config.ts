@@ -23,11 +23,13 @@ module.exports = {
       }
     }, {
       test: /\.ts$/,
-      loader: 'awesome-typescript-loader',
+      loader: 'ts-loader',
       exclude: /node_modules/,
       options: {
-        module: 'es2015',
-        declaration: false
+        compilerOptions: {
+          module: 'es2015',
+          declaration: false
+        }
       }
     }]
   },
