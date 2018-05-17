@@ -1,6 +1,7 @@
 import * as webpackDateFnsExternals from 'webpack-date-fns-externals';
 
 module.exports = {
+  mode: 'production',
   entry: __dirname + '/src/calendar-utils.ts',
   output: {
     path: __dirname + '/dist/umd',
@@ -35,5 +36,8 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.js']
+  },
+  optimization: {
+    minimize: false
   }
 };
