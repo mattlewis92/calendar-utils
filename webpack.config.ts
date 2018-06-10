@@ -4,8 +4,8 @@ module.exports = {
   mode: 'production',
   entry: __dirname + '/src/calendar-utils.ts',
   output: {
-    path: __dirname + '/dist/umd',
-    filename: 'calendar-utils.js',
+    path: __dirname + '/dist/bundles',
+    filename: 'calendar-utils.umd.js',
     libraryTarget: 'umd',
     library: 'calendarUtils'
   },
