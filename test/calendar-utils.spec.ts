@@ -2183,27 +2183,6 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result.width).to.equal(300);
       });
 
-      it('should exclude events with 0 height', () => {
-        const events: CalendarEvent[] = [
-          {
-            start: addHours(startOfDay(new Date()), 2),
-            end: addHours(startOfDay(new Date()), 2),
-            title: '',
-            color: { primary: '', secondary: '' }
-          }
-        ];
-        const result: DayView = getDayView(dateAdapter, {
-          events,
-          viewDate: new Date(),
-          hourSegments: 2,
-          dayStart: { hour: 0, minute: 0 },
-          dayEnd: { hour: 23, minute: 59 },
-          eventWidth: 100,
-          segmentHeight: 30
-        });
-        expect(result.events.length).to.equal(0);
-      });
-
       it('should separate all day events that occur on that day', () => {
         const events: CalendarEvent[] = [
           {

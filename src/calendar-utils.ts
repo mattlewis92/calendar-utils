@@ -753,8 +753,7 @@ export function getDayView(
       }
 
       return dayEvent;
-    })
-    .filter((dayEvent: DayViewEvent) => dayEvent.height > 0);
+    });
 
   const width: number = Math.max(
     ...dayViewEvents.map((event: DayViewEvent) => event.left + event.width)
