@@ -458,19 +458,21 @@ export function getWeekView(
       startsBeforeWeek: entry.event.start < startOfViewWeek,
       endsAfterWeek: (entry.event.end || entry.event.start) > endOfViewWeek
     }))
-    .sort((itemA, itemB): number => {
-      const startSecondsDiff: number = differenceInSeconds(
-        itemA.event.start,
-        itemB.event.start
-      );
-      if (startSecondsDiff === 0) {
-        return differenceInSeconds(
-          itemB.event.end || itemB.event.start,
-          itemA.event.end || itemA.event.start
+    .sort(
+      (itemA, itemB): number => {
+        const startSecondsDiff: number = differenceInSeconds(
+          itemA.event.start,
+          itemB.event.start
         );
+        if (startSecondsDiff === 0) {
+          return differenceInSeconds(
+            itemB.event.end || itemB.event.start,
+            itemA.event.end || itemA.event.start
+          );
+        }
+        return startSecondsDiff;
       }
-      return startSecondsDiff;
-    });
+    );
 
   const eventRows: WeekViewEventRow[] = [];
   const allocatedEvents: WeekViewEvent[] = [];
@@ -693,7 +695,7 @@ export function getDayView(
       const startsBeforeDay: boolean = eventStart < startOfView;
       const endsAfterDay: boolean = eventEnd > endOfView;
       const hourHeightModifier: number =
-        hourSegments * segmentHeight / MINUTES_IN_HOUR;
+        (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
 
       let top: number = 0;
       if (eventStart > startOfView) {
@@ -748,9 +750,7 @@ export function getDayView(
         endsAfterDay
       };
 
-      if (height > 0) {
-        previousDayEvents.push(dayEvent);
-      }
+      previousDayEvents.push(dayEvent);
 
       return dayEvent;
     });
