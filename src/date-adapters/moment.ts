@@ -1,26 +1,45 @@
 import { DateAdapter } from './date-adapter.interface';
 
-export function adapterFactory(moment): DateAdapter {
+export interface AdapterOptions {
+  utc?: boolean;
+}
+
+export function getMoment(
+  moment,
+  value: Date | string | number,
+  { utc }: AdapterOptions = {}
+) {
+  return utc ? moment.utc(value) : moment(value);
+}
+
+export function adapterFactory(
+  moment,
+  options: AdapterOptions = {}
+): DateAdapter {
+  function momentFactory(value: Date | string | number) {
+    return getMoment(moment, value, options);
+  }
+
   function addDays(date: Date | string | number, amount: number) {
-    return moment(date)
+    return momentFactory(date)
       .add(amount, 'days')
       .toDate();
   }
 
   function addHours(date: Date | string | number, amount: number) {
-    return moment(date)
+    return momentFactory(date)
       .add(amount, 'hours')
       .toDate();
   }
 
   function addMinutes(date: Date | string | number, amount: number) {
-    return moment(date)
+    return momentFactory(date)
       .add(amount, 'minutes')
       .toDate();
   }
 
   function addSeconds(date: Date | string | number, amount: number): Date {
-    return moment(date)
+    return momentFactory(date)
       .add(amount, 'seconds')
       .toDate();
   }
@@ -29,102 +48,102 @@ export function adapterFactory(moment): DateAdapter {
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): number {
-    return moment(dateLeft).diff(dateRight, 'days');
+    return momentFactory(dateLeft).diff(momentFactory(dateRight), 'days');
   }
 
   function differenceInMinutes(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): number {
-    return moment(dateLeft).diff(dateRight, 'minutes');
+    return momentFactory(dateLeft).diff(momentFactory(dateRight), 'minutes');
   }
 
   function differenceInSeconds(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): number {
-    return moment(dateLeft).diff(dateRight, 'seconds');
+    return momentFactory(dateLeft).diff(momentFactory(dateRight), 'seconds');
   }
 
   function endOfDay(date: Date | string | number): Date {
-    return moment(date)
+    return momentFactory(date)
       .endOf('day')
       .toDate();
   }
 
   function endOfMonth(date: Date | string | number): Date {
-    return moment(date)
+    return momentFactory(date)
       .endOf('month')
       .toDate();
   }
 
   function endOfWeek(date: Date | string | number): Date {
-    return moment(date)
+    return momentFactory(date)
       .endOf('week')
       .toDate();
   }
 
   function getDay(date: Date | string | number): number {
-    return moment(date).day();
+    return momentFactory(date).day();
   }
 
   function isSameDay(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): boolean {
-    return moment(dateLeft).isSame(dateRight, 'day');
+    return momentFactory(dateLeft).isSame(momentFactory(dateRight), 'day');
   }
 
   function isSameMonth(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): boolean {
-    return moment(dateLeft).isSame(dateRight, 'month');
+    return momentFactory(dateLeft).isSame(momentFactory(dateRight), 'month');
   }
 
   function isSameSecond(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): boolean {
-    return moment(dateLeft).isSame(dateRight, 'second');
+    return momentFactory(dateLeft).isSame(momentFactory(dateRight), 'second');
   }
 
   function max(...dates: Array<Date | string | number>): Date {
-    return moment.max(dates.map(date => moment(date))).toDate();
+    return moment.max(dates.map(date => momentFactory(date))).toDate();
   }
 
   function setHours(date: Date | string | number, hours: number): Date {
-    return moment(date)
+    return momentFactory(date)
       .hours(hours)
       .toDate();
   }
 
   function setMinutes(date: Date | string | number, minutes: number): Date {
-    return moment(date)
+    return momentFactory(date)
       .minutes(minutes)
       .toDate();
   }
 
   function startOfDay(date: Date | string | number): Date {
-    return moment(date)
+    return momentFactory(date)
       .startOf('day')
       .toDate();
   }
 
   function startOfMinute(date: Date | string | number): Date {
-    return moment(date)
+    return momentFactory(date)
       .startOf('minute')
       .toDate();
   }
 
   function startOfMonth(date: Date | string | number): Date {
-    return moment(date)
+    return momentFactory(date)
       .startOf('month')
       .toDate();
   }
 
   function startOfWeek(date: Date | string | number): Date {
-    return moment(date)
+    return momentFactory(date)
       .startOf('week')
       .toDate();
   }

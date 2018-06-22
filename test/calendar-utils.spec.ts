@@ -2567,3 +2567,24 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
     });
   });
 });
+
+describe('getDayViewHourGrid', () => {
+  it('should include hours that technically dont exist because of DST', () => {
+    const result: DayViewHour[] = getDayViewHourGrid(
+      momentAdapterFactory(moment, { utc: true }),
+      {
+        viewDate: new Date('2018-03-25'),
+        hourSegments: 1,
+        dayStart: {
+          hour: 0,
+          minute: 0
+        },
+        dayEnd: {
+          hour: 3,
+          minute: 59
+        }
+      }
+    );
+    expect(result.length).to.equal(4);
+  });
+});
