@@ -1,4 +1,4 @@
-import { DateAdapter } from './date-adapter.interface';
+import { DateAdapter } from '../date-adapter';
 
 export function adapterFactory(moment): DateAdapter {
   function addDays(date: Date | string | number, amount: number) {

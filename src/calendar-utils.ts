@@ -1,4 +1,4 @@
-import { DateAdapter } from './date-adapters/date-adapter.interface';
+import { DateAdapter } from './date-adapters/date-adapter/index';
 
 export enum DAYS_OF_WEEK {
   SUNDAY = 0,

@@ -19,7 +19,7 @@ import startOfDay from 'date-fns/start_of_day/index';
 import startOfMinute from 'date-fns/start_of_minute/index';
 import startOfMonth from 'date-fns/start_of_month/index';
 import startOfWeek from 'date-fns/start_of_week/index';
-import { DateAdapter } from './date-adapter.interface';
+import { DateAdapter } from '../date-adapter';
 
 export function adapterFactory(): DateAdapter {
   return {

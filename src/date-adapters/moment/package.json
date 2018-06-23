@@ -1,0 +1,5 @@
+{
+  "name": "calendar-utils/date-adapters/moment",
+  "main": "./index.js",
+  "typings": "./index.d.ts"
+}

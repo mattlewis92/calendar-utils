@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist/date-adapters"
+  },
+  "files": [
+    "src/date-adapters/date-fns/index.ts",
+    "src/date-adapters/moment/index.ts",
+  ]
+}

@@ -9,11 +9,12 @@
     "allowSyntheticDefaultImports": true,
     "lib": ["es5", "es2015"]
   },
-  "include": [
-    "src/**/*.ts"
+  "files": [
+    "src/calendar-utils.ts"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "src/date-adapters"
   ]
 }
