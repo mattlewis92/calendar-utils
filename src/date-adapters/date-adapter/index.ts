@@ -35,6 +35,8 @@ export interface DateAdapter {
 
   getDay(date: Date | string | number): number;
 
+  getMonth(date: Date | string | number): number;
+
   isSameDay(
     dateLeft: Date | string | number,
     dateRight: Date | string | number

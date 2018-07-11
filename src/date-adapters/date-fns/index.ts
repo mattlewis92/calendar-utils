@@ -9,6 +9,7 @@ import * as endOfDay from 'date-fns/end_of_day/index';
 import * as endOfMonth from 'date-fns/end_of_month/index';
 import * as endOfWeek from 'date-fns/end_of_week/index';
 import * as getDay from 'date-fns/get_day/index';
+import * as getMonth from 'date-fns/get_month/index';
 import * as isSameDay from 'date-fns/is_same_day/index';
 import * as isSameMonth from 'date-fns/is_same_month/index';
 import * as isSameSecond from 'date-fns/is_same_second/index';
@@ -34,6 +35,7 @@ export function adapterFactory(): DateAdapter {
     endOfMonth,
     endOfWeek,
     getDay,
+    getMonth,
     isSameDay,
     isSameMonth,
     isSameSecond,

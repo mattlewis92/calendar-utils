@@ -142,7 +142,7 @@ function getExcludedSeconds(
   const { addSeconds, getDay, addDays } = dateAdapter;
   const endDate: Date = addSeconds(startDate, seconds - 1);
   const dayStart: number = getDay(startDate);
-  const dayEnd: number = getDay(dateAdapter.addSeconds(endDate, 0));
+  const dayEnd: number = getDay(endDate);
   let result: number = 0; // Calculated in seconds
   let current: Date = startDate;
 
@@ -285,7 +285,7 @@ export function getWeekViewEventOffset(
       offset = differenceInSeconds(event.start, startOfWeekDate);
       break;
   }
-
+  
   offset -= getExcludedSeconds(dateAdapter, {
     startDate: startOfWeekDate,
     seconds: offset,
@@ -386,12 +386,12 @@ export function getWeekViewHeader(
   dateAdapter: DateAdapter,
   { viewDate, weekStartsOn, excluded = [], weekendDays }: GetWeekViewHeaderArgs
 ): WeekDay[] {
-  const { startOfWeek, addDays } = dateAdapter;
+  const { startOfWeek, addDays, getDay } = dateAdapter;
   const start: Date = startOfWeek(viewDate, { weekStartsOn });
   const days: WeekDay[] = [];
   for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
     const date: Date = addDays(start, i);
-    if (!excluded.some(e => date.getDay() === e)) {
+    if (!excluded.some(e => getDay(date) === e)) {
       days.push(getWeekDay(dateAdapter, { date, weekendDays }));
     }
   }
@@ -547,7 +547,9 @@ export function getMonthView(
     startOfDay,
     addHours,
     endOfDay,
-    isSameMonth
+    isSameMonth,
+    getDay,
+    getMonth
   } = dateAdapter;
   const start: Date = startOfWeek(viewStart, { weekStartsOn });
   const end: Date = endOfWeek(viewEnd, { weekStartsOn });
@@ -572,7 +574,7 @@ export function getMonthView(
       date = previousDate = start;
     }
 
-    if (!excluded.some(e => date.getDay() === e)) {
+    if (!excluded.some(e => getDay(date) === e)) {
       const day: MonthViewDay = getWeekDay(dateAdapter, {
         date,
         weekendDays
@@ -602,7 +604,7 @@ export function getMonthView(
         i + totalDaysVisibleInWeek
       );
       const isRowInMonth: boolean = row.some(
-        day => day.date.getMonth() === viewDate.getMonth()
+        day => getMonth(day.date) === getMonth(viewDate)
       );
       if (isRowInMonth) {
         days = [...days, ...row];

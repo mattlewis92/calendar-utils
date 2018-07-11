@@ -29,21 +29,21 @@ export function adapterFactory(moment): DateAdapter {
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): number {
-    return moment(dateLeft).diff(dateRight, 'days');
+    return moment(dateLeft).diff(moment(dateRight), 'days');
   }
 
   function differenceInMinutes(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): number {
-    return moment(dateLeft).diff(dateRight, 'minutes');
+    return moment(dateLeft).diff(moment(dateRight), 'minutes');
   }
 
   function differenceInSeconds(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): number {
-    return moment(dateLeft).diff(dateRight, 'seconds');
+    return moment(dateLeft).diff(moment(dateRight), 'seconds');
   }
 
   function endOfDay(date: Date | string | number): Date {
@@ -68,25 +68,29 @@ export function adapterFactory(moment): DateAdapter {
     return moment(date).day();
   }
 
+  function getMonth(date: Date | string | number): number {
+    return moment(date).month();
+  }
+
   function isSameDay(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): boolean {
-    return moment(dateLeft).isSame(dateRight, 'day');
+    return moment(dateLeft).isSame(moment(dateRight), 'day');
   }
 
   function isSameMonth(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): boolean {
-    return moment(dateLeft).isSame(dateRight, 'month');
+    return moment(dateLeft).isSame(moment(dateRight), 'month');
   }
 
   function isSameSecond(
     dateLeft: Date | string | number,
     dateRight: Date | string | number
   ): boolean {
-    return moment(dateLeft).isSame(dateRight, 'second');
+    return moment(dateLeft).isSame(moment(dateRight), 'second');
   }
 
   function max(...dates: Array<Date | string | number>): Date {
@@ -141,6 +145,7 @@ export function adapterFactory(moment): DateAdapter {
     endOfMonth,
     endOfWeek,
     getDay,
+    getMonth,
     isSameDay,
     isSameMonth,
     isSameSecond,
