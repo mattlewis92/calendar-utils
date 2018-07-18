@@ -24,7 +24,6 @@ import {
   DAYS_OF_WEEK,
   DayView,
   DayViewHour,
-  DayViewHourSegment,
   EventValidationErrorMessage,
   getDayView,
   getDayViewHourGrid,
@@ -194,26 +193,110 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: new Date('2016-06-27'),
             end: new Date('2016-06-29'),
             title: '',
-            color: { primary: '', secondary: '' }
+            allDay: true
           },
           {
             start: new Date('2017-06-27'),
             end: new Date('2017-06-29'),
             title: '',
-            color: { primary: '', secondary: '' }
+            allDay: true
           }
         ];
         const result = getWeekView(dateAdapter, {
           events,
           viewDate: new Date('2016-06-27'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-          precision: 'days'
+          precision: 'days',
+          hourSegments: 2,
+          dayStart: {
+            hour: 1,
+            minute: 30
+          },
+          dayEnd: {
+            hour: 3,
+            minute: 59
+          },
+          segmentHeight: 30
         });
         expect(result.period).toEqual({
           start: startOfDay(new Date('2016-06-26')),
           end: endOfDay(new Date('2016-07-02')),
           events: [events[0]]
         });
+      });
+
+      it('should get the day view segments respecting the start and end of the day', () => {
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: {
+            hour: 1,
+            minute: 30
+          },
+          dayEnd: {
+            hour: 3,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30
+        });
+        expect(result.hourColumns).toMatchSnapshot();
+      });
+
+      it('should position events as percentages in columns', () => {
+        const events = [
+          {
+            start: subDays(startOfDay(new Date()), 1),
+            end: addHours(startOfDay(new Date()), 16),
+            title: 'Column 1'
+          },
+          {
+            start: startOfDay(new Date()),
+            end: addMinutes(startOfDay(new Date()), 30),
+            title: 'Column 2 a'
+          },
+          {
+            start: addHours(startOfDay(new Date()), 2),
+            end: addHours(startOfDay(new Date()), 14),
+            title: 'Column 2 b'
+          },
+          {
+            start: addHours(startOfDay(new Date()), 17),
+            end: addHours(startOfDay(new Date()), 18),
+            title: 'Column 1 and column 2'
+          }
+        ]
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30,
+          events
+        }).hourColumns;
+        expect(result).toMatchSnapshot();
+        expect(result[2].events[0].event).toEqual(events[0]);
+        expect(result[2].events[0].left).toEqual(0);
+        expect(result[2].events[0].width).toEqual(50);
+
+        expect(result[2].events[1].event).toEqual(events[1]);
+        expect(result[2].events[1].left).toEqual(50);
+        expect(result[2].events[1].width).toEqual(50);
+
+        expect(result[2].events[2].event).toEqual(events[2]);
+        expect(result[2].events[2].left).toEqual(50);
+        expect(result[2].events[2].width).toEqual(50);
+
+        expect(result[2].events[3].event).toEqual(events[3]);
+        expect(result[2].events[3].left).toEqual(0);
+        expect(result[2].events[3].width).toEqual(100);
       });
 
       describe('precision = "days"', () => {
@@ -223,7 +306,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-27'),
               end: new Date('2016-06-29'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -231,9 +314,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -254,7 +347,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2017-05-29'),
               end: new Date('2017-05-29'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -269,9 +362,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2017-05-24'),
             weekStartsOn: DAYS_OF_WEEK.TUESDAY,
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -292,7 +395,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2017-05-31'),
               end: new Date('2017-05-31'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           moment.updateLocale('en', {
@@ -307,7 +410,17 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate,
             weekStartsOn,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
 
           const header: WeekDay[] = getWeekViewHeader(dateAdapter, {
@@ -325,7 +438,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           expect(header[5].date).toEqual(addDays(firstDayOfWeek, 5));
           expect(header[6].date).toEqual(addDays(firstDayOfWeek, 6));
 
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -346,7 +459,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-06-29'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -354,9 +467,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -377,7 +500,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-27'),
               end: new Date('2016-07-10'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -385,9 +508,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -408,7 +541,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-10'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const eventCount: number = getWeekView(dateAdapter, {
@@ -416,8 +549,18 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2016-01-12'),
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
-          }).eventRows.length;
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
+          }).allDayEventRows.length;
           expect(eventCount).toBe(0);
         });
 
@@ -427,7 +570,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-07-10'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -435,9 +578,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -458,23 +611,33 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: addDays(startOfWeek(new Date()), 2),
               end: addHours(addDays(startOfWeek(new Date()), 2), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[0].row[1].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[1].event).toEqual(events[1]);
         });
 
         it("should put events in the same row that don't overlap and position them absolutely to each other", () => {
@@ -483,13 +646,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: addDays(startOfWeek(new Date()), 2),
               end: addHours(addDays(startOfWeek(new Date()), 2), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
@@ -497,14 +660,24 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days',
-            absolutePositionedEvents: true
+            absolutePositionedEvents: true,
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[0].row[1].event).toEqual(events[1]);
-          expect(result.eventRows[0].row[0].span).toBe(1);
-          expect(result.eventRows[0].row[0].offset).toBe(0);
-          expect(result.eventRows[0].row[1].span).toEqual(1);
-          expect(result.eventRows[0].row[1].offset).toBe(2);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[1].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].span).toBe(1);
+          expect(result.allDayEventRows[0].row[0].offset).toBe(0);
+          expect(result.allDayEventRows[0].row[1].span).toEqual(1);
+          expect(result.allDayEventRows[0].row[1].offset).toBe(2);
         });
 
         it('should put events in the next row when they overlap', () => {
@@ -513,23 +686,33 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should put events in the next row when they have same start and ends are not defined', () => {
@@ -537,22 +720,32 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 0',
               start: startOfWeek(new Date()),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should sort events by start date when all events are in the same column', () => {
@@ -560,22 +753,32 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 1',
               start: addHours(new Date(), 1),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 0',
               start: new Date(),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[1]);
-          expect(result.eventRows[1].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[1]);
+          expect(result.allDayEventRows[1].row[0].event).toEqual(events[0]);
         });
 
         it('should exclude any events that dont occur in the event period', () => {
@@ -584,7 +787,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-05-25'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -592,9 +795,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([]);
+          expect(result.allDayEventRows).toEqual([]);
         });
 
         it('should put events in the next row when they have same start and ends are not defined', () => {
@@ -602,22 +815,32 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 0',
               start: startOfWeek(new Date()),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should exclude any events without an end date that dont occur in the event period', () => {
@@ -625,7 +848,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               start: new Date('2016-06-24'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -633,9 +856,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([]);
+          expect(result.allDayEventRows).toEqual([]);
         });
 
         it('should include events that start on the beginning on the week', () => {
@@ -644,16 +877,26 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: startOfWeek(new Date('2016-06-27')),
               end: new Date('2016-08-01'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
         });
 
         it('should include events that end at the end of the week', () => {
@@ -662,34 +905,64 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-04-01'),
               end: endOfWeek(new Date('2016-06-27')),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
         });
 
         it('should not throw if no events are provided', () => {
           const result = getWeekView(dateAdapter, {
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([]);
+          expect(result.allDayEventRows).toEqual([]);
         });
 
         it('should not throw if events are null', () => {
           const result = getWeekView(dateAdapter, {
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            events: null
+            events: null,
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([]);
+          expect(result.allDayEventRows).toEqual([]);
         });
 
         it('should not increase span for excluded days', () => {
@@ -698,7 +971,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-04'),
               end: new Date('2016-01-09'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
@@ -710,9 +983,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.THURSDAY
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].span).toBe(6 - 2);
+          expect(result.allDayEventRows[0].row[0].span).toBe(6 - 2);
         });
 
         it('should limit span and offset to available days in viewDate week', () => {
@@ -721,19 +1004,29 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-01'),
               end: new Date('2016-01-10'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date('2016-01-05'),
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
-            weekStartsOn: DAYS_OF_WEEK.SUNDAY
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].span).toBe(7 - 2);
-          expect(result.eventRows[0].row[0].offset).toBe(0);
-          expect(result.eventRows[0].row[0].endsAfterWeek).toBe(true);
-          expect(result.eventRows[0].row[0].startsBeforeWeek).toBe(true);
+          expect(result.allDayEventRows[0].row[0].span).toBe(7 - 2);
+          expect(result.allDayEventRows[0].row[0].offset).toBe(0);
+          expect(result.allDayEventRows[0].row[0].endsAfterWeek).toBe(true);
+          expect(result.allDayEventRows[0].row[0].startsBeforeWeek).toBe(true);
         });
 
         it('should limit span to available days in week including offset', () => {
@@ -742,7 +1035,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-05'),
               end: new Date('2016-01-20'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
@@ -750,12 +1043,22 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2016-01-04'),
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.WEDNESDAY],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].span).toBe(4); // thuesday, thursday, friday, saturday
-          expect(result.eventRows[0].row[0].offset).toBe(1); // skip monday
-          expect(result.eventRows[0].row[0].endsAfterWeek).toBe(true);
-          expect(result.eventRows[0].row[0].startsBeforeWeek).toBe(false);
+          expect(result.allDayEventRows[0].row[0].span).toBe(4); // thuesday, thursday, friday, saturday
+          expect(result.allDayEventRows[0].row[0].offset).toBe(1); // skip monday
+          expect(result.allDayEventRows[0].row[0].endsAfterWeek).toBe(true);
+          expect(result.allDayEventRows[0].row[0].startsBeforeWeek).toBe(false);
         });
 
         it('should not reduce offset if excluded days are in the future', () => {
@@ -764,7 +1067,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-04'),
               end: new Date('2016-01-05'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
@@ -776,9 +1079,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.SATURDAY
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'days'
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].offset).toBe(1); // sunday
+          expect(result.allDayEventRows[0].row[0].offset).toBe(1); // sunday
         });
 
         it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
@@ -787,13 +1100,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-15'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-09'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const eventCount: number = getWeekView(dateAdapter, {
@@ -805,8 +1118,18 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.FRIDAY,
               DAYS_OF_WEEK.SATURDAY
             ],
-            weekStartsOn: DAYS_OF_WEEK.SUNDAY
-          }).eventRows.length;
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
+          }).allDayEventRows.length;
           expect(eventCount).toBe(0);
         });
 
@@ -817,7 +1140,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                 start: new Date('2016-05-27'),
                 end: new Date('2016-07-10'),
                 title: '',
-                color: { primary: '', secondary: '' }
+                allDay: true
               }
             ];
 
@@ -825,9 +1148,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               events,
               viewDate: new Date('2016-06-27'),
               weekStartsOn: DAYS_OF_WEEK.MONDAY,
-              precision: 'days'
+              precision: 'days',
+              hourSegments: 2,
+              dayStart: {
+                hour: 1,
+                minute: 30
+              },
+              dayEnd: {
+                hour: 3,
+                minute: 59
+              },
+              segmentHeight: 3
             });
-            expect(result.eventRows).toEqual([
+            expect(result.allDayEventRows).toEqual([
               {
                 row: [
                   {
@@ -849,15 +1182,25 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2018-01-09T11:00:00.000Z'),
               end: new Date('2018-01-11T10:00:00.000Z'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date('2018-01-10T11:00:00.000Z'),
-            weekStartsOn: DAYS_OF_WEEK.SUNDAY
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -880,7 +1223,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-27'),
               end: new Date('2016-06-29'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -888,9 +1231,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -911,7 +1264,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-06-29'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -919,9 +1272,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -942,7 +1305,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-27'),
               end: new Date('2016-07-10'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -950,11 +1313,21 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].offset).toBe(1);
-          expect(result.eventRows[0].row[0].span).toBe(6);
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows[0].row[0].offset).toBe(1);
+          expect(result.allDayEventRows[0].row[0].span).toBe(6);
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -975,7 +1348,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-10'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const eventCount: number = getWeekView(dateAdapter, {
@@ -983,8 +1356,18 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2016-01-12'),
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
-          }).eventRows.length;
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
+          }).allDayEventRows.length;
           expect(eventCount).toBe(0);
         });
 
@@ -994,7 +1377,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-07-10'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -1002,9 +1385,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([
+          expect(result.allDayEventRows).toEqual([
             {
               row: [
                 {
@@ -1025,23 +1418,33 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: addDays(startOfWeek(new Date()), 2),
               end: addHours(addDays(startOfWeek(new Date()), 2), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[0].row[1].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[1].event).toEqual(events[1]);
         });
 
         it('should put events in the next row when they overlap', () => {
@@ -1050,23 +1453,33 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should put events in the next row when they have same start and ends are not defined', () => {
@@ -1074,22 +1487,32 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 0',
               start: startOfWeek(new Date()),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should sort events by start date when all events are in the same column', () => {
@@ -1097,22 +1520,32 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 1',
               start: addHours(new Date(), 1),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 0',
               start: new Date(),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[1]);
-          expect(result.eventRows[1].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[1]);
+          expect(result.allDayEventRows[1].row[0].event).toEqual(events[0]);
         });
 
         it('should exclude any events that dont occur in the event period', () => {
@@ -1121,7 +1554,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-05-25'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -1129,9 +1562,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([]);
+          expect(result.allDayEventRows).toEqual([]);
         });
 
         it('should put events in the next row when they have same start and ends are not defined', () => {
@@ -1139,22 +1582,32 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 0',
               start: startOfWeek(new Date()),
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date(),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
-          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should exclude any events without an end date that dont occur in the event period', () => {
@@ -1162,7 +1615,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               start: new Date('2016-06-24'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
 
@@ -1170,9 +1623,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([]);
+          expect(result.allDayEventRows).toEqual([]);
         });
 
         it('should include events that start on the beginning on the week', () => {
@@ -1181,16 +1644,26 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: startOfWeek(new Date('2016-06-27')),
               end: new Date('2016-08-01'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
         });
 
         it('should include events that end at the end of the week', () => {
@@ -1199,25 +1672,45 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-04-01'),
               end: endOfWeek(new Date('2016-06-27')),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
         });
 
         it('should not throw if no events are provided', () => {
           const result = getWeekView(dateAdapter, {
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([]);
+          expect(result.allDayEventRows).toEqual([]);
         });
 
         it('should not throw if events are null', () => {
@@ -1225,9 +1718,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2016-06-27'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             events: null,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows).toEqual([]);
+          expect(result.allDayEventRows).toEqual([]);
         });
 
         it('should not increase span for excluded days', () => {
@@ -1236,7 +1739,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-04'),
               end: new Date('2016-01-09'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
@@ -1248,9 +1751,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.THURSDAY
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].span).toBe(
+          expect(result.allDayEventRows[0].row[0].span).toBe(
             3 +
               differenceInSeconds(events[0].end, startOfDay(events[0].end)) /
                 SECONDS_IN_DAY
@@ -1263,7 +1776,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-01'),
               end: new Date('2016-01-10'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
@@ -1271,12 +1784,22 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2016-01-05'),
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].span).toBe(7 - 2);
-          expect(result.eventRows[0].row[0].offset).toBe(0);
-          expect(result.eventRows[0].row[0].endsAfterWeek).toBe(true);
-          expect(result.eventRows[0].row[0].startsBeforeWeek).toBe(true);
+          expect(result.allDayEventRows[0].row[0].span).toBe(7 - 2);
+          expect(result.allDayEventRows[0].row[0].offset).toBe(0);
+          expect(result.allDayEventRows[0].row[0].endsAfterWeek).toBe(true);
+          expect(result.allDayEventRows[0].row[0].startsBeforeWeek).toBe(true);
         });
 
         it('should limit span to available days in week including offset', () => {
@@ -1285,7 +1808,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-05'),
               end: new Date('2016-01-20'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
@@ -1293,12 +1816,22 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2016-01-04'),
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.WEDNESDAY],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].span).toBe(4); // tuesday, thursday, friday, saturday
-          expect(result.eventRows[0].row[0].offset).toBe(1); // skip monday
-          expect(result.eventRows[0].row[0].endsAfterWeek).toBe(true);
-          expect(result.eventRows[0].row[0].startsBeforeWeek).toBe(false);
+          expect(result.allDayEventRows[0].row[0].span).toBe(4); // tuesday, thursday, friday, saturday
+          expect(result.allDayEventRows[0].row[0].offset).toBe(1); // skip monday
+          expect(result.allDayEventRows[0].row[0].endsAfterWeek).toBe(true);
+          expect(result.allDayEventRows[0].row[0].startsBeforeWeek).toBe(false);
         });
 
         it('should not reduce offset if excluded days are in the future', () => {
@@ -1307,7 +1840,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-04'),
               end: new Date('2016-01-05'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const result = getWeekView(dateAdapter, {
@@ -1319,9 +1852,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.SATURDAY
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
           });
-          expect(result.eventRows[0].row[0].offset).toBe(1); // sunday
+          expect(result.allDayEventRows[0].row[0].offset).toBe(1); // sunday
         });
 
         it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
@@ -1330,13 +1873,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-15'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             },
             {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-09'),
               title: '',
-              color: { primary: '', secondary: '' }
+              allDay: true
             }
           ];
           const eventCount: number = getWeekView(dateAdapter, {
@@ -1349,8 +1892,18 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.SATURDAY
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            precision: 'minutes'
-          }).eventRows.length;
+            precision: 'minutes',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
+          }).allDayEventRows.length;
           expect(eventCount).toBe(0);
         });
       });
@@ -2298,10 +2851,6 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
     });
 
     describe('getDayViewHourGrid', () => {
-      interface DayViewHourSegmentDate extends DayViewHourSegment {
-        jsDate: Date;
-      }
-
       it('should get the day view segments respecting the start and end of the day', () => {
         const result: DayViewHour[] = getDayViewHourGrid(dateAdapter, {
           viewDate: new Date(),
@@ -2315,17 +2864,11 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59
           }
         });
-        result.forEach((hour: DayViewHour) => {
-          hour.segments.forEach((segment: DayViewHourSegmentDate) => {
-            segment.jsDate = segment.date;
-            delete segment.date;
-          });
-        });
         expect(result).toEqual([
           {
             segments: [
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 1), 30),
+                date: setMinutes(setHours(startOfDay(new Date()), 1), 30),
                 isStart: false
               }
             ]
@@ -2333,11 +2876,11 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             segments: [
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 0),
+                date: setMinutes(setHours(startOfDay(new Date()), 2), 0),
                 isStart: true
               },
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 30),
+                date: setMinutes(setHours(startOfDay(new Date()), 2), 30),
                 isStart: false
               }
             ]
@@ -2345,11 +2888,11 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             segments: [
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 0),
+                date: setMinutes(setHours(startOfDay(new Date()), 3), 0),
                 isStart: true
               },
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 30),
+                date: setMinutes(setHours(startOfDay(new Date()), 3), 30),
                 isStart: false
               }
             ]
@@ -2370,41 +2913,15 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59
           }
         });
-        result.forEach((hour: DayViewHour) => {
-          hour.segments.forEach((segment: DayViewHourSegmentDate) => {
-            segment.jsDate = segment.date;
-            delete segment.date;
-          });
-        });
         expect(result).toEqual([
           {
             segments: [
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 1), 30),
+                date: setMinutes(setHours(startOfDay(new Date()), 1), 30),
                 isStart: false
               },
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 1), 45),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 0),
-                isStart: true
-              },
-              {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 15),
-                isStart: false
-              },
-              {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 30),
-                isStart: false
-              },
-              {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 2), 45),
+                date: setMinutes(setHours(startOfDay(new Date()), 1), 45),
                 isStart: false
               }
             ]
@@ -2412,19 +2929,39 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             segments: [
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 0),
+                date: setMinutes(setHours(startOfDay(new Date()), 2), 0),
                 isStart: true
               },
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 15),
+                date: setMinutes(setHours(startOfDay(new Date()), 2), 15),
                 isStart: false
               },
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 30),
+                date: setMinutes(setHours(startOfDay(new Date()), 2), 30),
                 isStart: false
               },
               {
-                jsDate: setMinutes(setHours(startOfDay(new Date()), 3), 45),
+                date: setMinutes(setHours(startOfDay(new Date()), 2), 45),
+                isStart: false
+              }
+            ]
+          },
+          {
+            segments: [
+              {
+                date: setMinutes(setHours(startOfDay(new Date()), 3), 0),
+                isStart: true
+              },
+              {
+                date: setMinutes(setHours(startOfDay(new Date()), 3), 15),
+                isStart: false
+              },
+              {
+                date: setMinutes(setHours(startOfDay(new Date()), 3), 30),
+                isStart: false
+              },
+              {
+                date: setMinutes(setHours(startOfDay(new Date()), 3), 45),
                 isStart: false
               }
             ]

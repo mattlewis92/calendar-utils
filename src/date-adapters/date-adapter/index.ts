@@ -58,6 +58,10 @@ export interface DateAdapter {
 
   setMinutes(date: Date | string | number, minutes: number): Date;
 
+  getHours(date: Date | string | number): number;
+
+  getMinutes(date: Date | string | number): number;
+
   startOfDay(date: Date | string | number): Date;
 
   startOfMinute(date: Date | string | number): Date;

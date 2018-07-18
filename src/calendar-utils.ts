@@ -57,7 +57,7 @@ export interface CalendarEvent<MetaType = any> {
   meta?: MetaType;
 }
 
-export interface WeekViewEvent {
+export interface WeekViewAllDayEvent {
   event: CalendarEvent;
   offset: number;
   span: number;
@@ -65,13 +65,14 @@ export interface WeekViewEvent {
   endsAfterWeek: boolean;
 }
 
-export interface WeekViewEventRow {
-  row: WeekViewEvent[];
+export interface WeekViewAllDayEventRow {
+  row: WeekViewAllDayEvent[];
 }
 
 export interface WeekView {
   period: ViewPeriod;
-  eventRows: WeekViewEventRow[];
+  allDayEventRows: WeekViewAllDayEventRow[];
+  hourColumns: WeekViewHourColumn[];
 }
 
 export interface MonthViewDay<MetaType = any> extends WeekDay {
@@ -114,6 +115,12 @@ export interface DayViewHourSegment {
 
 export interface DayViewHour {
   segments: DayViewHourSegment[];
+}
+
+export interface WeekViewHourColumn {
+  date: Date;
+  hours: DayViewHour[];
+  events: DayViewEvent[];
 }
 
 export interface ViewPeriod {
@@ -362,10 +369,11 @@ function getWeekDay(
   }: {
     date: Date;
     weekendDays: number[];
+    precision?: 'days' | 'minutes';
   }
 ): WeekDay {
   const { startOfDay, isSameDay, getDay } = dateAdapter;
-  const today: Date = startOfDay(new Date());
+  const today = startOfDay(new Date());
   return {
     date,
     isPast: date < today,
@@ -406,33 +414,29 @@ export interface GetWeekViewArgs {
   excluded?: number[];
   precision?: 'minutes' | 'days';
   absolutePositionedEvents?: boolean;
+  hourSegments: number;
+  dayStart: any;
+  dayEnd: any;
+  weekendDays?: number[]
+  segmentHeight: number;
 }
 
-export function getWeekView(
+function getAllDayWeekEvents(
   dateAdapter: DateAdapter,
   {
-    events = [],
-    viewDate,
-    weekStartsOn,
-    excluded = [],
-    precision = 'days',
-    absolutePositionedEvents = false
-  }: GetWeekViewArgs
-): WeekView {
-  if (!events) {
-    events = [];
-  }
-  const { startOfWeek, endOfWeek, differenceInSeconds } = dateAdapter;
-  const startOfViewWeek: Date = startOfWeek(viewDate, { weekStartsOn });
-  const endOfViewWeek: Date = endOfWeek(viewDate, { weekStartsOn });
-  const maxRange: number = DAYS_IN_WEEK - excluded.length;
-  const eventsInPeriod = getEventsInPeriod(dateAdapter, {
     events,
-    periodStart: startOfViewWeek,
-    periodEnd: endOfViewWeek
-  });
-
-  const eventsMapped: WeekViewEvent[] = eventsInPeriod
+    excluded,
+    precision,
+    absolutePositionedEvents,
+    startOfViewWeek,
+    endOfViewWeek,
+    eventsInPeriod
+  }
+): WeekViewAllDayEventRow[] {
+  const {differenceInSeconds} = dateAdapter;
+  const maxRange: number = DAYS_IN_WEEK - excluded.length;
+  const eventsMapped: WeekViewAllDayEvent[] = eventsInPeriod
+    .filter(event => event.allDay)
     .map(event => {
       const offset: number = getWeekViewEventOffset(dateAdapter, {
         event,
@@ -474,14 +478,14 @@ export function getWeekView(
       }
     );
 
-  const eventRows: WeekViewEventRow[] = [];
-  const allocatedEvents: WeekViewEvent[] = [];
+  const allDayEventRows: WeekViewAllDayEventRow[] = [];
+  const allocatedEvents: WeekViewAllDayEvent[] = [];
 
-  eventsMapped.forEach((event: WeekViewEvent, index: number) => {
+  eventsMapped.forEach((event: WeekViewAllDayEvent, index: number) => {
     if (allocatedEvents.indexOf(event) === -1) {
       allocatedEvents.push(event);
       let rowSpan: number = event.span + event.offset;
-      const otherRowEvents: WeekViewEvent[] = eventsMapped
+      const otherRowEvents: WeekViewAllDayEvent[] = eventsMapped
         .slice(index + 1)
         .filter(nextEvent => {
           if (
@@ -498,19 +502,148 @@ export function getWeekView(
             return true;
           }
         });
-      eventRows.push({
+      allDayEventRows.push({
         row: [event, ...otherRowEvents]
       });
     }
   });
+  return allDayEventRows;
+}
+
+interface GetWeekViewHourGridArgs extends GetDayViewHourGridArgs {
+  weekStartsOn: number;
+  excluded?: number[];
+  weekendDays?: number[];
+  events?: CalendarEvent[];
+  segmentHeight: number;
+}
+
+function getWeekViewHourGrid(
+  dateAdapter: DateAdapter,
+  {
+    events,
+    viewDate,
+    hourSegments,
+    dayStart,
+    dayEnd,
+    weekStartsOn,
+    excluded,
+    weekendDays,
+    segmentHeight
+  }: GetWeekViewHourGridArgs
+): WeekViewHourColumn[] {
+  const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
+    viewDate,
+    hourSegments,
+    dayStart,
+    dayEnd
+  });
+  const weekDays = getWeekViewHeader(dateAdapter, {
+    viewDate,
+    weekStartsOn,
+    excluded,
+    weekendDays
+  });
+  const { setHours, setMinutes, getHours, getMinutes } = dateAdapter;
+
+  return weekDays.map(day => {
+    const dayView = getDayView(dateAdapter, {
+      events,
+      viewDate: day.date,
+      hourSegments,
+      dayStart,
+      dayEnd,
+      segmentHeight,
+      eventWidth: 1
+    });
+
+    const hours = dayViewHourGrid.map(hour => {
+      const segments = hour.segments.map(segment => {
+        const date = setMinutes(
+          setHours(day.date, getHours(segment.date)),
+          getMinutes(segment.date)
+        );
+        return { ...segment, date };
+      });
+      return { ...hour, segments };
+    });
+
+    return {
+      hours,
+      date: day.date,
+      events: dayView.events.map(event => {
+        const left = event.left > 0 ? 100 / (event.left + 1) : 0;
+
+        const overLappingEvents = getOverLappingDayViewEvents(
+          dayView.events,
+          event.top,
+          event.top + event.height
+        );
+        const columnCount = Math.max(
+          ...overLappingEvents.map(event => event.left + 1)
+        );
+
+        const width = 100 / columnCount;
+        return { ...event, left, width };
+      })
+    };
+  });
+}
+
+export function getWeekView(
+  dateAdapter: DateAdapter,
+  {
+    events = [],
+    viewDate,
+    weekStartsOn,
+    excluded = [],
+    precision = 'days',
+    absolutePositionedEvents = false,
+    hourSegments,
+    dayStart,
+    dayEnd,
+    weekendDays,
+    segmentHeight
+  }: GetWeekViewArgs
+): WeekView {
+  if (!events) {
+    events = [];
+  }
+  const { startOfWeek, endOfWeek } = dateAdapter;
+  const startOfViewWeek: Date = startOfWeek(viewDate, { weekStartsOn });
+  const endOfViewWeek: Date = endOfWeek(viewDate, { weekStartsOn });
+  const eventsInPeriod = getEventsInPeriod(dateAdapter, {
+    events,
+    periodStart: startOfViewWeek,
+    periodEnd: endOfViewWeek
+  });
 
   return {
-    eventRows,
+    allDayEventRows: getAllDayWeekEvents(dateAdapter, {
+      events,
+      excluded,
+      precision,
+      absolutePositionedEvents,
+      startOfViewWeek,
+      endOfViewWeek,
+      eventsInPeriod
+    }),
     period: {
       events: eventsInPeriod,
       start: startOfViewWeek,
       end: endOfViewWeek
-    }
+    },
+    hourColumns: getWeekViewHourGrid(dateAdapter, {
+      events,
+      viewDate,
+      hourSegments,
+      dayStart,
+      dayEnd,
+      weekStartsOn,
+      excluded,
+      weekendDays,
+      segmentHeight
+    })
   };
 }
 
@@ -648,6 +781,26 @@ export interface GetDayViewArgs {
   segmentHeight: number;
 }
 
+function getOverLappingDayViewEvents(
+  events: DayViewEvent[],
+  top: number,
+  bottom: number
+): DayViewEvent[] {
+  return events.filter((previousEvent: DayViewEvent) => {
+    const previousEventTop: number = previousEvent.top;
+    const previousEventBottom: number =
+      previousEvent.top + previousEvent.height;
+
+    if (top < previousEventBottom && previousEventBottom < bottom) {
+      return true;
+    } else if (previousEventTop <= top && bottom <= previousEventBottom) {
+      return true;
+    }
+
+    return false;
+  });
+}
+
 export function getDayView(
   dateAdapter: DateAdapter,
   {
@@ -716,20 +869,10 @@ export function getDayView(
 
       const bottom: number = top + height;
 
-      const overlappingPreviousEvents: DayViewEvent[] = previousDayEvents.filter(
-        (previousEvent: DayViewEvent) => {
-          const previousEventTop: number = previousEvent.top;
-          const previousEventBottom: number =
-            previousEvent.top + previousEvent.height;
-
-          if (top < previousEventBottom && previousEventBottom < bottom) {
-            return true;
-          } else if (previousEventTop <= top && bottom <= previousEventBottom) {
-            return true;
-          }
-
-          return false;
-        }
+      const overlappingPreviousEvents = getOverLappingDayViewEvents(
+        previousDayEvents,
+        top,
+        bottom
       );
 
       let left: number = 0;

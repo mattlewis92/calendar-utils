@@ -20,6 +20,8 @@ import * as startOfDay from 'date-fns/start_of_day/index';
 import * as startOfMinute from 'date-fns/start_of_minute/index';
 import * as startOfMonth from 'date-fns/start_of_month/index';
 import * as startOfWeek from 'date-fns/start_of_week/index';
+import * as getHours from 'date-fns/get_hours/index';
+import * as getMinutes from 'date-fns/get_minutes/index';
 import { DateAdapter } from '../date-adapter';
 
 export function adapterFactory(): DateAdapter {
@@ -45,6 +47,8 @@ export function adapterFactory(): DateAdapter {
     startOfDay,
     startOfMinute,
     startOfMonth,
-    startOfWeek
+    startOfWeek,
+    getHours,
+    getMinutes
   };
 }

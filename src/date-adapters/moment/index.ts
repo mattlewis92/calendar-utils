@@ -133,6 +133,14 @@ export function adapterFactory(moment): DateAdapter {
       .toDate();
   }
 
+  function getHours(date: Date | string | number): number {
+    return moment(date).hours();
+  }
+
+  function getMinutes(date: Date | string | number): number {
+    return moment(date).minutes();
+  }
+
   return {
     addDays,
     addHours,
@@ -155,6 +163,8 @@ export function adapterFactory(moment): DateAdapter {
     startOfDay,
     startOfMinute,
     startOfMonth,
-    startOfWeek
+    startOfWeek,
+    getHours,
+    getMinutes
   };
 }
