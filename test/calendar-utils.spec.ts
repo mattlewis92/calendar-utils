@@ -1,4 +1,3 @@
-import { expect, use } from 'chai';
 import {
   addDays,
   addHours,
@@ -18,9 +17,8 @@ import {
   subDays,
   subHours
 } from 'date-fns';
-import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as moment from 'moment';
+import * as lolex from 'lolex';
 import {
   CalendarEvent,
   DAYS_OF_WEEK,
@@ -42,15 +40,16 @@ import {
 import { adapterFactory as dateFnsAdapterFactory } from '../src/date-adapters/date-fns';
 import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/moment';
 
-use(sinonChai);
-
 let clock: any;
 beforeEach(() => {
-  clock = sinon.useFakeTimers(new Date('2016-06-28').getTime());
+  clock = lolex.install({
+    now: new Date('2016-06-28').getTime(),
+    toFake: ['Date']
+  });
 });
 
 afterEach(() => {
-  clock.restore();
+  clock.uninstall();
 });
 
 const adapters = [
@@ -89,7 +88,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY
           }).length
-        ).to.eq(1);
+        ).toEqual(1);
       });
 
       it('get all except excluded days even if week doesnt start at sunday', () => {
@@ -99,9 +98,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY]
         }).map(d => d.date.getDay());
 
-        expect(days.length).to.eq(5);
-        expect(days.indexOf(DAYS_OF_WEEK.SUNDAY)).to.eq(-1);
-        expect(days.indexOf(DAYS_OF_WEEK.SATURDAY)).to.eq(-1);
+        expect(days.length).toEqual(5);
+        expect(days.indexOf(DAYS_OF_WEEK.SUNDAY)).toEqual(-1);
+        expect(days.indexOf(DAYS_OF_WEEK.SATURDAY)).toEqual(-1);
       });
 
       it('get all days of the week for the given date', () => {
@@ -114,7 +113,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           delete day.date;
         });
 
-        expect(days).to.deep.equal([
+        expect(days).toEqual([
           {
             timestamp: new Date('2016-06-26').getTime(),
             isPast: true,
@@ -178,13 +177,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           delete day.date;
         });
 
-        expect(days[0].isWeekend).to.be.false;
-        expect(days[1].isWeekend).to.be.false;
-        expect(days[2].isWeekend).to.be.false;
-        expect(days[3].isWeekend).to.be.false;
-        expect(days[4].isWeekend).to.be.false;
-        expect(days[5].isWeekend).to.be.true;
-        expect(days[6].isWeekend).to.be.true;
+        expect(days[0].isWeekend).toBe(false);
+        expect(days[1].isWeekend).toBe(false);
+        expect(days[2].isWeekend).toBe(false);
+        expect(days[3].isWeekend).toBe(false);
+        expect(days[4].isWeekend).toBe(false);
+        expect(days[5].isWeekend).toBe(true);
+        expect(days[6].isWeekend).toBe(true);
       });
     });
 
@@ -210,7 +209,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           precision: 'days'
         });
-        expect(result.period).to.deep.equal({
+        expect(result.period).toEqual({
           start: startOfDay(new Date('2016-06-26')),
           end: endOfDay(new Date('2016-07-02')),
           events: [events[0]]
@@ -234,7 +233,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -272,7 +271,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
             precision: 'days'
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -317,16 +316,16 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           });
           const firstDayOfWeek: Date = startOfWeek(viewDate, { weekStartsOn });
 
-          expect(header.length).eq(7);
-          expect(header[0].date).to.deep.equal(firstDayOfWeek);
-          expect(header[1].date).to.deep.equal(addDays(firstDayOfWeek, 1));
-          expect(header[2].date).to.deep.equal(addDays(firstDayOfWeek, 2));
-          expect(header[3].date).to.deep.equal(addDays(firstDayOfWeek, 3));
-          expect(header[4].date).to.deep.equal(addDays(firstDayOfWeek, 4));
-          expect(header[5].date).to.deep.equal(addDays(firstDayOfWeek, 5));
-          expect(header[6].date).to.deep.equal(addDays(firstDayOfWeek, 6));
+          expect(header.length).toEqual(7);
+          expect(header[0].date).toEqual(firstDayOfWeek);
+          expect(header[1].date).toEqual(addDays(firstDayOfWeek, 1));
+          expect(header[2].date).toEqual(addDays(firstDayOfWeek, 2));
+          expect(header[3].date).toEqual(addDays(firstDayOfWeek, 3));
+          expect(header[4].date).toEqual(addDays(firstDayOfWeek, 4));
+          expect(header[5].date).toEqual(addDays(firstDayOfWeek, 5));
+          expect(header[6].date).toEqual(addDays(firstDayOfWeek, 6));
 
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -357,7 +356,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -388,7 +387,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -419,7 +418,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           }).eventRows.length;
-          expect(eventCount).to.equal(0);
+          expect(eventCount).toBe(0);
         });
 
         it('should get the correct span, offset and extends values for events that start before the week and end after it', () => {
@@ -438,7 +437,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -474,8 +473,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[0].row[1].event).to.deep.equal(events[1]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[0].row[1].event).toEqual(events[1]);
         });
 
         it("should put events in the same row that don't overlap and position them absolutely to each other", () => {
@@ -500,12 +499,12 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             precision: 'days',
             absolutePositionedEvents: true
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[0].row[1].event).to.deep.equal(events[1]);
-          expect(result.eventRows[0].row[0].span).to.equal(1);
-          expect(result.eventRows[0].row[0].offset).to.equal(0);
-          expect(result.eventRows[0].row[1].span).to.deep.equal(1);
-          expect(result.eventRows[0].row[1].offset).to.equal(2);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[0].row[1].event).toEqual(events[1]);
+          expect(result.eventRows[0].row[0].span).toBe(1);
+          expect(result.eventRows[0].row[0].offset).toBe(0);
+          expect(result.eventRows[0].row[1].span).toEqual(1);
+          expect(result.eventRows[0].row[1].offset).toBe(2);
         });
 
         it('should put events in the next row when they overlap', () => {
@@ -529,8 +528,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[1].row[0].event).to.deep.equal(events[1]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should put events in the next row when they have same start and ends are not defined', () => {
@@ -552,8 +551,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[1].row[0].event).to.deep.equal(events[1]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should sort events by start date when all events are in the same column', () => {
@@ -575,8 +574,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[1]);
-          expect(result.eventRows[1].row[0].event).to.deep.equal(events[0]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[1]);
+          expect(result.eventRows[1].row[0].event).toEqual(events[0]);
         });
 
         it('should exclude any events that dont occur in the event period', () => {
@@ -595,7 +594,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows).to.deep.equal([]);
+          expect(result.eventRows).toEqual([]);
         });
 
         it('should put events in the next row when they have same start and ends are not defined', () => {
@@ -617,8 +616,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[1].row[0].event).to.deep.equal(events[1]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should exclude any events without an end date that dont occur in the event period', () => {
@@ -636,7 +635,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows).to.deep.equal([]);
+          expect(result.eventRows).toEqual([]);
         });
 
         it('should include events that start on the beginning on the week', () => {
@@ -654,7 +653,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
         });
 
         it('should include events that end at the end of the week', () => {
@@ -672,7 +671,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
         });
 
         it('should not throw if no events are provided', () => {
@@ -681,7 +680,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows).to.deep.equal([]);
+          expect(result.eventRows).toEqual([]);
         });
 
         it('should not throw if events are null', () => {
@@ -690,7 +689,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             events: null
           });
-          expect(result.eventRows).to.deep.equal([]);
+          expect(result.eventRows).toEqual([]);
         });
 
         it('should not increase span for excluded days', () => {
@@ -713,7 +712,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].span).to.equal(6 - 2);
+          expect(result.eventRows[0].row[0].span).toBe(6 - 2);
         });
 
         it('should limit span and offset to available days in viewDate week', () => {
@@ -731,10 +730,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY
           });
-          expect(result.eventRows[0].row[0].span).to.equal(7 - 2);
-          expect(result.eventRows[0].row[0].offset).to.equal(0);
-          expect(result.eventRows[0].row[0].endsAfterWeek).to.equal(true);
-          expect(result.eventRows[0].row[0].startsBeforeWeek).to.equal(true);
+          expect(result.eventRows[0].row[0].span).toBe(7 - 2);
+          expect(result.eventRows[0].row[0].offset).toBe(0);
+          expect(result.eventRows[0].row[0].endsAfterWeek).toBe(true);
+          expect(result.eventRows[0].row[0].startsBeforeWeek).toBe(true);
         });
 
         it('should limit span to available days in week including offset', () => {
@@ -753,10 +752,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].span).to.equal(4); // thuesday, thursday, friday, saturday
-          expect(result.eventRows[0].row[0].offset).to.equal(1); // skip monday
-          expect(result.eventRows[0].row[0].endsAfterWeek).to.equal(true);
-          expect(result.eventRows[0].row[0].startsBeforeWeek).to.equal(false);
+          expect(result.eventRows[0].row[0].span).toBe(4); // thuesday, thursday, friday, saturday
+          expect(result.eventRows[0].row[0].offset).toBe(1); // skip monday
+          expect(result.eventRows[0].row[0].endsAfterWeek).toBe(true);
+          expect(result.eventRows[0].row[0].startsBeforeWeek).toBe(false);
         });
 
         it('should not reduce offset if excluded days are in the future', () => {
@@ -779,7 +778,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days'
           });
-          expect(result.eventRows[0].row[0].offset).to.equal(1); // sunday
+          expect(result.eventRows[0].row[0].offset).toBe(1); // sunday
         });
 
         it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
@@ -808,7 +807,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY
           }).eventRows.length;
-          expect(eventCount).to.equal(0);
+          expect(eventCount).toBe(0);
         });
 
         describe('weekStartsOn = 1', () => {
@@ -828,7 +827,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               weekStartsOn: DAYS_OF_WEEK.MONDAY,
               precision: 'days'
             });
-            expect(result.eventRows).to.deep.equal([
+            expect(result.eventRows).toEqual([
               {
                 row: [
                   {
@@ -858,7 +857,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2018-01-10T11:00:00.000Z'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -891,7 +890,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -922,7 +921,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -953,9 +952,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].offset).to.equal(1);
-          expect(result.eventRows[0].row[0].span).to.equal(6);
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows[0].row[0].offset).toBe(1);
+          expect(result.eventRows[0].row[0].span).toBe(6);
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -986,7 +985,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           }).eventRows.length;
-          expect(eventCount).to.equal(0);
+          expect(eventCount).toBe(0);
         });
 
         it('should get the correct span, offset and extends values for events that start before the week and end after it', () => {
@@ -1005,7 +1004,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows).to.deep.equal([
+          expect(result.eventRows).toEqual([
             {
               row: [
                 {
@@ -1041,8 +1040,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[0].row[1].event).to.deep.equal(events[1]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[0].row[1].event).toEqual(events[1]);
         });
 
         it('should put events in the next row when they overlap', () => {
@@ -1066,8 +1065,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[1].row[0].event).to.deep.equal(events[1]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should put events in the next row when they have same start and ends are not defined', () => {
@@ -1089,8 +1088,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[1].row[0].event).to.deep.equal(events[1]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should sort events by start date when all events are in the same column', () => {
@@ -1112,8 +1111,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[1]);
-          expect(result.eventRows[1].row[0].event).to.deep.equal(events[0]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[1]);
+          expect(result.eventRows[1].row[0].event).toEqual(events[0]);
         });
 
         it('should exclude any events that dont occur in the event period', () => {
@@ -1132,7 +1131,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows).to.deep.equal([]);
+          expect(result.eventRows).toEqual([]);
         });
 
         it('should put events in the next row when they have same start and ends are not defined', () => {
@@ -1154,8 +1153,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
-          expect(result.eventRows[1].row[0].event).to.deep.equal(events[1]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
+          expect(result.eventRows[1].row[0].event).toEqual(events[1]);
         });
 
         it('should exclude any events without an end date that dont occur in the event period', () => {
@@ -1173,7 +1172,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows).to.deep.equal([]);
+          expect(result.eventRows).toEqual([]);
         });
 
         it('should include events that start on the beginning on the week', () => {
@@ -1191,7 +1190,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
         });
 
         it('should include events that end at the end of the week', () => {
@@ -1209,7 +1208,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].event).to.deep.equal(events[0]);
+          expect(result.eventRows[0].row[0].event).toEqual(events[0]);
         });
 
         it('should not throw if no events are provided', () => {
@@ -1218,7 +1217,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows).to.deep.equal([]);
+          expect(result.eventRows).toEqual([]);
         });
 
         it('should not throw if events are null', () => {
@@ -1228,7 +1227,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             events: null,
             precision: 'minutes'
           });
-          expect(result.eventRows).to.deep.equal([]);
+          expect(result.eventRows).toEqual([]);
         });
 
         it('should not increase span for excluded days', () => {
@@ -1251,7 +1250,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].span).to.equal(
+          expect(result.eventRows[0].row[0].span).toBe(
             3 +
               differenceInSeconds(events[0].end, startOfDay(events[0].end)) /
                 SECONDS_IN_DAY
@@ -1274,10 +1273,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].span).to.equal(7 - 2);
-          expect(result.eventRows[0].row[0].offset).to.equal(0);
-          expect(result.eventRows[0].row[0].endsAfterWeek).to.equal(true);
-          expect(result.eventRows[0].row[0].startsBeforeWeek).to.equal(true);
+          expect(result.eventRows[0].row[0].span).toBe(7 - 2);
+          expect(result.eventRows[0].row[0].offset).toBe(0);
+          expect(result.eventRows[0].row[0].endsAfterWeek).toBe(true);
+          expect(result.eventRows[0].row[0].startsBeforeWeek).toBe(true);
         });
 
         it('should limit span to available days in week including offset', () => {
@@ -1296,10 +1295,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].span).to.equal(4); // tuesday, thursday, friday, saturday
-          expect(result.eventRows[0].row[0].offset).to.equal(1); // skip monday
-          expect(result.eventRows[0].row[0].endsAfterWeek).to.equal(true);
-          expect(result.eventRows[0].row[0].startsBeforeWeek).to.equal(false);
+          expect(result.eventRows[0].row[0].span).toBe(4); // tuesday, thursday, friday, saturday
+          expect(result.eventRows[0].row[0].offset).toBe(1); // skip monday
+          expect(result.eventRows[0].row[0].endsAfterWeek).toBe(true);
+          expect(result.eventRows[0].row[0].startsBeforeWeek).toBe(false);
         });
 
         it('should not reduce offset if excluded days are in the future', () => {
@@ -1322,7 +1321,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].offset).to.equal(1); // sunday
+          expect(result.eventRows[0].row[0].offset).toBe(1); // sunday
         });
 
         it('should filter event where offset is not within the week anymore or span is only on excluded days', () => {
@@ -1352,7 +1351,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           }).eventRows.length;
-          expect(eventCount).to.equal(0);
+          expect(eventCount).toBe(0);
         });
       });
     });
@@ -1369,7 +1368,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           startOfWeek: new Date('2016-01-04'),
           precision: 'minutes'
         });
-        expect(offset).to.equal(2);
+        expect(offset).toBe(2);
       });
     });
 
@@ -1411,7 +1410,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
       });
 
       it('should get the period start, end and events', () => {
-        expect(result.period).to.deep.equal({
+        expect(result.period).toEqual({
           start: startOfDay(new Date('2016-06-26')),
           end: endOfDay(new Date('2016-08-06')),
           events: [events[0], events[1], events[2]]
@@ -1425,11 +1424,11 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           events,
           weekStartsOn: DAYS_OF_WEEK.SUNDAY
         });
-        expect(different.days.length).to.equal(5 * 5); // 4 + 2 weeks / a 5days
-        expect(different.days[0].date).to.deep.equal(
+        expect(different.days.length).toBe(5 * 5); // 4 + 2 weeks / a 5days
+        expect(different.days[0].date).toEqual(
           startOfDay(new Date('2017-07-03'))
         );
-        expect(different.days[different.days.length - 1].date).to.deep.equal(
+        expect(different.days[different.days.length - 1].date).toEqual(
           startOfDay(new Date('2017-08-04'))
         );
       });
@@ -1441,11 +1440,11 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           events,
           weekStartsOn: DAYS_OF_WEEK.SUNDAY
         });
-        expect(different.rowOffsets).to.deep.equal([0, 6, 12, 18, 24]);
+        expect(different.rowOffsets).toEqual([0, 6, 12, 18, 24]);
       });
 
       it('should get the row offsets', () => {
-        expect(result.rowOffsets).to.deep.equal([0, 7, 14, 21, 28, 35]);
+        expect(result.rowOffsets).toEqual([0, 7, 14, 21, 28, 35]);
       });
 
       it('should set totalDaysVisibleInWeek', () => {
@@ -1455,49 +1454,49 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           events,
           weekStartsOn: DAYS_OF_WEEK.SUNDAY
         });
-        expect(different.totalDaysVisibleInWeek).to.equal(5);
+        expect(different.totalDaysVisibleInWeek).toBe(5);
       });
 
       it('should get all days in the month plus the ones at the start and end of the week', () => {
-        expect(result.days.length).to.equal(42);
+        expect(result.days.length).toBe(42);
       });
 
       it('should set the date on each day', () => {
-        expect(result.days[0].date.valueOf()).to.equal(
+        expect(result.days[0].date.valueOf()).toBe(
           new Date('2016-06-26').getTime()
         );
-        expect(result.days[10].date.valueOf()).to.equal(
+        expect(result.days[10].date.valueOf()).toBe(
           new Date('2016-07-06').getTime()
         );
       });
 
       it('should set inMonth on days', () => {
-        expect(result.days[0].inMonth).to.be.false;
-        expect(result.days[10].inMonth).to.be.true;
-        expect(result.days[40].inMonth).to.be.false;
+        expect(result.days[0].inMonth).toBe(false);
+        expect(result.days[10].inMonth).toBe(true);
+        expect(result.days[40].inMonth).toBe(false);
       });
 
       it('should set isPast on days', () => {
-        expect(result.days[0].isPast).to.be.true;
-        expect(result.days[2].isPast).to.be.false;
-        expect(result.days[10].isPast).to.be.false;
+        expect(result.days[0].isPast).toBe(true);
+        expect(result.days[2].isPast).toBe(false);
+        expect(result.days[10].isPast).toBe(false);
       });
 
       it('should set isToday on days', () => {
-        expect(result.days[0].isToday).to.be.false;
-        expect(result.days[2].isToday).to.be.true;
+        expect(result.days[0].isToday).toBe(false);
+        expect(result.days[2].isToday).toBe(true);
       });
 
       it('should set isFuture on days', () => {
-        expect(result.days[0].isFuture).to.be.false;
-        expect(result.days[2].isFuture).to.be.false;
-        expect(result.days[10].isFuture).to.be.true;
+        expect(result.days[0].isFuture).toBe(false);
+        expect(result.days[2].isFuture).toBe(false);
+        expect(result.days[10].isFuture).toBe(true);
       });
 
       it('should set isWeekend on days', () => {
-        expect(result.days[0].isWeekend).to.be.true;
-        expect(result.days[2].isWeekend).to.be.false;
-        expect(result.days[6].isWeekend).to.be.true;
+        expect(result.days[0].isWeekend).toBe(true);
+        expect(result.days[2].isWeekend).toBe(false);
+        expect(result.days[6].isWeekend).toBe(true);
       });
 
       it('should allow the weekend days to be customised', () => {
@@ -1507,34 +1506,34 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           weekendDays: [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY]
         });
-        expect(result.days[0].isWeekend).to.be.false;
-        expect(result.days[2].isWeekend).to.be.false;
-        expect(result.days[5].isWeekend).to.be.true;
-        expect(result.days[6].isWeekend).to.be.true;
+        expect(result.days[0].isWeekend).toBe(false);
+        expect(result.days[2].isWeekend).toBe(false);
+        expect(result.days[5].isWeekend).toBe(true);
+        expect(result.days[6].isWeekend).toBe(true);
       });
 
       it('should include events not in the current month but that could appear on the first and last days of adjoining months', () => {
-        expect(result.days[3].events.length).to.equal(1);
+        expect(result.days[3].events.length).toBe(1);
       });
 
       it('should set events on the correct days', () => {
-        expect(result.days[6].events).to.deep.equal([]);
-        expect(result.days[7].events).to.deep.equal([events[0]]);
-        expect(result.days[8].events).to.deep.equal([]);
-        expect(result.days[9].events).to.deep.equal([events[1]]);
-        expect(result.days[10].events).to.deep.equal([events[1]]);
-        expect(result.days[11].events).to.deep.equal([events[1]]);
-        expect(result.days[12].events).to.deep.equal([]);
+        expect(result.days[6].events).toEqual([]);
+        expect(result.days[7].events).toEqual([events[0]]);
+        expect(result.days[8].events).toEqual([]);
+        expect(result.days[9].events).toEqual([events[1]]);
+        expect(result.days[10].events).toEqual([events[1]]);
+        expect(result.days[11].events).toEqual([events[1]]);
+        expect(result.days[12].events).toEqual([]);
       });
 
       it('should set the badge total on days', () => {
-        expect(result.days[6].badgeTotal).to.equal(0);
-        expect(result.days[7].badgeTotal).to.equal(1);
-        expect(result.days[8].badgeTotal).to.equal(0);
-        expect(result.days[9].badgeTotal).to.equal(1);
-        expect(result.days[10].badgeTotal).to.equal(1);
-        expect(result.days[11].badgeTotal).to.equal(1);
-        expect(result.days[12].badgeTotal).to.equal(0);
+        expect(result.days[6].badgeTotal).toBe(0);
+        expect(result.days[7].badgeTotal).toBe(1);
+        expect(result.days[8].badgeTotal).toBe(0);
+        expect(result.days[9].badgeTotal).toBe(1);
+        expect(result.days[10].badgeTotal).toBe(1);
+        expect(result.days[11].badgeTotal).toBe(1);
+        expect(result.days[12].badgeTotal).toBe(0);
       });
 
       it('should include events that start on the first week of the calendar but not actually in the month', () => {
@@ -1552,10 +1551,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           events,
           weekStartsOn: DAYS_OF_WEEK.SUNDAY
         });
-        expect(result.days[3].events).to.deep.equal([events[0]]);
-        expect(result.days[4].events).to.deep.equal([events[0]]);
-        expect(result.days[5].events).to.deep.equal([events[0]]);
-        expect(result.days[6].events).to.deep.equal([]);
+        expect(result.days[3].events).toEqual([events[0]]);
+        expect(result.days[4].events).toEqual([events[0]]);
+        expect(result.days[5].events).toEqual([events[0]]);
+        expect(result.days[6].events).toEqual([]);
       });
 
       it('should not throw if no events are provided', () => {
@@ -1564,7 +1563,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2016-07-03'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY
           })
-        ).not.to.throw();
+        ).not.toThrowError();
       });
 
       it('should not throw if no events are null', () => {
@@ -1574,7 +1573,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             events: null
           })
-        ).not.to.throw();
+        ).not.toThrowError();
       });
 
       it('should handle changes in DST', () => {
@@ -1582,12 +1581,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2015-10-03'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY
         });
-        expect(view.days[28].date).to.deep.equal(
-          startOfDay(new Date('2015-10-25'))
-        );
-        expect(view.days[29].date).to.deep.equal(
-          startOfDay(new Date('2015-10-26'))
-        );
+        expect(view.days[28].date).toEqual(startOfDay(new Date('2015-10-25')));
+        expect(view.days[29].date).toEqual(startOfDay(new Date('2015-10-26')));
       });
 
       it('should allow the view start and end dates to be customised', () => {
@@ -1597,14 +1592,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewStart: new Date('2015-10-03'),
           viewEnd: new Date('2015-11-10')
         });
-        expect(view.days.length).to.equal(49);
-        expect(view.rowOffsets).to.deep.equal([0, 7, 14, 21, 28, 35, 42]);
-        expect(view.days[0].date).to.deep.equal(
-          startOfDay(new Date('2015-09-27'))
-        );
-        expect(view.days[13].date).to.deep.equal(
-          startOfDay(new Date('2015-10-10'))
-        );
+        expect(view.days.length).toBe(49);
+        expect(view.rowOffsets).toEqual([0, 7, 14, 21, 28, 35, 42]);
+        expect(view.days[0].date).toEqual(startOfDay(new Date('2015-09-27')));
+        expect(view.days[13].date).toEqual(startOfDay(new Date('2015-10-10')));
       });
     });
 
@@ -1634,7 +1625,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           segmentHeight: 30
         });
 
-        expect(result.period).to.deep.equal({
+        expect(result.period).toEqual({
           start: startOfDay(new Date()),
           end: setMilliseconds(setSeconds(endOfDay(new Date()), 0), 0),
           events: [events[1]]
@@ -1659,7 +1650,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events).to.deep.equal([]);
+        expect(result.events).toEqual([]);
       });
 
       it('should include events that start before the view date and end during it', () => {
@@ -1680,7 +1671,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[0]);
+        expect(result.events[0].event).toBe(events[0]);
       });
 
       it('should include events that start during the view date and end after it', () => {
@@ -1701,7 +1692,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[0]);
+        expect(result.events[0].event).toBe(events[0]);
       });
 
       it('should include events that start during the view date and end during it', () => {
@@ -1722,7 +1713,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[0]);
+        expect(result.events[0].event).toBe(events[0]);
       });
 
       it('should exclude events that are on the view date but outside of the day start', () => {
@@ -1743,7 +1734,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events).to.deep.equal([]);
+        expect(result.events).toEqual([]);
       });
 
       it('should exclude events that are on the view date but outside of the day end', () => {
@@ -1764,7 +1755,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events).to.deep.equal([]);
+        expect(result.events).toEqual([]);
       });
 
       it('should sort all events by start date', () => {
@@ -1791,8 +1782,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[1]);
-        expect(result.events[1].event).to.equal(events[0]);
+        expect(result.events[0].event).toBe(events[1]);
+        expect(result.events[1].event).toBe(events[0]);
       });
 
       it('should span the entire day', () => {
@@ -1813,10 +1804,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].top).to.deep.equal(0);
-        expect(result.events[0].height).to.deep.equal(1439);
-        expect(result.events[0].startsBeforeDay).to.be.false;
-        expect(result.events[0].endsAfterDay).to.be.true;
+        expect(result.events[0].top).toEqual(0);
+        expect(result.events[0].height).toEqual(1439);
+        expect(result.events[0].startsBeforeDay).toBe(false);
+        expect(result.events[0].endsAfterDay).toBe(true);
       });
 
       it('should start part of the way through the day and end after it', () => {
@@ -1837,10 +1828,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].top).to.deep.equal(150);
-        expect(result.events[0].height).to.deep.equal(1289);
-        expect(result.events[0].startsBeforeDay).to.be.false;
-        expect(result.events[0].endsAfterDay).to.be.true;
+        expect(result.events[0].top).toEqual(150);
+        expect(result.events[0].height).toEqual(1289);
+        expect(result.events[0].startsBeforeDay).toBe(false);
+        expect(result.events[0].endsAfterDay).toBe(true);
       });
 
       it('should start before the start of the day and end part of the way through', () => {
@@ -1861,10 +1852,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].top).to.deep.equal(0);
-        expect(result.events[0].height).to.deep.equal(150);
-        expect(result.events[0].startsBeforeDay).to.be.true;
-        expect(result.events[0].endsAfterDay).to.be.false;
+        expect(result.events[0].top).toEqual(0);
+        expect(result.events[0].height).toEqual(150);
+        expect(result.events[0].startsBeforeDay).toBe(true);
+        expect(result.events[0].endsAfterDay).toBe(false);
       });
 
       it('should start part of the way through the day and end part of the way through it', () => {
@@ -1885,10 +1876,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].top).to.deep.equal(150);
-        expect(result.events[0].height).to.deep.equal(210);
-        expect(result.events[0].startsBeforeDay).to.be.false;
-        expect(result.events[0].endsAfterDay).to.be.false;
+        expect(result.events[0].top).toEqual(150);
+        expect(result.events[0].height).toEqual(210);
+        expect(result.events[0].startsBeforeDay).toBe(false);
+        expect(result.events[0].endsAfterDay).toBe(false);
       });
 
       it('should use a default height of one segment if there is no event end date', () => {
@@ -1908,10 +1899,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].top).to.deep.equal(150);
-        expect(result.events[0].height).to.deep.equal(30);
-        expect(result.events[0].startsBeforeDay).to.be.false;
-        expect(result.events[0].endsAfterDay).to.be.false;
+        expect(result.events[0].top).toEqual(150);
+        expect(result.events[0].height).toEqual(30);
+        expect(result.events[0].startsBeforeDay).toBe(false);
+        expect(result.events[0].endsAfterDay).toBe(false);
       });
 
       it('should respect the day start', () => {
@@ -1932,10 +1923,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].top).to.deep.equal(60);
-        expect(result.events[0].height).to.deep.equal(150);
-        expect(result.events[0].startsBeforeDay).to.be.false;
-        expect(result.events[0].endsAfterDay).to.be.false;
+        expect(result.events[0].top).toEqual(60);
+        expect(result.events[0].height).toEqual(150);
+        expect(result.events[0].startsBeforeDay).toBe(false);
+        expect(result.events[0].endsAfterDay).toBe(false);
       });
 
       it('should respect the day end', () => {
@@ -1956,10 +1947,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].top).to.deep.equal(150);
-        expect(result.events[0].height).to.deep.equal(869);
-        expect(result.events[0].startsBeforeDay).to.be.false;
-        expect(result.events[0].endsAfterDay).to.be.true;
+        expect(result.events[0].top).toEqual(150);
+        expect(result.events[0].height).toEqual(869);
+        expect(result.events[0].startsBeforeDay).toBe(false);
+        expect(result.events[0].endsAfterDay).toBe(true);
       });
 
       it('should adjust the event height and top to account for a bigger hour segment size', () => {
@@ -1980,8 +1971,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].top).to.deep.equal(450);
-        expect(result.events[0].height).to.deep.equal(810);
+        expect(result.events[0].top).toEqual(450);
+        expect(result.events[0].height).toEqual(810);
       });
 
       it('should stack events where one starts before the other and ends during it', () => {
@@ -2008,10 +1999,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[1]);
-        expect(result.events[0].left).to.equal(0);
-        expect(result.events[1].event).to.equal(events[0]);
-        expect(result.events[1].left).to.equal(100);
+        expect(result.events[0].event).toBe(events[1]);
+        expect(result.events[0].left).toBe(0);
+        expect(result.events[1].event).toBe(events[0]);
+        expect(result.events[1].left).toBe(100);
       });
 
       it('should stack events where one starts during the other and ends after it', () => {
@@ -2038,10 +2029,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[0]);
-        expect(result.events[0].left).to.equal(0);
-        expect(result.events[1].event).to.equal(events[1]);
-        expect(result.events[1].left).to.equal(100);
+        expect(result.events[0].event).toBe(events[0]);
+        expect(result.events[0].left).toBe(0);
+        expect(result.events[1].event).toBe(events[1]);
+        expect(result.events[1].left).toBe(100);
       });
 
       it('should stack events where one starts during the other and ends during it', () => {
@@ -2068,10 +2059,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[0]);
-        expect(result.events[0].left).to.equal(0);
-        expect(result.events[1].event).to.equal(events[1]);
-        expect(result.events[1].left).to.equal(100);
+        expect(result.events[0].event).toBe(events[0]);
+        expect(result.events[0].left).toBe(0);
+        expect(result.events[1].event).toBe(events[1]);
+        expect(result.events[1].left).toBe(100);
       });
 
       it('should not stack events that do not overlap each other', () => {
@@ -2098,10 +2089,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[0]);
-        expect(result.events[0].left).to.equal(0);
-        expect(result.events[1].event).to.equal(events[1]);
-        expect(result.events[1].left).to.equal(0);
+        expect(result.events[0].event).toBe(events[0]);
+        expect(result.events[0].left).toBe(0);
+        expect(result.events[1].event).toBe(events[1]);
+        expect(result.events[1].left).toBe(0);
       });
 
       it('should not stack events where one starts on the others end date', () => {
@@ -2128,10 +2119,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.equal(events[0]);
-        expect(result.events[0].left).to.equal(0);
-        expect(result.events[1].event).to.equal(events[1]);
-        expect(result.events[1].left).to.equal(0);
+        expect(result.events[0].event).toBe(events[0]);
+        expect(result.events[0].left).toBe(0);
+        expect(result.events[1].event).toBe(events[1]);
+        expect(result.events[1].left).toBe(0);
       });
 
       it('should return the largest row width', () => {
@@ -2170,7 +2161,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.width).to.equal(300);
+        expect(result.width).toBe(300);
       });
 
       it('should separate all day events that occur on that day', () => {
@@ -2206,8 +2197,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events[0].event).to.deep.equal(events[1]);
-        expect(result.allDayEvents).to.deep.equal([events[0]]);
+        expect(result.events[0].event).toEqual(events[1]);
+        expect(result.allDayEvents).toEqual([events[0]]);
       });
 
       it('should include all day events that start on the current day with no end date', () => {
@@ -2229,7 +2220,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.allDayEvents).to.deep.equal([events[0]]);
+        expect(result.allDayEvents).toEqual([events[0]]);
       });
 
       it('should stack events in the correct columns', () => {
@@ -2264,20 +2255,20 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           segmentHeight: 30
         });
 
-        expect(result.events[0].event).to.equal(events[1]);
-        expect(result.events[0].height).to.equal(660);
-        expect(result.events[0].top).to.equal(0);
-        expect(result.events[0].left).to.equal(0);
+        expect(result.events[0].event).toBe(events[1]);
+        expect(result.events[0].height).toBe(660);
+        expect(result.events[0].top).toBe(0);
+        expect(result.events[0].left).toBe(0);
 
-        expect(result.events[1].event).to.equal(events[0]);
-        expect(result.events[1].height).to.equal(1439);
-        expect(result.events[1].top).to.equal(0);
-        expect(result.events[1].left).to.equal(100);
+        expect(result.events[1].event).toBe(events[0]);
+        expect(result.events[1].height).toBe(1439);
+        expect(result.events[1].top).toBe(0);
+        expect(result.events[1].left).toBe(100);
 
-        expect(result.events[2].event).to.equal(events[2]);
-        expect(result.events[2].height).to.equal(240);
-        expect(result.events[2].top).to.equal(660);
-        expect(result.events[2].left).to.equal(0);
+        expect(result.events[2].event).toBe(events[2]);
+        expect(result.events[2].height).toBe(240);
+        expect(result.events[2].top).toBe(660);
+        expect(result.events[2].left).toBe(0);
       });
 
       it('should not throw if no events are provided', () => {
@@ -2289,7 +2280,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           eventWidth: 100,
           segmentHeight: 30
         });
-        expect(result.events).to.deep.equal([]);
+        expect(result.events).toEqual([]);
       });
 
       it('should not throw if events are null', () => {
@@ -2302,7 +2293,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           segmentHeight: 30,
           events: null
         });
-        expect(result.events).to.deep.equal([]);
+        expect(result.events).toEqual([]);
       });
     });
 
@@ -2330,7 +2321,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             delete segment.date;
           });
         });
-        expect(result).to.deep.equal([
+        expect(result).toEqual([
           {
             segments: [
               {
@@ -2385,7 +2376,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             delete segment.date;
           });
         });
-        expect(result).to.deep.equal([
+        expect(result).toEqual([
           {
             segments: [
               {
@@ -2443,9 +2434,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
     });
 
     describe('validateEvents', () => {
-      let log: sinon.SinonSpy;
+      let log: jest.Mock;
       beforeEach(() => {
-        log = sinon.spy();
+        log = jest.fn();
       });
 
       it('should not log an error when all events are valid', () => {
@@ -2457,8 +2448,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             color: { primary: '', secondary: '' }
           }
         ];
-        expect(validateEvents(events, log)).to.be.true;
-        expect(log).not.to.have.been.called;
+        expect(validateEvents(events, log)).toBe(true);
+        expect(log).not.toHaveBeenCalled();
       });
 
       it('should not log an error when the event end is not missing', () => {
@@ -2469,8 +2460,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             color: { primary: '', secondary: '' }
           }
         ];
-        expect(validateEvents(events, log)).to.be.true;
-        expect(log).not.to.have.been.called;
+        expect(validateEvents(events, log)).toBe(true);
+        expect(log).not.toHaveBeenCalled();
       });
 
       it('should be invalid when at least one event is invalid', () => {
@@ -2486,15 +2477,16 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             color: { primary: '', secondary: '' }
           }
         ];
-        expect(validateEvents(events, log)).to.be.false;
-        expect(log).to.have.been.calledOnce;
+        expect(validateEvents(events, log)).toBe(false);
+        expect(log).toHaveBeenCalledTimes(1);
       });
 
       it('should log a warning when not passed an array of events', () => {
         const events: any = {};
-        expect(validateEvents(events, log)).to.be.false;
-        expect(log).to.have.been.calledWith(
-          EventValidationErrorMessage.NotArray
+        expect(validateEvents(events, log)).toBe(false);
+        expect(log).toHaveBeenCalledWith(
+          EventValidationErrorMessage.NotArray,
+          events
         );
       });
 
@@ -2505,9 +2497,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             color: { primary: '', secondary: '' }
           }
         ];
-        expect(validateEvents(events, log)).to.be.false;
-        expect(log).to.have.been.calledWith(
-          EventValidationErrorMessage.StartPropertyMissing
+        expect(validateEvents(events, log)).toBe(false);
+        expect(log).toHaveBeenCalledWith(
+          EventValidationErrorMessage.StartPropertyMissing,
+          events[0]
         );
       });
 
@@ -2519,9 +2512,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             color: { primary: '', secondary: '' }
           }
         ];
-        expect(validateEvents(events, log)).to.be.false;
-        expect(log).to.have.been.calledWith(
-          EventValidationErrorMessage.StartPropertyNotDate
+        expect(validateEvents(events, log)).toBe(false);
+        expect(log).toHaveBeenCalledWith(
+          EventValidationErrorMessage.StartPropertyNotDate,
+          events[0]
         );
       });
 
@@ -2534,9 +2528,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             color: { primary: '', secondary: '' }
           }
         ];
-        expect(validateEvents(events, log)).to.be.false;
-        expect(log).to.have.been.calledWith(
-          EventValidationErrorMessage.EndPropertyNotDate
+        expect(validateEvents(events, log)).toBe(false);
+        expect(log).toHaveBeenCalledWith(
+          EventValidationErrorMessage.EndPropertyNotDate,
+          events[0]
         );
       });
 
@@ -2549,9 +2544,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             color: { primary: '', secondary: '' }
           }
         ];
-        expect(validateEvents(events, log)).to.be.false;
-        expect(log).to.have.been.calledWith(
-          EventValidationErrorMessage.EndsBeforeStart
+        expect(validateEvents(events, log)).toBe(false);
+        expect(log).toHaveBeenCalledWith(
+          EventValidationErrorMessage.EndsBeforeStart,
+          events[0]
         );
       });
     });

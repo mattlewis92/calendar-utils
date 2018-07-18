@@ -285,7 +285,7 @@ export function getWeekViewEventOffset(
       offset = differenceInSeconds(event.start, startOfWeekDate);
       break;
   }
-  
+
   offset -= getExcludedSeconds(dateAdapter, {
     startDate: startOfWeekDate,
     seconds: offset,
@@ -293,7 +293,7 @@ export function getWeekViewEventOffset(
     precision
   });
 
-  return offset / SECONDS_IN_DAY;
+  return Math.abs(offset / SECONDS_IN_DAY);
 }
 
 interface IsEventInPeriodArgs {
