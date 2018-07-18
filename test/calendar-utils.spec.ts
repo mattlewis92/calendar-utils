@@ -1,5 +1,3 @@
-/// <reference types="mocha" />
-
 import { expect, use } from 'chai';
 import {
   addDays,
