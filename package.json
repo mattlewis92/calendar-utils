@@ -6,7 +6,7 @@
   "module": "calendar-utils.js",
   "typings": "calendar-utils.d.ts",
   "scripts": {
-    "test": "TZ=Europe/London jest",
+    "test": "TZ=UTC jest",
     "test:watch": "npm t -- --watch",
     "test:ci": "npm t -- --runInBand --coverage && npm run lint",
     "test:coverage": "npm t -- --coverage",

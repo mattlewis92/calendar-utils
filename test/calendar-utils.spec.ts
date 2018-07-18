@@ -45,12 +45,8 @@ import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/mom
 use(sinonChai);
 
 let clock: any;
-let timezoneOffset: number;
-let timezoneOffsetDays: number;
 beforeEach(() => {
   clock = sinon.useFakeTimers(new Date('2016-06-28').getTime());
-  timezoneOffset = new Date().getTimezoneOffset() * 60 * 1000;
-  timezoneOffsetDays = new Date().getTimezoneOffset() / 60 / 24;
 });
 
 afterEach(() => {
@@ -120,49 +116,49 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
 
         expect(days).to.deep.equal([
           {
-            timestamp: new Date('2016-06-26').getTime() + timezoneOffset,
+            timestamp: new Date('2016-06-26').getTime(),
             isPast: true,
             isToday: false,
             isFuture: false,
             isWeekend: true
           },
           {
-            timestamp: new Date('2016-06-27').getTime() + timezoneOffset,
+            timestamp: new Date('2016-06-27').getTime(),
             isPast: true,
             isToday: false,
             isFuture: false,
             isWeekend: false
           },
           {
-            timestamp: new Date('2016-06-28').getTime() + timezoneOffset,
+            timestamp: new Date('2016-06-28').getTime(),
             isPast: false,
             isToday: true,
             isFuture: false,
             isWeekend: false
           },
           {
-            timestamp: new Date('2016-06-29').getTime() + timezoneOffset,
+            timestamp: new Date('2016-06-29').getTime(),
             isPast: false,
             isToday: false,
             isFuture: true,
             isWeekend: false
           },
           {
-            timestamp: new Date('2016-06-30').getTime() + timezoneOffset,
+            timestamp: new Date('2016-06-30').getTime(),
             isPast: false,
             isToday: false,
             isFuture: true,
             isWeekend: false
           },
           {
-            timestamp: new Date('2016-07-01').getTime() + timezoneOffset,
+            timestamp: new Date('2016-07-01').getTime(),
             isPast: false,
             isToday: false,
             isFuture: true,
             isWeekend: false
           },
           {
-            timestamp: new Date('2016-07-02').getTime() + timezoneOffset,
+            timestamp: new Date('2016-07-02').getTime(),
             isPast: false,
             isToday: false,
             isFuture: true,
@@ -900,7 +896,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               row: [
                 {
                   event: events[0],
-                  offset: 1 - timezoneOffsetDays,
+                  offset: 1,
                   span: 2,
                   startsBeforeWeek: false,
                   endsAfterWeek: false
@@ -932,7 +928,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                 {
                   event: events[0],
                   offset: 0,
-                  span: 3 - timezoneOffsetDays,
+                  span: 3,
                   startsBeforeWeek: true,
                   endsAfterWeek: false
                 }
@@ -957,19 +953,15 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes'
           });
-          expect(result.eventRows[0].row[0].offset).to.equal(
-            1 - timezoneOffsetDays
-          );
-          expect(result.eventRows[0].row[0].span).to.equal(
-            6 + timezoneOffsetDays
-          );
+          expect(result.eventRows[0].row[0].offset).to.equal(1);
+          expect(result.eventRows[0].row[0].span).to.equal(6);
           expect(result.eventRows).to.deep.equal([
             {
               row: [
                 {
                   event: events[0],
-                  offset: 1 - timezoneOffsetDays,
-                  span: 6 + timezoneOffsetDays,
+                  offset: 1,
+                  span: 6,
                   startsBeforeWeek: false,
                   endsAfterWeek: true
                 }
@@ -1472,10 +1464,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
 
       it('should set the date on each day', () => {
         expect(result.days[0].date.valueOf()).to.equal(
-          new Date('2016-06-26').getTime() + timezoneOffset
+          new Date('2016-06-26').getTime()
         );
         expect(result.days[10].date.valueOf()).to.equal(
-          new Date('2016-07-06').getTime() + timezoneOffset
+          new Date('2016-07-06').getTime()
         );
       });
 
