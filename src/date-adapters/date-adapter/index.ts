@@ -52,7 +52,7 @@ export interface DateAdapter {
     dateRight: Date | string | number
   ): boolean;
 
-  max(...dates: (Date | string | number)[]): Date;
+  max(...dates: Array<Date | string | number>): Date;
 
   setHours(date: Date | string | number, hours: number): Date;
 

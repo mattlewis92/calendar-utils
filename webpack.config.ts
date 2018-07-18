@@ -1,5 +1,3 @@
-import * as webpackDateFnsExternals from 'webpack-date-fns-externals';
-
 module.exports = {
   mode: 'production',
   entry: __dirname + '/src/calendar-utils.ts',
@@ -9,20 +7,8 @@ module.exports = {
     libraryTarget: 'umd',
     library: 'calendarUtils'
   },
-  externals: [
-    webpackDateFnsExternals()
-  ],
   module: {
     rules: [{
-      test: /\.ts$/,
-      loader: 'tslint-loader',
-      exclude: /node_modules/,
-      enforce: 'pre',
-      options: {
-        emitErrors: true,
-        failOnHint: true
-      }
-    }, {
       test: /\.ts$/,
       loader: 'ts-loader',
       exclude: /node_modules/,

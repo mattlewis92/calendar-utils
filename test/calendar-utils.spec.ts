@@ -22,7 +22,7 @@ import {
 } from 'date-fns';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import moment from 'moment';
+import * as moment from 'moment';
 import {
   CalendarEvent,
   DAYS_OF_WEEK,
