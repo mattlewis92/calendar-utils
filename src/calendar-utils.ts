@@ -700,6 +700,7 @@ export function getMonthView(
       date = startOfDay(addHours(previousDate, HOURS_IN_DAY));
       if (previousDate.getTime() === date.getTime()) {
         // DST change, so need to add 25 hours
+        /* istanbul ignore next */
         date = startOfDay(addHours(previousDate, HOURS_IN_DAY + 1));
       }
       previousDate = date;
