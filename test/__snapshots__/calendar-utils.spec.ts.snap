@@ -2401,6 +2401,81 @@ Array [
 ]
 `;
 
+exports[`Adapter: date-fns getWeekViewHeader should allow the week start and end to be customised 1`] = `
+Array [
+  Object {
+    "date": 2018-07-20T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-21T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2018-07-22T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2018-07-23T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-24T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-25T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-26T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-27T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-28T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2018-07-29T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+]
+`;
+
 exports[`Adapter: moment getWeekView should get the day view segments respecting the start and end of the day 1`] = `
 Array [
   Object {
@@ -4798,6 +4873,81 @@ Array [
         ],
       },
     ],
+  },
+]
+`;
+
+exports[`Adapter: moment getWeekViewHeader should allow the week start and end to be customised 1`] = `
+Array [
+  Object {
+    "date": 2018-07-20T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-21T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2018-07-22T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2018-07-23T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-24T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-25T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-26T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-27T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-28T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2018-07-29T00:00:00.000Z,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
   },
 ]
 `;

@@ -388,22 +388,30 @@ export interface GetWeekViewHeaderArgs {
   weekStartsOn: number;
   excluded?: number[];
   weekendDays?: number[];
+  startOfWeek?: Date;
+  endOfWeek?: Date;
 }
 
 export function getWeekViewHeader(
   dateAdapter: DateAdapter,
-  { viewDate, weekStartsOn, excluded = [], weekendDays }: GetWeekViewHeaderArgs
+  {
+    viewDate,
+    weekStartsOn,
+    excluded = [],
+    weekendDays,
+    startOfWeek = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
+    endOfWeek = dateAdapter.addDays(startOfWeek, DAYS_IN_WEEK)
+  }: GetWeekViewHeaderArgs
 ): WeekDay[] {
-  const { startOfWeek, addDays, getDay } = dateAdapter;
-  const start: Date = startOfWeek(viewDate, { weekStartsOn });
+  const { addDays, getDay } = dateAdapter;
   const days: WeekDay[] = [];
-  for (let i: number = 0; i < DAYS_IN_WEEK; i++) {
-    const date: Date = addDays(start, i);
+  let date = startOfWeek;
+  while(date < endOfWeek) {
     if (!excluded.some(e => getDay(date) === e)) {
       days.push(getWeekDay(dateAdapter, { date, weekendDays }));
     }
+    date = addDays(date, 1);
   }
-
   return days;
 }
 
@@ -417,7 +425,7 @@ export interface GetWeekViewArgs {
   hourSegments: number;
   dayStart: any;
   dayEnd: any;
-  weekendDays?: number[]
+  weekendDays?: number[];
   segmentHeight: number;
 }
 
@@ -433,7 +441,7 @@ function getAllDayWeekEvents(
     eventsInPeriod
   }
 ): WeekViewAllDayEventRow[] {
-  const {differenceInSeconds} = dateAdapter;
+  const { differenceInSeconds } = dateAdapter;
   const maxRange: number = DAYS_IN_WEEK - excluded.length;
   const eventsMapped: WeekViewAllDayEvent[] = eventsInPeriod
     .filter(event => event.allDay)

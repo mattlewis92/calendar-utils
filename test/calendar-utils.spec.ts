@@ -184,6 +184,17 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(days[5].isWeekend).toBe(true);
         expect(days[6].isWeekend).toBe(true);
       });
+
+      it('should allow the week start and end to be customised', () => {
+        const days = getWeekViewHeader(dateAdapter, {
+          viewDate: new Date('2018-07-27'),
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+          startOfWeek: startOfDay(new Date('2018-07-20')),
+          endOfWeek: endOfDay(new Date('2018-07-29'))
+        });
+        expect(days.length).toEqual(10);
+        expect(days).toMatchSnapshot();
+      })
     });
 
     describe('getWeekView', () => {
