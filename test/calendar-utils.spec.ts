@@ -1225,6 +1225,37 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             }
           ]);
         });
+
+        it('should allow the week start and end to be customised', () => {
+          const events: CalendarEvent[] = [
+            {
+              start: new Date('2018-06-20T11:00:00.000Z'),
+              end: new Date('2018-08-11T10:00:00.000Z'),
+              title: '',
+              allDay: true
+            }
+          ];
+          const view = getWeekView(dateAdapter, {
+            events,
+            viewDate: new Date('2018-07-27'),
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+            viewStart: new Date('2018-07-20'),
+            viewEnd: new Date('2018-07-29'),
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
+          });
+          expect(view.allDayEventRows[0].row[0].span).toEqual(10);
+          expect(view.hourColumns.length).toEqual(10);
+          expect(view).toMatchSnapshot();
+        })
       });
 
       describe('precision = "minutes"', () => {

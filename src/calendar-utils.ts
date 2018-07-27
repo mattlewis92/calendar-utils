@@ -18,7 +18,6 @@ const DAYS_IN_WEEK: number = 7;
 const HOURS_IN_DAY: number = 24;
 const MINUTES_IN_HOUR: number = 60;
 export const SECONDS_IN_DAY: number = 60 * 60 * 24;
-export const SECONDS_IN_WEEK: number = SECONDS_IN_DAY * DAYS_IN_WEEK;
 
 export interface WeekDay {
   date: Date;
@@ -210,13 +209,15 @@ function getWeekViewEventSpan(
     offset,
     startOfWeekDate,
     excluded,
-    precision = 'days'
+    precision = 'days',
+    totalDaysInView
   }: {
     event: CalendarEvent;
     offset: number;
     startOfWeekDate: Date;
     excluded: number[];
     precision?: 'minutes' | 'days';
+    totalDaysInView: number
   }
 ): number {
   const {
@@ -246,9 +247,10 @@ function getWeekViewEventSpan(
   const totalLength: number = offsetSeconds + span;
 
   // the best way to detect if an event is outside the week-view
-  // is to check if the total span beginning (from startOfWeekDay or event start) exceeds 7days
-  if (totalLength > SECONDS_IN_WEEK) {
-    span = SECONDS_IN_WEEK - offsetSeconds;
+  // is to check if the total span beginning (from startOfWeekDay or event start) exceeds the total days in the view
+  const secondsInView = totalDaysInView * SECONDS_IN_DAY;
+  if (totalLength > secondsInView) {
+    span = secondsInView - offsetSeconds;
   }
 
   span -= getExcludedSeconds(dateAdapter, {
@@ -406,7 +408,7 @@ export function getWeekViewHeader(
   const { addDays, getDay } = dateAdapter;
   const days: WeekDay[] = [];
   let date = viewStart;
-  while(date < viewEnd) {
+  while (date < viewEnd) {
     if (!excluded.some(e => getDay(date) === e)) {
       days.push(getWeekDay(dateAdapter, { date, weekendDays }));
     }
@@ -427,6 +429,20 @@ export interface GetWeekViewArgs {
   dayEnd: any;
   weekendDays?: number[];
   segmentHeight: number;
+  viewStart?: Date;
+  viewEnd?: Date;
+}
+
+function getDifferenceInDays(dateAdapter: DateAdapter, { viewStart, viewEnd, excluded }: {viewStart: Date, viewEnd: Date, excluded: number[]}): number {
+  let date = viewStart;
+  let diff = 0;
+  while (date < viewEnd) {
+    if (excluded.indexOf(dateAdapter.getDay(date)) === -1) {
+      diff++;
+    }
+    date = dateAdapter.addDays(date, 1);
+  }
+  return diff;
 }
 
 function getAllDayWeekEvents(
@@ -436,28 +452,30 @@ function getAllDayWeekEvents(
     excluded,
     precision,
     absolutePositionedEvents,
-    startOfViewWeek,
-    endOfViewWeek,
+    viewStart,
+    viewEnd,
     eventsInPeriod
   }
 ): WeekViewAllDayEventRow[] {
-  const { differenceInSeconds } = dateAdapter;
-  const maxRange: number = DAYS_IN_WEEK - excluded.length;
+  const { differenceInSeconds, differenceInDays } = dateAdapter;
+  const maxRange: number = getDifferenceInDays(dateAdapter, {viewStart, viewEnd, excluded});
+  const totalDaysInView = differenceInDays(viewEnd, viewStart) + 1;
   const eventsMapped: WeekViewAllDayEvent[] = eventsInPeriod
     .filter(event => event.allDay)
     .map(event => {
       const offset: number = getWeekViewEventOffset(dateAdapter, {
         event,
-        startOfWeek: startOfViewWeek,
+        startOfWeek: viewStart,
         excluded,
         precision
       });
       const span: number = getWeekViewEventSpan(dateAdapter, {
         event,
         offset,
-        startOfWeekDate: startOfViewWeek,
+        startOfWeekDate: viewStart,
         excluded,
-        precision
+        precision,
+        totalDaysInView
       });
       return { event, offset, span };
     })
@@ -467,8 +485,8 @@ function getAllDayWeekEvents(
       event: entry.event,
       offset: entry.offset,
       span: entry.span,
-      startsBeforeWeek: entry.event.start < startOfViewWeek,
-      endsAfterWeek: (entry.event.end || entry.event.start) > endOfViewWeek
+      startsBeforeWeek: entry.event.start < viewStart,
+      endsAfterWeek: (entry.event.end || entry.event.start) > viewEnd
     }))
     .sort(
       (itemA, itemB): number => {
@@ -498,7 +516,7 @@ function getAllDayWeekEvents(
         .filter(nextEvent => {
           if (
             nextEvent.offset >= rowSpan &&
-            rowSpan + nextEvent.span <= DAYS_IN_WEEK &&
+            rowSpan + nextEvent.span <= totalDaysInView &&
             allocatedEvents.indexOf(nextEvent) === -1
           ) {
             const nextEventOffset: number = nextEvent.offset - rowSpan;
@@ -524,6 +542,8 @@ interface GetWeekViewHourGridArgs extends GetDayViewHourGridArgs {
   weekendDays?: number[];
   events?: CalendarEvent[];
   segmentHeight: number;
+  viewStart: Date;
+  viewEnd: Date;
 }
 
 function getWeekViewHourGrid(
@@ -537,7 +557,9 @@ function getWeekViewHourGrid(
     weekStartsOn,
     excluded,
     weekendDays,
-    segmentHeight
+    segmentHeight,
+    viewStart,
+    viewEnd
   }: GetWeekViewHourGridArgs
 ): WeekViewHourColumn[] {
   const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
@@ -550,7 +572,9 @@ function getWeekViewHourGrid(
     viewDate,
     weekStartsOn,
     excluded,
-    weekendDays
+    weekendDays,
+    viewStart,
+    viewEnd
   });
   const { setHours, setMinutes, getHours, getMinutes } = dateAdapter;
 
@@ -611,19 +635,21 @@ export function getWeekView(
     dayStart,
     dayEnd,
     weekendDays,
-    segmentHeight
+    segmentHeight,
+    viewStart = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
+    viewEnd = dateAdapter.endOfWeek(viewDate, { weekStartsOn })
   }: GetWeekViewArgs
 ): WeekView {
   if (!events) {
     events = [];
   }
-  const { startOfWeek, endOfWeek } = dateAdapter;
-  const startOfViewWeek: Date = startOfWeek(viewDate, { weekStartsOn });
-  const endOfViewWeek: Date = endOfWeek(viewDate, { weekStartsOn });
+  const { startOfDay, endOfDay } = dateAdapter;
+  viewStart = startOfDay(viewStart);
+  viewEnd = endOfDay(viewEnd);
   const eventsInPeriod = getEventsInPeriod(dateAdapter, {
     events,
-    periodStart: startOfViewWeek,
-    periodEnd: endOfViewWeek
+    periodStart: viewStart,
+    periodEnd: viewEnd
   });
 
   return {
@@ -632,14 +658,14 @@ export function getWeekView(
       excluded,
       precision,
       absolutePositionedEvents,
-      startOfViewWeek,
-      endOfViewWeek,
+      viewStart,
+      viewEnd,
       eventsInPeriod
     }),
     period: {
       events: eventsInPeriod,
-      start: startOfViewWeek,
-      end: endOfViewWeek
+      start: viewStart,
+      end: viewEnd
     },
     hourColumns: getWeekViewHourGrid(dateAdapter, {
       events,
@@ -650,7 +676,9 @@ export function getWeekView(
       weekStartsOn,
       excluded,
       weekendDays,
-      segmentHeight
+      segmentHeight,
+      viewStart,
+      viewEnd
     })
   };
 }
