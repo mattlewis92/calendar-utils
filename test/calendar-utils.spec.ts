@@ -189,8 +189,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         const days = getWeekViewHeader(dateAdapter, {
           viewDate: new Date('2018-07-27'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-          startOfWeek: startOfDay(new Date('2018-07-20')),
-          endOfWeek: endOfDay(new Date('2018-07-29'))
+          viewStart: startOfDay(new Date('2018-07-20')),
+          viewEnd: endOfDay(new Date('2018-07-29'))
         });
         expect(days.length).toEqual(10);
         expect(days).toMatchSnapshot();

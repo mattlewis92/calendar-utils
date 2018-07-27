@@ -388,8 +388,8 @@ export interface GetWeekViewHeaderArgs {
   weekStartsOn: number;
   excluded?: number[];
   weekendDays?: number[];
-  startOfWeek?: Date;
-  endOfWeek?: Date;
+  viewStart?: Date;
+  viewEnd?: Date;
 }
 
 export function getWeekViewHeader(
@@ -399,14 +399,14 @@ export function getWeekViewHeader(
     weekStartsOn,
     excluded = [],
     weekendDays,
-    startOfWeek = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
-    endOfWeek = dateAdapter.addDays(startOfWeek, DAYS_IN_WEEK)
+    viewStart = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
+    viewEnd = dateAdapter.addDays(viewStart, DAYS_IN_WEEK)
   }: GetWeekViewHeaderArgs
 ): WeekDay[] {
   const { addDays, getDay } = dateAdapter;
   const days: WeekDay[] = [];
-  let date = startOfWeek;
-  while(date < endOfWeek) {
+  let date = viewStart;
+  while(date < viewEnd) {
     if (!excluded.some(e => getDay(date) === e)) {
       days.push(getWeekDay(dateAdapter, { date, weekendDays }));
     }
