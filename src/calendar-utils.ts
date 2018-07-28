@@ -217,7 +217,7 @@ function getWeekViewEventSpan(
     startOfWeekDate: Date;
     excluded: number[];
     precision?: 'minutes' | 'days';
-    totalDaysInView: number
+    totalDaysInView: number;
   }
 ): number {
   const {
@@ -433,10 +433,13 @@ export interface GetWeekViewArgs {
   viewEnd?: Date;
 }
 
-function getDifferenceInDays(dateAdapter: DateAdapter, { viewStart, viewEnd, excluded }: {viewStart: Date, viewEnd: Date, excluded: number[]}): number {
-  let date = viewStart;
+export function getDifferenceInDaysWithExclusions(
+  dateAdapter: DateAdapter,
+  { date1, date2, excluded }: { date1: Date; date2: Date; excluded: number[] }
+): number {
+  let date = date1;
   let diff = 0;
-  while (date < viewEnd) {
+  while (date < date2) {
     if (excluded.indexOf(dateAdapter.getDay(date)) === -1) {
       diff++;
     }
@@ -458,7 +461,11 @@ function getAllDayWeekEvents(
   }
 ): WeekViewAllDayEventRow[] {
   const { differenceInSeconds, differenceInDays } = dateAdapter;
-  const maxRange: number = getDifferenceInDays(dateAdapter, {viewStart, viewEnd, excluded});
+  const maxRange: number = getDifferenceInDaysWithExclusions(dateAdapter, {
+    date1: viewStart,
+    date2: viewEnd,
+    excluded
+  });
   const totalDaysInView = differenceInDays(viewEnd, viewStart) + 1;
   const eventsMapped: WeekViewAllDayEvent[] = eventsInPeriod
     .filter(event => event.allDay)
@@ -612,7 +619,7 @@ function getWeekViewHourGrid(
           event.top + event.height
         );
         const columnCount = Math.max(
-          ...overLappingEvents.map(event => event.left + 1)
+          ...overLappingEvents.map(iEvent => iEvent.left + 1)
         );
 
         const width = 100 / columnCount;

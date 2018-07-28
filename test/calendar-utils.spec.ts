@@ -27,6 +27,7 @@ import {
   EventValidationErrorMessage,
   getDayView,
   getDayViewHourGrid,
+  getDifferenceInDaysWithExclusions,
   getMonthView,
   getWeekView,
   getWeekViewEventOffset,
@@ -194,7 +195,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         });
         expect(days.length).toEqual(10);
         expect(days).toMatchSnapshot();
-      })
+      });
     });
 
     describe('getWeekView', () => {
@@ -276,7 +277,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             end: addHours(startOfDay(new Date()), 18),
             title: 'Column 1 and column 2'
           }
-        ]
+        ];
         const result = getWeekView(dateAdapter, {
           viewDate: new Date(),
           hourSegments: 2,
@@ -1255,7 +1256,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           expect(view.allDayEventRows[0].row[0].span).toEqual(10);
           expect(view.hourColumns.length).toEqual(10);
           expect(view).toMatchSnapshot();
-        })
+        });
       });
 
       describe('precision = "minutes"', () => {
@@ -3128,6 +3129,26 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           EventValidationErrorMessage.EndsBeforeStart,
           events[0]
         );
+      });
+    });
+
+    describe('getDifferenceInDaysWithExclusions', () => {
+      it('should get the difference in days between 2 dates when not excluding days', () => {
+        const daysDiff = getDifferenceInDaysWithExclusions(dateAdapter, {
+          date1: new Date('2018-07-21'),
+          date2: new Date('2018-07-28'),
+          excluded: []
+        });
+        expect(daysDiff).toEqual(7);
+      });
+
+      it('should get the difference in days between 2 dates when excluding days', () => {
+        const daysDiff = getDifferenceInDaysWithExclusions(dateAdapter, {
+          date1: new Date('2018-07-21'),
+          date2: new Date('2018-07-28'),
+          excluded: [0, 6]
+        });
+        expect(daysDiff).toEqual(5);
       });
     });
   });
