@@ -311,6 +311,49 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result[2].events[3].width).toEqual(100);
       });
 
+      it('should use the correct left value of events on the same row', () => {
+        const date = moment()
+          .startOf('week')
+          .toDate();
+        const events = [
+          {
+            start: date,
+            title: 'Title'
+          },
+          {
+            start: date,
+            title: 'Title'
+          },
+          {
+            start: date,
+            title: 'Title'
+          },
+          {
+            start: date,
+            title: 'Title'
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          viewDate: date,
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30,
+          events
+        }).hourColumns;
+        expect(result[0].events[0].left).toEqual(0);
+        expect(result[0].events[1].left).toEqual(25);
+        expect(result[0].events[2].left).toEqual(50);
+        expect(result[0].events[3].left).toEqual(75);
+      });
+
       describe('precision = "days"', () => {
         it('should get the correct span, offset and extends values for events that start within the week', () => {
           const events: CalendarEvent[] = [

@@ -611,8 +611,6 @@ function getWeekViewHourGrid(
       hours,
       date: day.date,
       events: dayView.events.map(event => {
-        const left = event.left > 0 ? 100 / (event.left + 1) : 0;
-
         const overLappingEvents = getOverLappingDayViewEvents(
           dayView.events,
           event.top,
@@ -623,7 +621,7 @@ function getWeekViewHourGrid(
         );
 
         const width = 100 / columnCount;
-        return { ...event, left, width };
+        return { ...event, left: event.left * width, width };
       })
     };
   });
