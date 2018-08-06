@@ -1256,6 +1256,45 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           expect(view.allDayEventRows[0].row[0].span).toEqual(10);
           expect(view.hourColumns.length).toEqual(10);
           expect(view).toMatchSnapshot();
+          expect(view.period.start).toEqual(
+            moment(new Date('2018-07-20'))
+              .startOf('day')
+              .toDate()
+          );
+          expect(view.period.end).toEqual(
+            moment(new Date('2018-07-29'))
+              .endOf('day')
+              .toDate()
+          );
+        });
+
+        it('should get the correct period start and end date when excluding days', () => {
+          const view = getWeekView(dateAdapter, {
+            events: [],
+            viewDate: new Date('2018-08-01'),
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30,
+            excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY]
+          });
+          expect(view.period.start).toEqual(
+            moment(new Date('2018-07-30'))
+              .startOf('day')
+              .toDate()
+          );
+          expect(view.period.end).toEqual(
+            moment(new Date('2018-08-03'))
+              .endOf('day')
+              .toDate()
+          );
         });
       });
 
@@ -2011,6 +2050,25 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           end: endOfDay(new Date('2016-08-06')),
           events: [events[0], events[1], events[2]]
         });
+      });
+
+      it('should get the correct period start and end date when excluding days', () => {
+        const view = getMonthView(dateAdapter, {
+          events: [],
+          viewDate: new Date('2018-07-29'),
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+          excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY]
+        });
+        expect(view.period.start).toEqual(
+          moment(new Date('2018-07-02'))
+            .startOf('day')
+            .toDate()
+        );
+        expect(view.period.end).toEqual(
+          moment(new Date('2018-08-03'))
+            .endOf('day')
+            .toDate()
+        );
       });
 
       it('should exclude days from month view', () => {

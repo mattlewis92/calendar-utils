@@ -659,6 +659,15 @@ export function getWeekView(
     periodEnd: viewEnd
   });
 
+  const header = getWeekViewHeader(dateAdapter, {
+    viewDate,
+    weekStartsOn,
+    excluded,
+    weekendDays,
+    viewStart,
+    viewEnd
+  });
+
   return {
     allDayEventRows: getAllDayWeekEvents(dateAdapter, {
       events,
@@ -671,8 +680,8 @@ export function getWeekView(
     }),
     period: {
       events: eventsInPeriod,
-      start: viewStart,
-      end: viewEnd
+      start: header[0].date,
+      end: endOfDay(header[header.length - 1].date)
     },
     hourColumns: getWeekViewHourGrid(dateAdapter, {
       events,
@@ -802,8 +811,8 @@ export function getMonthView(
     totalDaysVisibleInWeek,
     days,
     period: {
-      start,
-      end,
+      start: days[0].date,
+      end: endOfDay(days[days.length - 1].date),
       events: eventsInMonth
     }
   };
