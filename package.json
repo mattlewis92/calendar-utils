@@ -51,7 +51,7 @@
     "chai": "^4.0.0",
     "codecov": "^3.0.4",
     "copyfiles": "^2.0.0",
-    "date-fns": "^1.29.0",
+    "date-fns": "^2.0.0-alpha.16",
     "husky": "^0.14.3",
     "jest": "^23.5.0",
     "lint-staged": "^7.2.2",
