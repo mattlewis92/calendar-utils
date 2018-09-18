@@ -431,6 +431,7 @@ export interface GetWeekViewArgs {
   segmentHeight: number;
   viewStart?: Date;
   viewEnd?: Date;
+  minEventHeight?: number;
 }
 
 export function getDifferenceInDaysWithExclusions(
@@ -551,6 +552,7 @@ interface GetWeekViewHourGridArgs extends GetDayViewHourGridArgs {
   segmentHeight: number;
   viewStart: Date;
   viewEnd: Date;
+  minEventHeight?: number;
 }
 
 function getWeekViewHourGrid(
@@ -566,7 +568,8 @@ function getWeekViewHourGrid(
     weekendDays,
     segmentHeight,
     viewStart,
-    viewEnd
+    viewEnd,
+    minEventHeight
   }: GetWeekViewHourGridArgs
 ): WeekViewHourColumn[] {
   const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
@@ -593,7 +596,8 @@ function getWeekViewHourGrid(
       dayStart,
       dayEnd,
       segmentHeight,
-      eventWidth: 1
+      eventWidth: 1,
+      minEventHeight
     });
 
     const hours = dayViewHourGrid.map(hour => {
@@ -642,7 +646,8 @@ export function getWeekView(
     weekendDays,
     segmentHeight,
     viewStart = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
-    viewEnd = dateAdapter.endOfWeek(viewDate, { weekStartsOn })
+    viewEnd = dateAdapter.endOfWeek(viewDate, { weekStartsOn }),
+    minEventHeight
   }: GetWeekViewArgs
 ): WeekView {
   if (!events) {
@@ -692,7 +697,8 @@ export function getWeekView(
       weekendDays,
       segmentHeight,
       viewStart,
-      viewEnd
+      viewEnd,
+      minEventHeight
     })
   };
 }
@@ -830,6 +836,7 @@ export interface GetDayViewArgs {
   };
   eventWidth: number;
   segmentHeight: number;
+  minEventHeight?: number;
 }
 
 function getOverLappingDayViewEvents(
@@ -861,7 +868,8 @@ export function getDayView(
     dayStart,
     dayEnd,
     eventWidth,
-    segmentHeight
+    segmentHeight,
+    minEventHeight
   }: GetDayViewArgs
 ): DayView {
   if (!events) {
@@ -890,6 +898,10 @@ export function getDayView(
     periodStart: startOfView,
     periodEnd: endOfView
   });
+  const hourHeightModifier: number =
+    (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
+  const viewHeight =
+    differenceInMinutes(endOfView, startOfView) * hourHeightModifier;
 
   const dayViewEvents: DayViewEvent[] = eventsInPeriod
     .sort((eventA: CalendarEvent, eventB: CalendarEvent) => {
@@ -900,8 +912,6 @@ export function getDayView(
       const eventEnd: Date = event.end || eventStart;
       const startsBeforeDay: boolean = eventStart < startOfView;
       const endsAfterDay: boolean = eventEnd > endOfView;
-      const hourHeightModifier: number =
-        (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
 
       let top: number = 0;
       if (eventStart > startOfView) {
@@ -918,7 +928,17 @@ export function getDayView(
         height *= hourHeightModifier;
       }
 
-      const bottom: number = top + height;
+      if (minEventHeight) {
+        height = Math.max(minEventHeight, height);
+      }
+
+      let bottom: number = top + height;
+
+      if (bottom > viewHeight) {
+        const extra = bottom - viewHeight;
+        height -= extra;
+        bottom -= extra;
+      }
 
       const overlappingPreviousEvents = getOverLappingDayViewEvents(
         previousDayEvents,
