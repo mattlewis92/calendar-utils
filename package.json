@@ -20,7 +20,6 @@
     "preversion": "npm test",
     "postversion": "npm run build && git push && npm publish dist && npm run clean",
     "codecov": "cat coverage/lcov.info | codecov",
-    "precommit": "lint-staged",
     "lint": "tslint \"{src,test}/**/*.ts\""
   },
   "lint-staged": {
@@ -45,27 +44,27 @@
   },
   "homepage": "https://github.com/mattlewis92/calendar-utils#readme",
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/jest": "^23.3.2",
-    "@types/node": "^10.10.1",
-    "chai": "^4.0.0",
+    "@types/chai": "^4.1.6",
+    "@types/jest": "^23.3.3",
+    "@types/node": "^10.11.4",
+    "chai": "^4.2.0",
     "codecov": "^3.1.0",
     "copyfiles": "^2.1.0",
     "date-fns": "^1.29.0",
-    "husky": "^0.14.3",
+    "husky": "^1.1.1",
     "jest": "^23.6.0",
-    "lint-staged": "^7.2.2",
-    "lolex": "^2.7.4",
+    "lint-staged": "^7.3.0",
+    "lolex": "^2.7.5",
     "moment": "^2.22.2",
-    "prettier": "^1.14.2",
-    "ts-jest": "^23.1.4",
-    "ts-loader": "^4.5.0",
+    "prettier": "^1.14.3",
+    "ts-jest": "^23.10.3",
+    "ts-loader": "^5.2.1",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
-    "typescript": "^3.0.3",
-    "webpack": "^4.19.1",
-    "webpack-cli": "^3.1.0"
+    "typescript": "^3.1.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
   },
   "jest": {
     "transform": {
@@ -91,5 +90,10 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
