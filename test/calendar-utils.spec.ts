@@ -1188,6 +1188,42 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           expect(eventCount).toBe(0);
         });
 
+        it('should add an id to the row', () => {
+          const events: CalendarEvent[] = [
+            {
+              id: 'foo',
+              start: startOfWeek(new Date()),
+              end: addDays(startOfWeek(new Date()), 1),
+              title: '',
+              allDay: true
+            },
+            {
+              id: 'bar',
+              start: addDays(startOfWeek(new Date()), 2),
+              end: addDays(startOfWeek(new Date()), 3),
+              title: '',
+              allDay: true
+            }
+          ];
+          const result = getWeekView(dateAdapter, {
+            events,
+            viewDate: new Date('2016-06-27'),
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
+          });
+          expect(result.allDayEventRows[0].id).toEqual('foo-bar');
+        });
+
         describe('weekStartsOn = 1', () => {
           it('should get the correct span, offset and extends values for events that span the whole week', () => {
             const events: CalendarEvent[] = [

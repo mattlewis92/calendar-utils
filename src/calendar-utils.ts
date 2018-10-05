@@ -65,6 +65,7 @@ export interface WeekViewAllDayEvent {
 }
 
 export interface WeekViewAllDayEventRow {
+  id?: string;
   row: WeekViewAllDayEvent[];
 }
 
@@ -536,8 +537,14 @@ function getAllDayWeekEvents(
             return true;
           }
         });
+      const weekEvents = [event, ...otherRowEvents];
+      const id = weekEvents
+        .filter(weekEvent => weekEvent.event.id)
+        .map(weekEvent => weekEvent.event.id)
+        .join('-');
       allDayEventRows.push({
-        row: [event, ...otherRowEvents]
+        row: weekEvents,
+        ...(id ? { id } : {})
       });
     }
   });
