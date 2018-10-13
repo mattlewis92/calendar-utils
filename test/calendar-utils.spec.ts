@@ -137,6 +137,31 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(days.length).toEqual(10);
         expect(days).toMatchSnapshot();
       });
+
+      it('should add the events on each day', () => {
+        const events = [
+          {
+            title: 'event 1',
+            start: new Date('2018-07-26'),
+            end: new Date('2018-07-27')
+          },
+          {
+            title: 'event 2',
+            start: new Date('2019-07-26'),
+            end: new Date('2019-07-27')
+          }
+        ];
+        const days = getWeekViewHeader(dateAdapter, {
+          viewDate: new Date('2018-07-27'),
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+          events
+        });
+        expect(days[3].events).toEqual([]);
+        expect(days[4].events).toEqual([events[0]]);
+        expect(days[5].events).toEqual([events[0]]);
+        expect(days[6].events).toEqual([]);
+        expect(days).toMatchSnapshot();
+      });
     });
 
     describe('getWeekView', () => {

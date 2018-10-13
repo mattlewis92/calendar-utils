@@ -2823,6 +2823,7 @@ Array [
   Object {
     "date": 2016-06-26T00:00:00.000Z,
     "day": 0,
+    "events": Array [],
     "isFuture": false,
     "isPast": true,
     "isToday": false,
@@ -2831,6 +2832,7 @@ Array [
   Object {
     "date": 2016-06-27T00:00:00.000Z,
     "day": 1,
+    "events": Array [],
     "isFuture": false,
     "isPast": true,
     "isToday": false,
@@ -2839,6 +2841,7 @@ Array [
   Object {
     "date": 2016-06-28T00:00:00.000Z,
     "day": 2,
+    "events": Array [],
     "isFuture": false,
     "isPast": false,
     "isToday": true,
@@ -2847,6 +2850,7 @@ Array [
   Object {
     "date": 2016-06-29T00:00:00.000Z,
     "day": 3,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2855,6 +2859,7 @@ Array [
   Object {
     "date": 2016-06-30T00:00:00.000Z,
     "day": 4,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2863,6 +2868,7 @@ Array [
   Object {
     "date": 2016-07-01T00:00:00.000Z,
     "day": 5,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2871,6 +2877,87 @@ Array [
   Object {
     "date": 2016-07-02T00:00:00.000Z,
     "day": 6,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+]
+`;
+
+exports[`Adapter: date-fns getWeekViewHeader should add the events on each day 1`] = `
+Array [
+  Object {
+    "date": 2018-07-22T00:00:00.000Z,
+    "day": 0,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2018-07-23T00:00:00.000Z,
+    "day": 1,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-24T00:00:00.000Z,
+    "day": 2,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-25T00:00:00.000Z,
+    "day": 3,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-26T00:00:00.000Z,
+    "day": 4,
+    "events": Array [
+      Object {
+        "end": 2018-07-27T00:00:00.000Z,
+        "start": 2018-07-26T00:00:00.000Z,
+        "title": "event 1",
+      },
+    ],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-27T00:00:00.000Z,
+    "day": 5,
+    "events": Array [
+      Object {
+        "end": 2018-07-27T00:00:00.000Z,
+        "start": 2018-07-26T00:00:00.000Z,
+        "title": "event 1",
+      },
+    ],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-28T00:00:00.000Z,
+    "day": 6,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2884,6 +2971,7 @@ Array [
   Object {
     "date": 2018-07-20T00:00:00.000Z,
     "day": 5,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2892,6 +2980,7 @@ Array [
   Object {
     "date": 2018-07-21T00:00:00.000Z,
     "day": 6,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2900,6 +2989,7 @@ Array [
   Object {
     "date": 2018-07-22T00:00:00.000Z,
     "day": 0,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2908,6 +2998,7 @@ Array [
   Object {
     "date": 2018-07-23T00:00:00.000Z,
     "day": 1,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2916,6 +3007,7 @@ Array [
   Object {
     "date": 2018-07-24T00:00:00.000Z,
     "day": 2,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2924,6 +3016,7 @@ Array [
   Object {
     "date": 2018-07-25T00:00:00.000Z,
     "day": 3,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2932,6 +3025,7 @@ Array [
   Object {
     "date": 2018-07-26T00:00:00.000Z,
     "day": 4,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2940,6 +3034,7 @@ Array [
   Object {
     "date": 2018-07-27T00:00:00.000Z,
     "day": 5,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2948,6 +3043,7 @@ Array [
   Object {
     "date": 2018-07-28T00:00:00.000Z,
     "day": 6,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2956,6 +3052,7 @@ Array [
   Object {
     "date": 2018-07-29T00:00:00.000Z,
     "day": 0,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5787,6 +5884,7 @@ Array [
   Object {
     "date": 2016-06-26T00:00:00.000Z,
     "day": 0,
+    "events": Array [],
     "isFuture": false,
     "isPast": true,
     "isToday": false,
@@ -5795,6 +5893,7 @@ Array [
   Object {
     "date": 2016-06-27T00:00:00.000Z,
     "day": 1,
+    "events": Array [],
     "isFuture": false,
     "isPast": true,
     "isToday": false,
@@ -5803,6 +5902,7 @@ Array [
   Object {
     "date": 2016-06-28T00:00:00.000Z,
     "day": 2,
+    "events": Array [],
     "isFuture": false,
     "isPast": false,
     "isToday": true,
@@ -5811,6 +5911,7 @@ Array [
   Object {
     "date": 2016-06-29T00:00:00.000Z,
     "day": 3,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5819,6 +5920,7 @@ Array [
   Object {
     "date": 2016-06-30T00:00:00.000Z,
     "day": 4,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5827,6 +5929,7 @@ Array [
   Object {
     "date": 2016-07-01T00:00:00.000Z,
     "day": 5,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5835,6 +5938,87 @@ Array [
   Object {
     "date": 2016-07-02T00:00:00.000Z,
     "day": 6,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+]
+`;
+
+exports[`Adapter: moment getWeekViewHeader should add the events on each day 1`] = `
+Array [
+  Object {
+    "date": 2018-07-22T00:00:00.000Z,
+    "day": 0,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2018-07-23T00:00:00.000Z,
+    "day": 1,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-24T00:00:00.000Z,
+    "day": 2,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-25T00:00:00.000Z,
+    "day": 3,
+    "events": Array [],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-26T00:00:00.000Z,
+    "day": 4,
+    "events": Array [
+      Object {
+        "end": 2018-07-27T00:00:00.000Z,
+        "start": 2018-07-26T00:00:00.000Z,
+        "title": "event 1",
+      },
+    ],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-27T00:00:00.000Z,
+    "day": 5,
+    "events": Array [
+      Object {
+        "end": 2018-07-27T00:00:00.000Z,
+        "start": 2018-07-26T00:00:00.000Z,
+        "title": "event 1",
+      },
+    ],
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2018-07-28T00:00:00.000Z,
+    "day": 6,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5848,6 +6032,7 @@ Array [
   Object {
     "date": 2018-07-20T00:00:00.000Z,
     "day": 5,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5856,6 +6041,7 @@ Array [
   Object {
     "date": 2018-07-21T00:00:00.000Z,
     "day": 6,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5864,6 +6050,7 @@ Array [
   Object {
     "date": 2018-07-22T00:00:00.000Z,
     "day": 0,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5872,6 +6059,7 @@ Array [
   Object {
     "date": 2018-07-23T00:00:00.000Z,
     "day": 1,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5880,6 +6068,7 @@ Array [
   Object {
     "date": 2018-07-24T00:00:00.000Z,
     "day": 2,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5888,6 +6077,7 @@ Array [
   Object {
     "date": 2018-07-25T00:00:00.000Z,
     "day": 3,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5896,6 +6086,7 @@ Array [
   Object {
     "date": 2018-07-26T00:00:00.000Z,
     "day": 4,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5904,6 +6095,7 @@ Array [
   Object {
     "date": 2018-07-27T00:00:00.000Z,
     "day": 5,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5912,6 +6104,7 @@ Array [
   Object {
     "date": 2018-07-28T00:00:00.000Z,
     "day": 6,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5920,6 +6113,7 @@ Array [
   Object {
     "date": 2018-07-29T00:00:00.000Z,
     "day": 0,
+    "events": Array [],
     "isFuture": true,
     "isPast": false,
     "isToday": false,
