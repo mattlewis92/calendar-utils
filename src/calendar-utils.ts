@@ -21,6 +21,7 @@ export const SECONDS_IN_DAY: number = 60 * 60 * 24;
 
 export interface WeekDay {
   date: Date;
+  day: number;
   isPast: boolean;
   isToday: boolean;
   isFuture: boolean;
@@ -377,12 +378,14 @@ function getWeekDay(
 ): WeekDay {
   const { startOfDay, isSameDay, getDay } = dateAdapter;
   const today = startOfDay(new Date());
+  const day = getDay(date);
   return {
     date,
+    day,
     isPast: date < today,
     isToday: isSameDay(date, today),
     isFuture: date > today,
-    isWeekend: weekendDays.indexOf(getDay(date)) > -1
+    isWeekend: weekendDays.indexOf(day) > -1
   };
 }
 

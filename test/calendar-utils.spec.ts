@@ -108,62 +108,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2016-06-28'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY
         });
-        days.forEach((day: any) => {
-          day.timestamp = day.date.valueOf();
-          delete day.date;
-        });
-
-        expect(days).toEqual([
-          {
-            timestamp: new Date('2016-06-26').getTime(),
-            isPast: true,
-            isToday: false,
-            isFuture: false,
-            isWeekend: true
-          },
-          {
-            timestamp: new Date('2016-06-27').getTime(),
-            isPast: true,
-            isToday: false,
-            isFuture: false,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-06-28').getTime(),
-            isPast: false,
-            isToday: true,
-            isFuture: false,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-06-29').getTime(),
-            isPast: false,
-            isToday: false,
-            isFuture: true,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-06-30').getTime(),
-            isPast: false,
-            isToday: false,
-            isFuture: true,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-07-01').getTime(),
-            isPast: false,
-            isToday: false,
-            isFuture: true,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-07-02').getTime(),
-            isPast: false,
-            isToday: false,
-            isFuture: true,
-            isWeekend: true
-          }
-        ]);
+        expect(days).toMatchSnapshot();
       });
 
       it('should allow the weekend days to be customised', () => {
@@ -171,10 +116,6 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2016-06-28'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           weekendDays: [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY]
-        });
-        days.forEach((day: any) => {
-          day.timestamp = day.date.valueOf();
-          delete day.date;
         });
 
         expect(days[0].isWeekend).toBe(false);

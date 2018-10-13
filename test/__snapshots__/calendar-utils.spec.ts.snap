@@ -2818,10 +2818,72 @@ Array [
 ]
 `;
 
+exports[`Adapter: date-fns getWeekViewHeader get all days of the week for the given date 1`] = `
+Array [
+  Object {
+    "date": 2016-06-26T00:00:00.000Z,
+    "day": 0,
+    "isFuture": false,
+    "isPast": true,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2016-06-27T00:00:00.000Z,
+    "day": 1,
+    "isFuture": false,
+    "isPast": true,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-06-28T00:00:00.000Z,
+    "day": 2,
+    "isFuture": false,
+    "isPast": false,
+    "isToday": true,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-06-29T00:00:00.000Z,
+    "day": 3,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-06-30T00:00:00.000Z,
+    "day": 4,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-07-01T00:00:00.000Z,
+    "day": 5,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-07-02T00:00:00.000Z,
+    "day": 6,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+]
+`;
+
 exports[`Adapter: date-fns getWeekViewHeader should allow the week start and end to be customised 1`] = `
 Array [
   Object {
     "date": 2018-07-20T00:00:00.000Z,
+    "day": 5,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2829,6 +2891,7 @@ Array [
   },
   Object {
     "date": 2018-07-21T00:00:00.000Z,
+    "day": 6,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2836,6 +2899,7 @@ Array [
   },
   Object {
     "date": 2018-07-22T00:00:00.000Z,
+    "day": 0,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2843,6 +2907,7 @@ Array [
   },
   Object {
     "date": 2018-07-23T00:00:00.000Z,
+    "day": 1,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2850,6 +2915,7 @@ Array [
   },
   Object {
     "date": 2018-07-24T00:00:00.000Z,
+    "day": 2,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2857,6 +2923,7 @@ Array [
   },
   Object {
     "date": 2018-07-25T00:00:00.000Z,
+    "day": 3,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2864,6 +2931,7 @@ Array [
   },
   Object {
     "date": 2018-07-26T00:00:00.000Z,
+    "day": 4,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2871,6 +2939,7 @@ Array [
   },
   Object {
     "date": 2018-07-27T00:00:00.000Z,
+    "day": 5,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2878,6 +2947,7 @@ Array [
   },
   Object {
     "date": 2018-07-28T00:00:00.000Z,
+    "day": 6,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -2885,6 +2955,7 @@ Array [
   },
   Object {
     "date": 2018-07-29T00:00:00.000Z,
+    "day": 0,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5711,10 +5782,72 @@ Array [
 ]
 `;
 
+exports[`Adapter: moment getWeekViewHeader get all days of the week for the given date 1`] = `
+Array [
+  Object {
+    "date": 2016-06-26T00:00:00.000Z,
+    "day": 0,
+    "isFuture": false,
+    "isPast": true,
+    "isToday": false,
+    "isWeekend": true,
+  },
+  Object {
+    "date": 2016-06-27T00:00:00.000Z,
+    "day": 1,
+    "isFuture": false,
+    "isPast": true,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-06-28T00:00:00.000Z,
+    "day": 2,
+    "isFuture": false,
+    "isPast": false,
+    "isToday": true,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-06-29T00:00:00.000Z,
+    "day": 3,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-06-30T00:00:00.000Z,
+    "day": 4,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-07-01T00:00:00.000Z,
+    "day": 5,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": false,
+  },
+  Object {
+    "date": 2016-07-02T00:00:00.000Z,
+    "day": 6,
+    "isFuture": true,
+    "isPast": false,
+    "isToday": false,
+    "isWeekend": true,
+  },
+]
+`;
+
 exports[`Adapter: moment getWeekViewHeader should allow the week start and end to be customised 1`] = `
 Array [
   Object {
     "date": 2018-07-20T00:00:00.000Z,
+    "day": 5,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5722,6 +5855,7 @@ Array [
   },
   Object {
     "date": 2018-07-21T00:00:00.000Z,
+    "day": 6,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5729,6 +5863,7 @@ Array [
   },
   Object {
     "date": 2018-07-22T00:00:00.000Z,
+    "day": 0,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5736,6 +5871,7 @@ Array [
   },
   Object {
     "date": 2018-07-23T00:00:00.000Z,
+    "day": 1,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5743,6 +5879,7 @@ Array [
   },
   Object {
     "date": 2018-07-24T00:00:00.000Z,
+    "day": 2,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5750,6 +5887,7 @@ Array [
   },
   Object {
     "date": 2018-07-25T00:00:00.000Z,
+    "day": 3,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5757,6 +5895,7 @@ Array [
   },
   Object {
     "date": 2018-07-26T00:00:00.000Z,
+    "day": 4,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5764,6 +5903,7 @@ Array [
   },
   Object {
     "date": 2018-07-27T00:00:00.000Z,
+    "day": 5,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5771,6 +5911,7 @@ Array [
   },
   Object {
     "date": 2018-07-28T00:00:00.000Z,
+    "day": 6,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
@@ -5778,6 +5919,7 @@ Array [
   },
   Object {
     "date": 2018-07-29T00:00:00.000Z,
+    "day": 0,
     "isFuture": true,
     "isPast": false,
     "isToday": false,
