@@ -295,6 +295,38 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result[0].events[3].left).toEqual(75);
       });
 
+      it('should use the correct width on events that start close to each other', () => {
+        const events = [
+          {
+            start: new Date('2018-10-13T00:05:00'),
+            end: new Date('2018-10-20'),
+            title: 'Event 1'
+          },
+          {
+            start: new Date('2018-10-13T00:10:00'),
+            end: new Date('2018-10-20'),
+            title: 'Event 2'
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date('2018-10-12'),
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30,
+          events
+        }).hourColumns;
+        expect(result[6].events[0].width).toEqual(50);
+        expect(result[6].events[1].width).toEqual(50);
+      });
+
       describe('precision = "days"', () => {
         it('should get the correct span, offset and extends values for events that start within the week', () => {
           const events: CalendarEvent[] = [

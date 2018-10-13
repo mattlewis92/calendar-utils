@@ -854,6 +854,8 @@ function getOverLappingDayViewEvents(
 
     if (top < previousEventBottom && previousEventBottom < bottom) {
       return true;
+    } else if (top < previousEventTop && previousEventTop < bottom) {
+      return true;
     } else if (previousEventTop <= top && bottom <= previousEventBottom) {
       return true;
     }
