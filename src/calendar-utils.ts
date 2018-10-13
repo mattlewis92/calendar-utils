@@ -27,7 +27,6 @@ export interface WeekDay {
   isFuture: boolean;
   isWeekend: boolean;
   cssClass?: string;
-  events?: CalendarEvent[];
 }
 
 export interface EventColor {
@@ -397,7 +396,6 @@ export interface GetWeekViewHeaderArgs {
   weekendDays?: number[];
   viewStart?: Date;
   viewEnd?: Date;
-  events?: CalendarEvent[];
 }
 
 export function getWeekViewHeader(
@@ -407,25 +405,16 @@ export function getWeekViewHeader(
     weekStartsOn,
     excluded = [],
     weekendDays,
-    events,
     viewStart = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
     viewEnd = dateAdapter.addDays(viewStart, DAYS_IN_WEEK)
   }: GetWeekViewHeaderArgs
 ): WeekDay[] {
-  events = events || [];
-  const { addDays, getDay, startOfDay, endOfDay } = dateAdapter;
+  const { addDays, getDay } = dateAdapter;
   const days: WeekDay[] = [];
   let date = viewStart;
   while (date < viewEnd) {
     if (!excluded.some(e => getDay(date) === e)) {
-      days.push({
-        ...getWeekDay(dateAdapter, { date, weekendDays }),
-        events: getEventsInPeriod(dateAdapter, {
-          events,
-          periodStart: startOfDay(date),
-          periodEnd: endOfDay(date)
-        })
-      });
+      days.push(getWeekDay(dateAdapter, { date, weekendDays }));
     }
     date = addDays(date, 1);
   }
