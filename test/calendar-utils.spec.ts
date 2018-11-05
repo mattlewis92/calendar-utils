@@ -327,6 +327,56 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result[6].events[1].width).toEqual(50);
       });
 
+      it('should use the correct width of events for events that overlap in multiple columns', () => {
+        const eventAStartDate = new Date('2018-10-23T08:15:00');
+        const eventAEndDate = new Date('2018-10-23T11:00:00');
+        const eventBStartDate = new Date('2018-10-23T11:00:00');
+        const eventBEndDate = new Date('2018-10-23T14:00:00');
+
+        const events = [
+          {
+            title: 'Event 1',
+            start: eventBStartDate,
+            end: eventBEndDate
+          },
+          {
+            title: 'Event 2',
+            start: eventAStartDate,
+            end: eventAEndDate
+          },
+
+          {
+            title: 'Event 3',
+            start: eventBStartDate,
+            end: eventBEndDate
+          },
+          {
+            title: 'Event 4',
+            start: eventAStartDate,
+            end: eventBEndDate
+          }
+        ];
+
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date('2018-10-23T08:15:00'),
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30,
+          events
+        }).hourColumns;
+
+        expect(result[2].events[0].width).toEqual(100 / 3);
+        expect(result).toMatchSnapshot();
+      });
+
       describe('precision = "days"', () => {
         it('should get the correct span, offset and extends values for events that start within the week', () => {
           const events: CalendarEvent[] = [

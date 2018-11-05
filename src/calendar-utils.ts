@@ -617,17 +617,44 @@ function getWeekViewHourGrid(
       return { ...hour, segments };
     });
 
+    function getColumnCount(
+      allEvents: DayViewEvent[],
+      prevOverlappingEvents: DayViewEvent[]
+    ): number {
+      const columnCount = Math.max(
+        ...prevOverlappingEvents.map(iEvent => iEvent.left + 1)
+      );
+
+      const nextOverlappingEvents = allEvents
+        .filter(iEvent => iEvent.left >= columnCount)
+        .filter(iEvent => {
+          return (
+            getOverLappingDayViewEvents(
+              prevOverlappingEvents,
+              iEvent.top,
+              iEvent.top + iEvent.height
+            ).length > 0
+          );
+        });
+
+      if (nextOverlappingEvents.length > 0) {
+        return getColumnCount(allEvents, nextOverlappingEvents);
+      } else {
+        return columnCount;
+      }
+    }
+
     return {
       hours,
       date: day.date,
       events: dayView.events.map(event => {
-        const overLappingEvents = getOverLappingDayViewEvents(
+        const columnCount = getColumnCount(
           dayView.events,
-          event.top,
-          event.top + event.height
-        );
-        const columnCount = Math.max(
-          ...overLappingEvents.map(iEvent => iEvent.left + 1)
+          getOverLappingDayViewEvents(
+            dayView.events,
+            event.top,
+            event.top + event.height
+          )
         );
 
         const width = 100 / columnCount;
