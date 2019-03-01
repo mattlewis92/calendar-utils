@@ -35,6 +35,7 @@ export interface EventColor {
 }
 
 export interface EventAction {
+  id?: string | number;
   label: string;
   cssClass?: string;
   onClick({ event }: { event: CalendarEvent }): any;
