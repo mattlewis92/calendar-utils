@@ -430,8 +430,8 @@ export interface GetWeekViewArgs {
   precision?: 'minutes' | 'days';
   absolutePositionedEvents?: boolean;
   hourSegments: number;
-  dayStart: any;
-  dayEnd: any;
+  dayStart: Time;
+  dayEnd: Time;
   weekendDays?: number[];
   segmentHeight: number;
   viewStart?: Date;
@@ -917,12 +917,12 @@ export function getDayView(
   } = dateAdapter;
 
   const startOfView: Date = setMinutes(
-    setHours(startOfDay(viewDate), dayStart.hour),
-    dayStart.minute
+    setHours(startOfDay(viewDate), sanitiseHours(dayStart.hour)),
+    sanitiseMinutes(dayStart.minute)
   );
   const endOfView: Date = setMinutes(
-    setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour),
-    dayEnd.minute
+    setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
+    sanitiseMinutes(dayEnd.minute)
   );
   const previousDayEvents: DayViewEvent[] = [];
   const eventsInPeriod = getEventsInPeriod(dateAdapter, {
@@ -1012,11 +1012,24 @@ export function getDayView(
   };
 }
 
+interface Time {
+  hour: number;
+  minute: number;
+}
+
 export interface GetDayViewHourGridArgs {
   viewDate: Date;
   hourSegments: number;
-  dayStart: any;
-  dayEnd: any;
+  dayStart: Time;
+  dayEnd: Time;
+}
+
+function sanitiseHours(hours: number): number {
+  return Math.max(Math.min(23, hours), 0);
+}
+
+function sanitiseMinutes(minutes: number): number {
+  return Math.max(Math.min(59, minutes), 0);
 }
 
 export function getDayViewHourGrid(
@@ -1035,12 +1048,12 @@ export function getDayViewHourGrid(
   const hours: DayViewHour[] = [];
 
   const startOfView: Date = setMinutes(
-    setHours(startOfDay(viewDate), dayStart.hour),
-    dayStart.minute
+    setHours(startOfDay(viewDate), sanitiseHours(dayStart.hour)),
+    sanitiseMinutes(dayStart.minute)
   );
   const endOfView: Date = setMinutes(
-    setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour),
-    dayEnd.minute
+    setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
+    sanitiseMinutes(dayEnd.minute)
   );
   const segmentDuration: number = MINUTES_IN_HOUR / hourSegments;
   const startOfViewDay: Date = startOfDay(viewDate);

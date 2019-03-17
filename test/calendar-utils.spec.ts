@@ -2388,6 +2388,38 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         });
       });
 
+      it('should sanitise invalid day view start and end times', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: startOfDay(subDays(new Date(), 1)),
+            end: endOfDay(subDays(new Date(), 1)),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: new Date(),
+            end: addDays(new Date(), 1),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result: DayView = getDayView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: -1000, minute: -1000 },
+          dayEnd: { hour: 24, minute: 3000 },
+          eventWidth: 100,
+          segmentHeight: 30
+        });
+
+        expect(result.period).toEqual({
+          start: startOfDay(new Date()),
+          end: setMilliseconds(setSeconds(endOfDay(new Date()), 0), 0),
+          events: [events[1]]
+        });
+      });
+
       it('should exclude all events that dont occur on the view date', () => {
         const events: CalendarEvent[] = [
           {
