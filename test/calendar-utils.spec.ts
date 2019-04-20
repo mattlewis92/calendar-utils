@@ -2091,6 +2091,57 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           expect(eventCount).toBe(0);
         });
       });
+
+      it('should set event widths to fill sibling spaces', () => {
+        const events = [
+          {
+            title: 'A',
+            start: new Date('2018-10-23T08:30:00'),
+            end: new Date('2018-10-23T09:00:00')
+          },
+          {
+            title: 'B',
+            start: new Date('2018-10-23T09:00:00'),
+            end: new Date('2018-10-23T09:30:00')
+          },
+          {
+            title: 'D',
+            start: new Date('2018-10-23T08:00:00'),
+            end: new Date('2018-10-23T08:30:00')
+          },
+          {
+            title: 'F',
+            start: new Date('2018-10-23T08:00:00'),
+            end: new Date('2018-10-23T08:30:00')
+          },
+          {
+            title: 'G',
+            start: new Date('2018-10-23T08:00:00'),
+            end: new Date('2018-10-23T09:30:00')
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date('2018-10-23T08:15:00'),
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30,
+          events
+        }).hourColumns;
+
+        expect(result[2].events[3].event).toEqual(events[0]);
+        expect(result[2].events[3].left).toEqual(0);
+        expect(Math.floor(result[2].events[3].width)).toEqual(66);
+
+        expect(result).toMatchSnapshot();
+      });
     });
 
     describe('getWeekViewEventOffset', () => {

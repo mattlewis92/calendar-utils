@@ -645,21 +645,39 @@ function getWeekViewHourGrid(
       }
     }
 
+    const mappedEvents = dayView.events.map(event => {
+      const columnCount = getColumnCount(
+        dayView.events,
+        getOverLappingDayViewEvents(
+          dayView.events,
+          event.top,
+          event.top + event.height
+        )
+      );
+
+      const width = 100 / columnCount;
+      return { ...event, left: event.left * width, width };
+    });
+
     return {
       hours,
       date: day.date,
-      events: dayView.events.map(event => {
-        const columnCount = getColumnCount(
-          dayView.events,
-          getOverLappingDayViewEvents(
-            dayView.events,
-            event.top,
-            event.top + event.height
-          )
+      events: mappedEvents.map(event => {
+        const overLappingEvents = getOverLappingDayViewEvents(
+          mappedEvents.filter(otherEvent => otherEvent.left > event.left),
+          event.top,
+          event.top + event.height
         );
-
-        const width = 100 / columnCount;
-        return { ...event, left: event.left * width, width };
+        if (overLappingEvents.length > 0) {
+          return {
+            ...event,
+            width:
+              Math.min(
+                ...overLappingEvents.map(otherEvent => otherEvent.left)
+              ) - event.left
+          };
+        }
+        return event;
       })
     };
   });
