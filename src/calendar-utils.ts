@@ -963,7 +963,11 @@ export function getDayView(
 
       let top: number = 0;
       if (eventStart > startOfView) {
-        top += differenceInMinutes(eventStart, startOfView);
+        // adjust the difference in minutes if the user's offset is different between the start of the day and the event (e.g. when going to or from DST)
+        const eventOffset = eventStart.getTimezoneOffset();
+        const startOffset = startOfView.getTimezoneOffset();
+        const diff = startOffset - eventOffset;
+        top += differenceInMinutes(eventStart, startOfView) + diff;
       }
       top *= hourHeightModifier;
 
