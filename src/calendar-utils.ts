@@ -38,6 +38,7 @@ export interface EventAction {
   id?: string | number;
   label: string;
   cssClass?: string;
+  a11yLabel?: string;
   onClick({ event }: { event: CalendarEvent }): any;
 }
 
