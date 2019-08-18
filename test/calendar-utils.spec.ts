@@ -3151,40 +3151,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59
           }
         });
-        expect(result).toEqual([
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 1), 30),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 30),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 30),
-                isStart: false
-              }
-            ]
-          }
-        ]);
+        expect(result).toMatchSnapshot()
       });
 
       it('should get the day view segments with a bigger segment size', () => {
@@ -3200,60 +3167,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59
           }
         });
-        expect(result).toEqual([
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 1), 30),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 1), 45),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 15),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 30),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 45),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 15),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 30),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 45),
-                isStart: false
-              }
-            ]
-          }
-        ]);
+        expect(result).toMatchSnapshot()
       });
     });
 

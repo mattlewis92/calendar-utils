@@ -113,6 +113,7 @@ export interface DayView {
 export interface DayViewHourSegment {
   isStart: boolean;
   date: Date;
+  displayDate: Date;
   cssClass?: string;
 }
 
@@ -1102,6 +1103,7 @@ export function getDayViewHourGrid(
       if (date >= startOfView && date < endOfView) {
         segments.push({
           date: dateAdjustment(date),
+          displayDate: date,
           isStart: j === 0
         });
       }
