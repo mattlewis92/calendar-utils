@@ -113,6 +113,7 @@ export interface DayView {
 export interface DayViewHourSegment {
   isStart: boolean;
   date: Date;
+  displayDate: Date;
   cssClass?: string;
 }
 
@@ -964,7 +965,11 @@ export function getDayView(
 
       let top: number = 0;
       if (eventStart > startOfView) {
-        top += differenceInMinutes(eventStart, startOfView);
+        // adjust the difference in minutes if the user's offset is different between the start of the day and the event (e.g. when going to or from DST)
+        const eventOffset = eventStart.getTimezoneOffset();
+        const startOffset = startOfView.getTimezoneOffset();
+        const diff = startOffset - eventOffset;
+        top += differenceInMinutes(eventStart, startOfView) + diff;
       }
       top *= hourHeightModifier;
 
@@ -1062,20 +1067,31 @@ export function getDayViewHourGrid(
     startOfMinute,
     endOfDay,
     addMinutes,
-    addHours
+    addHours,
+    addDays
   } = dateAdapter;
   const hours: DayViewHour[] = [];
 
-  const startOfView: Date = setMinutes(
+  let startOfView: Date = setMinutes(
     setHours(startOfDay(viewDate), sanitiseHours(dayStart.hour)),
     sanitiseMinutes(dayStart.minute)
   );
-  const endOfView: Date = setMinutes(
+  let endOfView: Date = setMinutes(
     setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
     sanitiseMinutes(dayEnd.minute)
   );
   const segmentDuration: number = MINUTES_IN_HOUR / hourSegments;
-  const startOfViewDay: Date = startOfDay(viewDate);
+  let startOfViewDay: Date = startOfDay(viewDate);
+  const endOfViewDay: Date = endOfDay(viewDate);
+  let dateAdjustment: (d: Date) => Date = (d: Date) => d;
+
+  // this means that we change from or to DST on this day and that's going to cause problems so we bump the date
+  if (startOfViewDay.getTimezoneOffset() !== endOfViewDay.getTimezoneOffset()) {
+    startOfViewDay = addDays(startOfViewDay, 1);
+    startOfView = addDays(startOfView, 1);
+    endOfView = addDays(endOfView, 1);
+    dateAdjustment = (d: Date) => addDays(d, -1);
+  }
 
   for (let i: number = 0; i < HOURS_IN_DAY; i++) {
     const segments: DayViewHourSegment[] = [];
@@ -1086,7 +1102,8 @@ export function getDayViewHourGrid(
       );
       if (date >= startOfView && date < endOfView) {
         segments.push({
-          date,
+          date: dateAdjustment(date),
+          displayDate: date,
           isStart: j === 0
         });
       }
