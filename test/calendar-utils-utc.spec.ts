@@ -1,4 +1,4 @@
-import './util/force-utc';
+import './util/use-utc-timezone';
 import {
   addDays,
   addHours,
