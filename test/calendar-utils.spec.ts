@@ -3137,50 +3137,6 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
     });
 
     describe('getDayViewHourGrid', () => {
-      it.skip('should deal with days that contain DST switch over in them', () => {
-        // this is the day that we flip from BST to GMT in the UK which means that there is an extra hour in the day
-        // we want to make sure that this does not screw things up
-        const viewDate = new Date(2019, 9, 27);
-        const result: DayViewHour[] = getDayViewHourGrid(dateAdapter, {
-          viewDate,
-          hourSegments: 2,
-          dayStart: {
-            hour: 1,
-            minute: 0
-          },
-          dayEnd: {
-            hour: 2,
-            minute: 59
-          }
-        });
-        expect(result).toEqual([
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(viewDate), 1), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(viewDate), 1), 30),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(viewDate), 2), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(viewDate), 2), 30),
-                isStart: false
-              }
-            ]
-          }
-        ]);
-      });
-
       it('should get the day view segments respecting the start and end of the day', () => {
         const result: DayViewHour[] = getDayViewHourGrid(dateAdapter, {
           viewDate: new Date(),
