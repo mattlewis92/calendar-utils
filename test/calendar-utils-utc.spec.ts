@@ -3151,7 +3151,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59
           }
         });
-        expect(result).toMatchSnapshot()
+        expect(result).toMatchSnapshot();
       });
 
       it('should get the day view segments with a bigger segment size', () => {
@@ -3167,7 +3167,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59
           }
         });
-        expect(result).toMatchSnapshot()
+        expect(result).toMatchSnapshot();
       });
     });
 

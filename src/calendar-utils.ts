@@ -502,21 +502,19 @@ function getAllDayWeekEvents(
       startsBeforeWeek: entry.event.start < viewStart,
       endsAfterWeek: (entry.event.end || entry.event.start) > viewEnd
     }))
-    .sort(
-      (itemA, itemB): number => {
-        const startSecondsDiff: number = differenceInSeconds(
-          itemA.event.start,
-          itemB.event.start
+    .sort((itemA, itemB): number => {
+      const startSecondsDiff: number = differenceInSeconds(
+        itemA.event.start,
+        itemB.event.start
+      );
+      if (startSecondsDiff === 0) {
+        return differenceInSeconds(
+          itemB.event.end || itemB.event.start,
+          itemA.event.end || itemA.event.start
         );
-        if (startSecondsDiff === 0) {
-          return differenceInSeconds(
-            itemB.event.end || itemB.event.start,
-            itemA.event.end || itemA.event.start
-          );
-        }
-        return startSecondsDiff;
       }
-    );
+      return startSecondsDiff;
+    });
 
   const allDayEventRows: WeekViewAllDayEventRow[] = [];
   const allocatedEvents: WeekViewAllDayEvent[] = [];
