@@ -233,7 +233,7 @@ function getWeekViewEventSpan(
     differenceInDays
   } = dateAdapter;
   let span: number = SECONDS_IN_DAY;
-  const begin: Date = max(event.start, startOfWeekDate);
+  const begin: Date = max([event.start, startOfWeekDate]);
 
   if (event.end) {
     switch (precision) {

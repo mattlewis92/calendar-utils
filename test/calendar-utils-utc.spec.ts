@@ -12,9 +12,7 @@ import {
   setMinutes,
   setSeconds,
   startOfDay,
-  startOfTomorrow,
   startOfWeek,
-  startOfYesterday,
   subDays,
   subHours
 } from 'date-fns';
@@ -483,7 +481,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             } as any
           });
 
-          const weekStartsOn: number = DAYS_OF_WEEK.SATURDAY;
+          const weekStartsOn = DAYS_OF_WEEK.SATURDAY;
           const viewDate: Date = new Date('2017-05-27');
           const result = getWeekView(dateAdapter, {
             events,
@@ -3072,8 +3070,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             color: { primary: '', secondary: '' }
           },
           {
-            start: startOfYesterday(),
-            end: setHours(startOfTomorrow(), 11),
+            start: subDays(startOfDay(new Date()), 1),
+            end: setHours(startOfDay(addDays(new Date(), 1)), 11),
             title: 'Day column 1 - event 1',
             color: { primary: '', secondary: '' }
           },
@@ -3087,7 +3085,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
 
         const result: DayView = getDayView(dateAdapter, {
           events,
-          viewDate: startOfTomorrow(),
+          viewDate: startOfDay(addDays(new Date(), 1)),
           hourSegments: 2,
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
