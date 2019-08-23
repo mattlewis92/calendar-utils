@@ -1,12 +1,12 @@
 {
   "name": "calendar-utils",
-  "version": "0.2.0",
+  "version": "0.3.3",
   "description": "Utility functions to generate views for calendars",
   "main": "bundles/calendar-utils.umd.js",
   "module": "calendar-utils.js",
   "typings": "calendar-utils.d.ts",
   "scripts": {
-    "test": "TZ=UTC jest",
+    "test": "jest",
     "test:watch": "npm t -- --watch",
     "test:ci": "npm t -- --runInBand --coverage && npm run lint",
     "test:coverage": "npm t -- --coverage",
@@ -20,7 +20,6 @@
     "preversion": "npm test",
     "postversion": "npm run build && git push && npm publish dist && npm run clean",
     "codecov": "cat coverage/lcov.info | codecov",
-    "precommit": "lint-staged",
     "lint": "tslint \"{src,test}/**/*.ts\""
   },
   "lint-staged": {
@@ -45,27 +44,28 @@
   },
   "homepage": "https://github.com/mattlewis92/calendar-utils#readme",
   "devDependencies": {
-    "@types/chai": "^4.1.4",
-    "@types/jest": "^23.3.1",
-    "@types/node": "^10.9.3",
-    "chai": "^4.0.0",
-    "codecov": "^3.0.4",
-    "copyfiles": "^2.0.0",
-    "date-fns": "^2.0.0-alpha.16",
-    "husky": "^0.14.3",
-    "jest": "^23.5.0",
-    "lint-staged": "^7.2.2",
-    "lolex": "^2.7.1",
-    "moment": "^2.22.2",
-    "prettier": "^1.14.2",
-    "ts-jest": "^23.1.4",
-    "ts-loader": "^4.5.0",
-    "ts-node": "^7.0.1",
-    "tslint": "^5.11.0",
-    "tslint-config-prettier": "^1.15.0",
-    "typescript": "^3.0.1",
-    "webpack": "^4.17.1",
-    "webpack-cli": "^3.1.0"
+    "@types/chai": "^4.2.0",
+    "@types/jest": "^24.0.17",
+    "@types/node": "^12.7.2",
+    "chai": "^4.2.0",
+    "codecov": "^3.5.0",
+    "copyfiles": "^2.1.1",
+    "date-fns": "^2.0.0",
+    "husky": "^3.0.4",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.2.3",
+    "lolex": "^4.2.0",
+    "moment": "^2.24.0",
+    "prettier": "^1.18.2",
+    "timezone-mock": "^1.0.8",
+    "ts-jest": "^24.0.2",
+    "ts-loader": "^6.0.4",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.5.3",
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
   },
   "jest": {
     "transform": {
@@ -82,7 +82,7 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 97,
+        "branches": 96,
         "functions": 100,
         "lines": 100,
         "statements": 100
@@ -91,5 +91,10 @@
     "modulePathIgnorePatterns": [
       "<rootDir>/dist/"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

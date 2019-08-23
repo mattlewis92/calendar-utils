@@ -43,7 +43,7 @@ export function adapterFactory(): DateAdapter {
     isSameDay,
     isSameMonth,
     isSameSecond,
-    max: (...dates) => max(dates),
+    max,
     setHours,
     setMinutes,
     startOfDay,

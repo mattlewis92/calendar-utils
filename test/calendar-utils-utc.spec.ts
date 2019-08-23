@@ -1,3 +1,4 @@
+import './util/use-utc-timezone';
 import {
   addDays,
   addHours,
@@ -106,62 +107,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2016-06-28'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY
         });
-        days.forEach((day: any) => {
-          day.timestamp = day.date.valueOf();
-          delete day.date;
-        });
-
-        expect(days).toEqual([
-          {
-            timestamp: new Date('2016-06-26').getTime(),
-            isPast: true,
-            isToday: false,
-            isFuture: false,
-            isWeekend: true
-          },
-          {
-            timestamp: new Date('2016-06-27').getTime(),
-            isPast: true,
-            isToday: false,
-            isFuture: false,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-06-28').getTime(),
-            isPast: false,
-            isToday: true,
-            isFuture: false,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-06-29').getTime(),
-            isPast: false,
-            isToday: false,
-            isFuture: true,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-06-30').getTime(),
-            isPast: false,
-            isToday: false,
-            isFuture: true,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-07-01').getTime(),
-            isPast: false,
-            isToday: false,
-            isFuture: true,
-            isWeekend: false
-          },
-          {
-            timestamp: new Date('2016-07-02').getTime(),
-            isPast: false,
-            isToday: false,
-            isFuture: true,
-            isWeekend: true
-          }
-        ]);
+        expect(days).toMatchSnapshot();
       });
 
       it('should allow the weekend days to be customised', () => {
@@ -169,10 +115,6 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2016-06-28'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           weekendDays: [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY]
-        });
-        days.forEach((day: any) => {
-          day.timestamp = day.date.valueOf();
-          delete day.date;
         });
 
         expect(days[0].isWeekend).toBe(false);
@@ -352,6 +294,88 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result[0].events[3].left).toEqual(75);
       });
 
+      it('should use the correct width on events that start close to each other', () => {
+        const events = [
+          {
+            start: new Date('2018-10-13T00:05:00'),
+            end: new Date('2018-10-20'),
+            title: 'Event 1'
+          },
+          {
+            start: new Date('2018-10-13T00:10:00'),
+            end: new Date('2018-10-20'),
+            title: 'Event 2'
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date('2018-10-12'),
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30,
+          events
+        }).hourColumns;
+        expect(result[6].events[0].width).toEqual(50);
+        expect(result[6].events[1].width).toEqual(50);
+      });
+
+      it('should use the correct width of events for events that overlap in multiple columns', () => {
+        const eventAStartDate = new Date('2018-10-23T08:15:00');
+        const eventAEndDate = new Date('2018-10-23T11:00:00');
+        const eventBStartDate = new Date('2018-10-23T11:00:00');
+        const eventBEndDate = new Date('2018-10-23T14:00:00');
+
+        const events = [
+          {
+            title: 'Event 1',
+            start: eventBStartDate,
+            end: eventBEndDate
+          },
+          {
+            title: 'Event 2',
+            start: eventAStartDate,
+            end: eventAEndDate
+          },
+
+          {
+            title: 'Event 3',
+            start: eventBStartDate,
+            end: eventBEndDate
+          },
+          {
+            title: 'Event 4',
+            start: eventAStartDate,
+            end: eventBEndDate
+          }
+        ];
+
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date('2018-10-23T08:15:00'),
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30,
+          events
+        }).hourColumns;
+
+        expect(result[2].events[0].width).toEqual(100 / 3);
+        expect(result).toMatchSnapshot();
+      });
+
       describe('precision = "days"', () => {
         it('should get the correct span, offset and extends values for events that start within the week', () => {
           const events: CalendarEvent[] = [
@@ -457,7 +481,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             } as any
           });
 
-          const weekStartsOn: number = DAYS_OF_WEEK.SATURDAY;
+          const weekStartsOn = DAYS_OF_WEEK.SATURDAY;
           const viewDate: Date = new Date('2017-05-27');
           const result = getWeekView(dateAdapter, {
             events,
@@ -1184,6 +1208,42 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             segmentHeight: 30
           }).allDayEventRows.length;
           expect(eventCount).toBe(0);
+        });
+
+        it('should add an id to the row', () => {
+          const events: CalendarEvent[] = [
+            {
+              id: 'foo',
+              start: startOfWeek(new Date()),
+              end: addDays(startOfWeek(new Date()), 1),
+              title: '',
+              allDay: true
+            },
+            {
+              id: 'bar',
+              start: addDays(startOfWeek(new Date()), 2),
+              end: addDays(startOfWeek(new Date()), 3),
+              title: '',
+              allDay: true
+            }
+          ];
+          const result = getWeekView(dateAdapter, {
+            events,
+            viewDate: new Date('2016-06-27'),
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+            precision: 'days',
+            hourSegments: 2,
+            dayStart: {
+              hour: 1,
+              minute: 30
+            },
+            dayEnd: {
+              hour: 3,
+              minute: 59
+            },
+            segmentHeight: 30
+          });
+          expect(result.allDayEventRows[0].id).toEqual('foo-bar');
         });
 
         describe('weekStartsOn = 1', () => {
@@ -2030,6 +2090,57 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           expect(eventCount).toBe(0);
         });
       });
+
+      it('should set event widths to fill sibling spaces', () => {
+        const events = [
+          {
+            title: 'A',
+            start: new Date('2018-10-23T08:30:00'),
+            end: new Date('2018-10-23T09:00:00')
+          },
+          {
+            title: 'B',
+            start: new Date('2018-10-23T09:00:00'),
+            end: new Date('2018-10-23T09:30:00')
+          },
+          {
+            title: 'D',
+            start: new Date('2018-10-23T08:00:00'),
+            end: new Date('2018-10-23T08:30:00')
+          },
+          {
+            title: 'F',
+            start: new Date('2018-10-23T08:00:00'),
+            end: new Date('2018-10-23T08:30:00')
+          },
+          {
+            title: 'G',
+            start: new Date('2018-10-23T08:00:00'),
+            end: new Date('2018-10-23T09:30:00')
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date('2018-10-23T08:15:00'),
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30,
+          events
+        }).hourColumns;
+
+        expect(result[2].events[3].event).toEqual(events[0]);
+        expect(result[2].events[3].left).toEqual(0);
+        expect(Math.floor(result[2].events[3].width)).toEqual(66);
+
+        expect(result).toMatchSnapshot();
+      });
     });
 
     describe('getWeekViewEventOffset', () => {
@@ -2316,6 +2427,38 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           hourSegments: 2,
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
+          eventWidth: 100,
+          segmentHeight: 30
+        });
+
+        expect(result.period).toEqual({
+          start: startOfDay(new Date()),
+          end: setMilliseconds(setSeconds(endOfDay(new Date()), 0), 0),
+          events: [events[1]]
+        });
+      });
+
+      it('should sanitise invalid day view start and end times', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: startOfDay(subDays(new Date(), 1)),
+            end: endOfDay(subDays(new Date(), 1)),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: new Date(),
+            end: addDays(new Date(), 1),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result: DayView = getDayView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: -1000, minute: -1000 },
+          dayEnd: { hour: 24, minute: 3000 },
           eventWidth: 100,
           segmentHeight: 30
         });
@@ -3006,40 +3149,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59
           }
         });
-        expect(result).toEqual([
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 1), 30),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 30),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 30),
-                isStart: false
-              }
-            ]
-          }
-        ]);
+        expect(result).toMatchSnapshot()
       });
 
       it('should get the day view segments with a bigger segment size', () => {
@@ -3055,60 +3165,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59
           }
         });
-        expect(result).toEqual([
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 1), 30),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 1), 45),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 15),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 30),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 2), 45),
-                isStart: false
-              }
-            ]
-          },
-          {
-            segments: [
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 0),
-                isStart: true
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 15),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 30),
-                isStart: false
-              },
-              {
-                date: setMinutes(setHours(startOfDay(new Date()), 3), 45),
-                isStart: false
-              }
-            ]
-          }
-        ]);
+        expect(result).toMatchSnapshot()
       });
     });
 

@@ -5,7 +5,8 @@ module.exports = {
     path: __dirname + '/dist/bundles',
     filename: 'calendar-utils.umd.js',
     libraryTarget: 'umd',
-    library: 'calendarUtils'
+    library: 'calendarUtils',
+    globalObject: "typeof self !== 'undefined' ? self : this"
   },
   module: {
     rules: [{

@@ -21,6 +21,7 @@ export const SECONDS_IN_DAY: number = 60 * 60 * 24;
 
 export interface WeekDay {
   date: Date;
+  day: number;
   isPast: boolean;
   isToday: boolean;
   isFuture: boolean;
@@ -34,8 +35,10 @@ export interface EventColor {
 }
 
 export interface EventAction {
+  id?: string | number;
   label: string;
   cssClass?: string;
+  a11yLabel?: string;
   onClick({ event }: { event: CalendarEvent }): any;
 }
 
@@ -65,6 +68,7 @@ export interface WeekViewAllDayEvent {
 }
 
 export interface WeekViewAllDayEventRow {
+  id?: string;
   row: WeekViewAllDayEvent[];
 }
 
@@ -109,6 +113,7 @@ export interface DayView {
 export interface DayViewHourSegment {
   isStart: boolean;
   date: Date;
+  displayDate: Date;
   cssClass?: string;
 }
 
@@ -228,7 +233,7 @@ function getWeekViewEventSpan(
     differenceInDays
   } = dateAdapter;
   let span: number = SECONDS_IN_DAY;
-  const begin: Date = max(event.start, startOfWeekDate);
+  const begin: Date = max([event.start, startOfWeekDate]);
 
   if (event.end) {
     switch (precision) {
@@ -376,12 +381,14 @@ function getWeekDay(
 ): WeekDay {
   const { startOfDay, isSameDay, getDay } = dateAdapter;
   const today = startOfDay(new Date());
+  const day = getDay(date);
   return {
     date,
+    day,
     isPast: date < today,
     isToday: isSameDay(date, today),
     isFuture: date > today,
-    isWeekend: weekendDays.indexOf(getDay(date)) > -1
+    isWeekend: weekendDays.indexOf(day) > -1
   };
 }
 
@@ -425,8 +432,8 @@ export interface GetWeekViewArgs {
   precision?: 'minutes' | 'days';
   absolutePositionedEvents?: boolean;
   hourSegments: number;
-  dayStart: any;
-  dayEnd: any;
+  dayStart: Time;
+  dayEnd: Time;
   weekendDays?: number[];
   segmentHeight: number;
   viewStart?: Date;
@@ -495,21 +502,19 @@ function getAllDayWeekEvents(
       startsBeforeWeek: entry.event.start < viewStart,
       endsAfterWeek: (entry.event.end || entry.event.start) > viewEnd
     }))
-    .sort(
-      (itemA, itemB): number => {
-        const startSecondsDiff: number = differenceInSeconds(
-          itemA.event.start,
-          itemB.event.start
+    .sort((itemA, itemB): number => {
+      const startSecondsDiff: number = differenceInSeconds(
+        itemA.event.start,
+        itemB.event.start
+      );
+      if (startSecondsDiff === 0) {
+        return differenceInSeconds(
+          itemB.event.end || itemB.event.start,
+          itemA.event.end || itemA.event.start
         );
-        if (startSecondsDiff === 0) {
-          return differenceInSeconds(
-            itemB.event.end || itemB.event.start,
-            itemA.event.end || itemA.event.start
-          );
-        }
-        return startSecondsDiff;
       }
-    );
+      return startSecondsDiff;
+    });
 
   const allDayEventRows: WeekViewAllDayEventRow[] = [];
   const allocatedEvents: WeekViewAllDayEvent[] = [];
@@ -535,8 +540,14 @@ function getAllDayWeekEvents(
             return true;
           }
         });
+      const weekEvents = [event, ...otherRowEvents];
+      const id = weekEvents
+        .filter(weekEvent => weekEvent.event.id)
+        .map(weekEvent => weekEvent.event.id)
+        .join('-');
       allDayEventRows.push({
-        row: [event, ...otherRowEvents]
+        row: weekEvents,
+        ...(id ? { id } : {})
       });
     }
   });
@@ -607,21 +618,66 @@ function getWeekViewHourGrid(
       return { ...hour, segments };
     });
 
-    return {
-      hours,
-      date: day.date,
-      events: dayView.events.map(event => {
-        const overLappingEvents = getOverLappingDayViewEvents(
+    function getColumnCount(
+      allEvents: DayViewEvent[],
+      prevOverlappingEvents: DayViewEvent[]
+    ): number {
+      const columnCount = Math.max(
+        ...prevOverlappingEvents.map(iEvent => iEvent.left + 1)
+      );
+
+      const nextOverlappingEvents = allEvents
+        .filter(iEvent => iEvent.left >= columnCount)
+        .filter(iEvent => {
+          return (
+            getOverLappingDayViewEvents(
+              prevOverlappingEvents,
+              iEvent.top,
+              iEvent.top + iEvent.height
+            ).length > 0
+          );
+        });
+
+      if (nextOverlappingEvents.length > 0) {
+        return getColumnCount(allEvents, nextOverlappingEvents);
+      } else {
+        return columnCount;
+      }
+    }
+
+    const mappedEvents = dayView.events.map(event => {
+      const columnCount = getColumnCount(
+        dayView.events,
+        getOverLappingDayViewEvents(
           dayView.events,
           event.top,
           event.top + event.height
-        );
-        const columnCount = Math.max(
-          ...overLappingEvents.map(iEvent => iEvent.left + 1)
-        );
+        )
+      );
 
-        const width = 100 / columnCount;
-        return { ...event, left: event.left * width, width };
+      const width = 100 / columnCount;
+      return { ...event, left: event.left * width, width };
+    });
+
+    return {
+      hours,
+      date: day.date,
+      events: mappedEvents.map(event => {
+        const overLappingEvents = getOverLappingDayViewEvents(
+          mappedEvents.filter(otherEvent => otherEvent.left > event.left),
+          event.top,
+          event.top + event.height
+        );
+        if (overLappingEvents.length > 0) {
+          return {
+            ...event,
+            width:
+              Math.min(
+                ...overLappingEvents.map(otherEvent => otherEvent.left)
+              ) - event.left
+          };
+        }
+        return event;
       })
     };
   });
@@ -844,6 +900,8 @@ function getOverLappingDayViewEvents(
 
     if (top < previousEventBottom && previousEventBottom < bottom) {
       return true;
+    } else if (top < previousEventTop && previousEventTop < bottom) {
+      return true;
     } else if (previousEventTop <= top && bottom <= previousEventBottom) {
       return true;
     }
@@ -877,12 +935,12 @@ export function getDayView(
   } = dateAdapter;
 
   const startOfView: Date = setMinutes(
-    setHours(startOfDay(viewDate), dayStart.hour),
-    dayStart.minute
+    setHours(startOfDay(viewDate), sanitiseHours(dayStart.hour)),
+    sanitiseMinutes(dayStart.minute)
   );
   const endOfView: Date = setMinutes(
-    setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour),
-    dayEnd.minute
+    setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
+    sanitiseMinutes(dayEnd.minute)
   );
   const previousDayEvents: DayViewEvent[] = [];
   const eventsInPeriod = getEventsInPeriod(dateAdapter, {
@@ -905,7 +963,11 @@ export function getDayView(
 
       let top: number = 0;
       if (eventStart > startOfView) {
-        top += differenceInMinutes(eventStart, startOfView);
+        // adjust the difference in minutes if the user's offset is different between the start of the day and the event (e.g. when going to or from DST)
+        const eventOffset = eventStart.getTimezoneOffset();
+        const startOffset = startOfView.getTimezoneOffset();
+        const diff = startOffset - eventOffset;
+        top += differenceInMinutes(eventStart, startOfView) + diff;
       }
       top *= hourHeightModifier;
 
@@ -972,11 +1034,24 @@ export function getDayView(
   };
 }
 
+interface Time {
+  hour: number;
+  minute: number;
+}
+
 export interface GetDayViewHourGridArgs {
   viewDate: Date;
   hourSegments: number;
-  dayStart: any;
-  dayEnd: any;
+  dayStart: Time;
+  dayEnd: Time;
+}
+
+function sanitiseHours(hours: number): number {
+  return Math.max(Math.min(23, hours), 0);
+}
+
+function sanitiseMinutes(minutes: number): number {
+  return Math.max(Math.min(59, minutes), 0);
 }
 
 export function getDayViewHourGrid(
@@ -990,20 +1065,31 @@ export function getDayViewHourGrid(
     startOfMinute,
     endOfDay,
     addMinutes,
-    addHours
+    addHours,
+    addDays
   } = dateAdapter;
   const hours: DayViewHour[] = [];
 
-  const startOfView: Date = setMinutes(
-    setHours(startOfDay(viewDate), dayStart.hour),
-    dayStart.minute
+  let startOfView: Date = setMinutes(
+    setHours(startOfDay(viewDate), sanitiseHours(dayStart.hour)),
+    sanitiseMinutes(dayStart.minute)
   );
-  const endOfView: Date = setMinutes(
-    setHours(startOfMinute(endOfDay(viewDate)), dayEnd.hour),
-    dayEnd.minute
+  let endOfView: Date = setMinutes(
+    setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
+    sanitiseMinutes(dayEnd.minute)
   );
   const segmentDuration: number = MINUTES_IN_HOUR / hourSegments;
-  const startOfViewDay: Date = startOfDay(viewDate);
+  let startOfViewDay: Date = startOfDay(viewDate);
+  const endOfViewDay: Date = endOfDay(viewDate);
+  let dateAdjustment: (d: Date) => Date = (d: Date) => d;
+
+  // this means that we change from or to DST on this day and that's going to cause problems so we bump the date
+  if (startOfViewDay.getTimezoneOffset() !== endOfViewDay.getTimezoneOffset()) {
+    startOfViewDay = addDays(startOfViewDay, 1);
+    startOfView = addDays(startOfView, 1);
+    endOfView = addDays(endOfView, 1);
+    dateAdjustment = (d: Date) => addDays(d, -1);
+  }
 
   for (let i: number = 0; i < HOURS_IN_DAY; i++) {
     const segments: DayViewHourSegment[] = [];
@@ -1014,7 +1100,8 @@ export function getDayViewHourGrid(
       );
       if (date >= startOfView && date < endOfView) {
         segments.push({
-          date,
+          date: dateAdjustment(date),
+          displayDate: date,
           isStart: j === 0
         });
       }
