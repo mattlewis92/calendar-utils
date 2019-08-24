@@ -39,7 +39,7 @@ export interface EventAction {
   label: string;
   cssClass?: string;
   a11yLabel?: string;
-  onClick({ event }: { event: CalendarEvent }): any;
+  onClick({ event, sourceEvent }: { event: CalendarEvent, sourceEvent: MouseEvent | KeyboardEvent }): any;
 }
 
 export interface CalendarEvent<MetaType = any> {
