@@ -93,7 +93,7 @@ export interface MonthView {
   period: ViewPeriod;
 }
 
-export interface DayViewEvent {
+export interface WeekViewTimeEvent {
   event: CalendarEvent;
   height: number;
   width: number;
@@ -103,28 +103,28 @@ export interface DayViewEvent {
   endsAfterDay: boolean;
 }
 
-export interface DayView {
-  events: DayViewEvent[];
+interface DayView {
+  events: WeekViewTimeEvent[];
   width: number;
   allDayEvents: CalendarEvent[];
   period: ViewPeriod;
 }
 
-export interface DayViewHourSegment {
+export interface WeekViewHourSegment {
   isStart: boolean;
   date: Date;
   displayDate: Date;
   cssClass?: string;
 }
 
-export interface DayViewHour {
-  segments: DayViewHourSegment[];
+export interface WeekViewHour {
+  segments: WeekViewHourSegment[];
 }
 
 export interface WeekViewHourColumn {
   date: Date;
-  hours: DayViewHour[];
-  events: DayViewEvent[];
+  hours: WeekViewHour[];
+  events: WeekViewTimeEvent[];
 }
 
 export interface ViewPeriod {
@@ -139,12 +139,12 @@ function getExcludedSeconds(
     startDate,
     seconds,
     excluded,
-    precision = 'days'
+    precision
   }: {
     startDate: Date;
     seconds: number;
     excluded: number[];
-    precision?: 'minutes' | 'days';
+    precision: 'minutes' | 'days';
   }
 ): number {
   if (excluded.length < 1) {
@@ -214,14 +214,14 @@ function getWeekViewEventSpan(
     offset,
     startOfWeekDate,
     excluded,
-    precision = 'days',
+    precision,
     totalDaysInView
   }: {
     event: CalendarEvent;
     offset: number;
     startOfWeekDate: Date;
     excluded: number[];
-    precision?: 'minutes' | 'days';
+    precision: 'minutes' | 'days';
     totalDaysInView: number;
   }
 ): number {
@@ -268,18 +268,18 @@ function getWeekViewEventSpan(
   return span / SECONDS_IN_DAY;
 }
 
-export function getWeekViewEventOffset(
+function getWeekViewEventOffset(
   dateAdapter: DateAdapter,
   {
     event,
     startOfWeek: startOfWeekDate,
-    excluded = [],
-    precision = 'days'
+    excluded,
+    precision
   }: {
     event: CalendarEvent;
     startOfWeek: Date;
-    excluded?: number[];
-    precision?: 'minutes' | 'days';
+    excluded: number[];
+    precision: 'minutes' | 'days';
   }
 ): number {
   const { differenceInDays, startOfDay, differenceInSeconds } = dateAdapter;
@@ -619,8 +619,8 @@ function getWeekViewHourGrid(
     });
 
     function getColumnCount(
-      allEvents: DayViewEvent[],
-      prevOverlappingEvents: DayViewEvent[]
+      allEvents: WeekViewTimeEvent[],
+      prevOverlappingEvents: WeekViewTimeEvent[]
     ): number {
       const columnCount = Math.max(
         ...prevOverlappingEvents.map(iEvent => iEvent.left + 1)
@@ -630,7 +630,7 @@ function getWeekViewHourGrid(
         .filter(iEvent => iEvent.left >= columnCount)
         .filter(iEvent => {
           return (
-            getOverLappingDayViewEvents(
+            getOverLappingWeekViewEvents(
               prevOverlappingEvents,
               iEvent.top,
               iEvent.top + iEvent.height
@@ -648,7 +648,7 @@ function getWeekViewHourGrid(
     const mappedEvents = dayView.events.map(event => {
       const columnCount = getColumnCount(
         dayView.events,
-        getOverLappingDayViewEvents(
+        getOverLappingWeekViewEvents(
           dayView.events,
           event.top,
           event.top + event.height
@@ -663,7 +663,7 @@ function getWeekViewHourGrid(
       hours,
       date: day.date,
       events: mappedEvents.map(event => {
-        const overLappingEvents = getOverLappingDayViewEvents(
+        const overLappingEvents = getOverLappingWeekViewEvents(
           mappedEvents.filter(otherEvent => otherEvent.left > event.left),
           event.top,
           event.top + event.height
@@ -888,12 +888,12 @@ export interface GetDayViewArgs {
   segmentHeight: number;
 }
 
-function getOverLappingDayViewEvents(
-  events: DayViewEvent[],
+function getOverLappingWeekViewEvents(
+  events: WeekViewTimeEvent[],
   top: number,
   bottom: number
-): DayViewEvent[] {
-  return events.filter((previousEvent: DayViewEvent) => {
+): WeekViewTimeEvent[] {
+  return events.filter((previousEvent: WeekViewTimeEvent) => {
     const previousEventTop: number = previousEvent.top;
     const previousEventBottom: number =
       previousEvent.top + previousEvent.height;
@@ -910,10 +910,10 @@ function getOverLappingDayViewEvents(
   });
 }
 
-export function getDayView(
+function getDayView(
   dateAdapter: DateAdapter,
   {
-    events = [],
+    events,
     viewDate,
     hourSegments,
     dayStart,
@@ -922,9 +922,6 @@ export function getDayView(
     segmentHeight
   }: GetDayViewArgs
 ): DayView {
-  if (!events) {
-    events = [];
-  }
   const {
     setMinutes,
     setHours,
@@ -942,14 +939,14 @@ export function getDayView(
     setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
     sanitiseMinutes(dayEnd.minute)
   );
-  const previousDayEvents: DayViewEvent[] = [];
+  const previousDayEvents: WeekViewTimeEvent[] = [];
   const eventsInPeriod = getEventsInPeriod(dateAdapter, {
     events: events.filter((event: CalendarEvent) => !event.allDay),
     periodStart: startOfView,
     periodEnd: endOfView
   });
 
-  const dayViewEvents: DayViewEvent[] = eventsInPeriod
+  const dayViewEvents: WeekViewTimeEvent[] = eventsInPeriod
     .sort((eventA: CalendarEvent, eventB: CalendarEvent) => {
       return eventA.start.valueOf() - eventB.start.valueOf();
     })
@@ -982,7 +979,7 @@ export function getDayView(
 
       const bottom: number = top + height;
 
-      const overlappingPreviousEvents = getOverLappingDayViewEvents(
+      const overlappingPreviousEvents = getOverLappingWeekViewEvents(
         previousDayEvents,
         top,
         bottom
@@ -998,7 +995,7 @@ export function getDayView(
         left += eventWidth;
       }
 
-      const dayEvent: DayViewEvent = {
+      const dayEvent: WeekViewTimeEvent = {
         event,
         height,
         width: eventWidth,
@@ -1014,7 +1011,7 @@ export function getDayView(
     });
 
   const width: number = Math.max(
-    ...dayViewEvents.map((event: DayViewEvent) => event.left + event.width)
+    ...dayViewEvents.map((event: WeekViewTimeEvent) => event.left + event.width)
   );
   const allDayEvents: CalendarEvent[] = getEventsInPeriod(dateAdapter, {
     events: events.filter((event: CalendarEvent) => event.allDay),
@@ -1039,7 +1036,7 @@ interface Time {
   minute: number;
 }
 
-export interface GetDayViewHourGridArgs {
+interface GetDayViewHourGridArgs {
   viewDate: Date;
   hourSegments: number;
   dayStart: Time;
@@ -1054,10 +1051,10 @@ function sanitiseMinutes(minutes: number): number {
   return Math.max(Math.min(59, minutes), 0);
 }
 
-export function getDayViewHourGrid(
+function getDayViewHourGrid(
   dateAdapter: DateAdapter,
   { viewDate, hourSegments, dayStart, dayEnd }: GetDayViewHourGridArgs
-): DayViewHour[] {
+): WeekViewHour[] {
   const {
     setMinutes,
     setHours,
@@ -1068,7 +1065,7 @@ export function getDayViewHourGrid(
     addHours,
     addDays
   } = dateAdapter;
-  const hours: DayViewHour[] = [];
+  const hours: WeekViewHour[] = [];
 
   let startOfView: Date = setMinutes(
     setHours(startOfDay(viewDate), sanitiseHours(dayStart.hour)),
@@ -1092,7 +1089,7 @@ export function getDayViewHourGrid(
   }
 
   for (let i: number = 0; i < HOURS_IN_DAY; i++) {
-    const segments: DayViewHourSegment[] = [];
+    const segments: WeekViewHourSegment[] = [];
     for (let j: number = 0; j < hourSegments; j++) {
       const date: Date = addMinutes(
         addHours(startOfViewDay, i),
