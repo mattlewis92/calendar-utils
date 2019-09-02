@@ -5,10 +5,16 @@ import {
   addMinutes,
   differenceInSeconds,
   endOfDay,
+  endOfMonth,
   endOfWeek,
+  setHours,
+  setMilliseconds,
+  setMinutes,
+  setSeconds,
   startOfDay,
   startOfWeek,
   subDays,
+  subHours
 } from 'date-fns';
 import * as moment from 'moment';
 import * as lolex from 'lolex';
@@ -2129,6 +2135,861 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(Math.floor(result[2].events[3].width)).toEqual(66);
 
         expect(result).toMatchSnapshot();
+      });
+
+      it('should get the hour view segments respecting the start and end of the day', () => {
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: {
+            hour: 1,
+            minute: 30
+          },
+          dayEnd: {
+            hour: 3,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30
+        }).hourColumns;
+        expect(result).toMatchSnapshot();
+      });
+
+      it('should get the hour view segments with a bigger segment size', () => {
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date(),
+          hourSegments: 4,
+          dayStart: {
+            hour: 1,
+            minute: 30
+          },
+          dayEnd: {
+            hour: 3,
+            minute: 59
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30
+        }).hourColumns;
+        expect(result).toMatchSnapshot();
+      });
+
+      it('should sanitise invalid day view start and end times', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: startOfDay(subDays(new Date(), 1)),
+            end: endOfDay(subDays(new Date(), 1)),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: new Date(),
+            end: addDays(new Date(), 1),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: -1000, minute: -1000 },
+          dayEnd: { hour: 24, minute: 3000 },
+          segmentHeight: 30,
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate()
+        });
+
+        expect(result.period).toEqual({
+          start: startOfDay(new Date()),
+          end: endOfDay(new Date()),
+          events: [events[1]]
+        });
+      });
+
+      it('should exclude all events that dont occur on the view date', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: startOfDay(subDays(new Date(), 1)),
+            end: endOfDay(subDays(new Date(), 1)),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          segmentHeight: 30,
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate()
+        });
+        expect(result.hourColumns[0].events).toEqual([]);
+        expect(result.allDayEventRows).toEqual([]);
+      });
+
+      it('should include events that start before the view date and end during it', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: startOfDay(subDays(new Date(), 1)),
+            end: addHours(startOfDay(new Date()), 1),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          segmentHeight: 30,
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate()
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[0]);
+      });
+
+      it('should include events that start during the view date and end after it', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: startOfDay(new Date()),
+            end: addDays(new Date(), 5),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[0]);
+      });
+
+      it('should include events that start during the view date and end during it', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addHours(startOfDay(new Date()), 1),
+            end: addHours(startOfDay(new Date()), 2),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[0]);
+      });
+
+      it('should exclude events that are on the view date but outside of the day start', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addHours(startOfDay(new Date()), 1),
+            end: addMinutes(addHours(startOfDay(new Date()), 6), 15),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 6, minute: 30 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events).toEqual([]);
+      });
+
+      it('should exclude events that are on the view date but outside of the day end', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: subHours(endOfDay(new Date()), 1),
+            end: setMinutes(setHours(new Date(), 18), 45),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 18, minute: 30 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events).toEqual([]);
+      });
+
+      it('should sort all events by start date', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addHours(startOfDay(new Date()), 1),
+            end: addHours(startOfDay(new Date()), 2),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: startOfDay(new Date()),
+            end: addHours(startOfDay(new Date()), 1),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[1]);
+        expect(result.hourColumns[0].events[1].event).toBe(events[0]);
+      });
+
+      it('should span the entire day', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: startOfDay(new Date()),
+            end: startOfDay(addDays(new Date(), 1)),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].top).toEqual(0);
+        expect(result.hourColumns[0].events[0].height).toEqual(1439);
+        expect(result.hourColumns[0].events[0].startsBeforeDay).toBe(false);
+        expect(result.hourColumns[0].events[0].endsAfterDay).toBe(true);
+      });
+
+      it('should start part of the way through the day and end after it', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addDays(new Date(), 2),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].top).toEqual(150);
+        expect(result.hourColumns[0].events[0].height).toEqual(1289);
+        expect(result.hourColumns[0].events[0].startsBeforeDay).toBe(false);
+        expect(result.hourColumns[0].events[0].endsAfterDay).toBe(true);
+      });
+
+      it('should start before the start of the day and end part of the way through', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: subDays(new Date(), 1),
+            end: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].top).toEqual(0);
+        expect(result.hourColumns[0].events[0].height).toEqual(150);
+        expect(result.hourColumns[0].events[0].startsBeforeDay).toBe(true);
+        expect(result.hourColumns[0].events[0].endsAfterDay).toBe(false);
+      });
+
+      it('should start part of the way through the day and end part of the way through it', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 6),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].top).toEqual(150);
+        expect(result.hourColumns[0].events[0].height).toEqual(210);
+        expect(result.hourColumns[0].events[0].startsBeforeDay).toBe(false);
+        expect(result.hourColumns[0].events[0].endsAfterDay).toBe(false);
+      });
+
+      it('should use a default height of one segment if there is no event end date', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].top).toEqual(150);
+        expect(result.hourColumns[0].events[0].height).toEqual(30);
+        expect(result.hourColumns[0].events[0].startsBeforeDay).toBe(false);
+        expect(result.hourColumns[0].events[0].endsAfterDay).toBe(false);
+      });
+
+      it('should respect the day start', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 5),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 1, minute: 30 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].top).toEqual(60);
+        expect(result.hourColumns[0].events[0].height).toEqual(150);
+        expect(result.hourColumns[0].events[0].startsBeforeDay).toBe(false);
+        expect(result.hourColumns[0].events[0].endsAfterDay).toBe(false);
+      });
+
+      it('should respect the day end', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 18),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 16, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].top).toEqual(150);
+        expect(result.hourColumns[0].events[0].height).toEqual(869);
+        expect(result.hourColumns[0].events[0].startsBeforeDay).toBe(false);
+        expect(result.hourColumns[0].events[0].endsAfterDay).toBe(true);
+      });
+
+      it('should adjust the event height and top to account for a bigger hour segment size', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 7),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 6,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 16, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].top).toEqual(450);
+        expect(result.hourColumns[0].events[0].height).toEqual(810);
+      });
+
+      it('should stack events where one starts before the other and ends during it', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 7),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: addHours(startOfDay(new Date()), 1),
+            end: addHours(startOfDay(new Date()), 5),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[1]);
+        expect(result.hourColumns[0].events[0].left).toBe(0);
+        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[1].event).toBe(events[0]);
+        expect(result.hourColumns[0].events[1].left).toBe(50);
+        expect(result.hourColumns[0].events[1].width).toBe(50);
+      });
+
+      it('should stack events where one starts during the other and ends after it', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 7),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: addHours(startOfDay(new Date()), 3),
+            end: addHours(startOfDay(new Date()), 10),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[0]);
+        expect(result.hourColumns[0].events[0].left).toBe(0);
+        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[1].event).toBe(events[1]);
+        expect(result.hourColumns[0].events[1].left).toBe(50);
+        expect(result.hourColumns[0].events[1].width).toBe(50);
+      });
+
+      it('should stack events where one starts during the other and ends during it', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 7),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: addHours(startOfDay(new Date()), 3),
+            end: addHours(startOfDay(new Date()), 5),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[0]);
+        expect(result.hourColumns[0].events[0].left).toBe(0);
+        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[1].event).toBe(events[1]);
+        expect(result.hourColumns[0].events[1].left).toBe(50);
+        expect(result.hourColumns[0].events[1].width).toBe(50);
+      });
+
+      it('should not stack events that do not overlap each other', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 4),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: addHours(startOfDay(new Date()), 5),
+            end: addHours(startOfDay(new Date()), 6),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[0]);
+        expect(result.hourColumns[0].events[0].left).toBe(0);
+        expect(result.hourColumns[0].events[1].event).toBe(events[1]);
+        expect(result.hourColumns[0].events[1].left).toBe(0);
+      });
+
+      it('should not stack events where one starts on the others end date', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
+            end: addHours(startOfDay(new Date()), 4),
+            title: '',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: addHours(startOfDay(new Date()), 4),
+            end: addHours(startOfDay(new Date()), 6),
+            title: '',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[0]);
+        expect(result.hourColumns[0].events[0].left).toBe(0);
+        expect(result.hourColumns[0].events[1].event).toBe(events[1]);
+        expect(result.hourColumns[0].events[1].left).toBe(0);
+      });
+
+      it('should separate all day events that occur on that day', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: subDays(startOfDay(new Date()), 1),
+            end: endOfDay(addDays(new Date(), 1)),
+            title: '',
+            color: { primary: '', secondary: '' },
+            allDay: true
+          },
+          {
+            start: subDays(startOfDay(new Date()), 1),
+            end: endOfDay(addDays(new Date(), 1)),
+            title: '',
+            color: { primary: '', secondary: '' },
+            allDay: false
+          },
+          {
+            start: subDays(startOfDay(new Date()), 10),
+            end: endOfDay(subDays(new Date(), 5)),
+            title: '',
+            color: { primary: '', secondary: '' },
+            allDay: true
+          }
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].event).toEqual(events[1]);
+        expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+      });
+
+      it('should include all day events that start on the current day with no end date', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: startOfDay(new Date()),
+            title: '',
+            color: { primary: '', secondary: '' },
+            allDay: true
+          }
+        ];
+
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 6, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
+      });
+
+      it('should stack events in the correct columns', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: subDays(endOfMonth(new Date()), 3),
+            end: addDays(endOfMonth(new Date()), 3),
+            title: 'Day column 2',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: subDays(startOfDay(new Date()), 1),
+            end: setHours(startOfDay(addDays(new Date(), 1)), 11),
+            title: 'Day column 1 - event 1',
+            color: { primary: '', secondary: '' }
+          },
+          {
+            start: setHours(addDays(startOfDay(new Date()), 1), 11),
+            end: setHours(addDays(startOfDay(new Date()), 1), 15),
+            title: 'Day column 1 - event 2',
+            color: { primary: '', secondary: '' }
+          }
+        ];
+
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: startOfDay(addDays(new Date(), 1)),
+          hourSegments: 2,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: startOfDay(addDays(new Date(), 1)),
+          viewEnd: endOfDay(addDays(new Date(), 1)),
+          segmentHeight: 30
+        });
+
+        expect(result.hourColumns[0].events[0].event).toBe(events[1]);
+        expect(result.hourColumns[0].events[0].height).toBe(660);
+        expect(result.hourColumns[0].events[0].top).toBe(0);
+        expect(result.hourColumns[0].events[0].left).toBe(0);
+        expect(result.hourColumns[0].events[0].width).toBe(50);
+
+        expect(result.hourColumns[0].events[1].event).toBe(events[0]);
+        expect(result.hourColumns[0].events[1].height).toBe(1439);
+        expect(result.hourColumns[0].events[1].top).toBe(0);
+        expect(result.hourColumns[0].events[1].left).toBe(50);
+        expect(result.hourColumns[0].events[0].width).toBe(50);
+
+        expect(result.hourColumns[0].events[2].event).toBe(events[2]);
+        expect(result.hourColumns[0].events[2].height).toBe(240);
+        expect(result.hourColumns[0].events[2].top).toBe(660);
+        expect(result.hourColumns[0].events[2].left).toBe(0);
+        expect(result.hourColumns[0].events[0].width).toBe(50);
+      });
+
+      it('should not throw if no events are provided', () => {
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 6, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30
+        });
+        expect(result.hourColumns[0].events).toEqual([]);
+      });
+
+      it('should not throw if events are null', () => {
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date(),
+          hourSegments: 2,
+          dayStart: { hour: 6, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment()
+            .startOf('day')
+            .toDate(),
+          viewEnd: moment()
+            .endOf('day')
+            .toDate(),
+          segmentHeight: 30,
+          events: null
+        });
+        expect(result.hourColumns[0].events).toEqual([]);
       });
     });
 
