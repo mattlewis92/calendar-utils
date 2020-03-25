@@ -39,7 +39,13 @@ export interface EventAction {
   label: string;
   cssClass?: string;
   a11yLabel?: string;
-  onClick({ event, sourceEvent }: { event: CalendarEvent, sourceEvent: MouseEvent | KeyboardEvent }): any;
+  onClick({
+    event,
+    sourceEvent
+  }: {
+    event: CalendarEvent;
+    sourceEvent: MouseEvent | KeyboardEvent;
+  }): any;
 }
 
 export interface CalendarEvent<MetaType = any> {
@@ -431,7 +437,8 @@ export interface GetWeekViewArgs {
   excluded?: number[];
   precision?: 'minutes' | 'days';
   absolutePositionedEvents?: boolean;
-  hourSegments: number;
+  hourSegments?: number;
+  segmentDuration?: number;
   dayStart: Time;
   dayEnd: Time;
   weekendDays?: number[];
@@ -570,6 +577,7 @@ function getWeekViewHourGrid(
     events,
     viewDate,
     hourSegments,
+    segmentDuration,
     dayStart,
     dayEnd,
     weekStartsOn,
@@ -583,6 +591,7 @@ function getWeekViewHourGrid(
   const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
     viewDate,
     hourSegments,
+    segmentDuration,
     dayStart,
     dayEnd
   });
@@ -693,6 +702,7 @@ export function getWeekView(
     precision = 'days',
     absolutePositionedEvents = false,
     hourSegments,
+    segmentDuration,
     dayStart,
     dayEnd,
     weekendDays,
@@ -741,6 +751,7 @@ export function getWeekView(
       events,
       viewDate,
       hourSegments,
+      segmentDuration,
       dayStart,
       dayEnd,
       weekStartsOn,
@@ -1039,6 +1050,7 @@ interface Time {
 interface GetDayViewHourGridArgs {
   viewDate: Date;
   hourSegments: number;
+  segmentDuration: number;
   dayStart: Time;
   dayEnd: Time;
 }
@@ -1053,7 +1065,13 @@ function sanitiseMinutes(minutes: number): number {
 
 function getDayViewHourGrid(
   dateAdapter: DateAdapter,
-  { viewDate, hourSegments, dayStart, dayEnd }: GetDayViewHourGridArgs
+  {
+    viewDate,
+    hourSegments,
+    segmentDuration,
+    dayStart,
+    dayEnd
+  }: GetDayViewHourGridArgs
 ): WeekViewHour[] {
   const {
     setMinutes,
@@ -1075,7 +1093,6 @@ function getDayViewHourGrid(
     setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
     sanitiseMinutes(dayEnd.minute)
   );
-  const segmentDuration: number = MINUTES_IN_HOUR / hourSegments;
   let startOfViewDay: Date = startOfDay(viewDate);
   const endOfViewDay: Date = endOfDay(viewDate);
   let dateAdjustment: (d: Date) => Date = (d: Date) => d;
@@ -1088,23 +1105,48 @@ function getDayViewHourGrid(
     dateAdjustment = (d: Date) => addDays(d, -1);
   }
 
-  for (let i: number = 0; i < HOURS_IN_DAY; i++) {
-    const segments: WeekViewHourSegment[] = [];
-    for (let j: number = 0; j < hourSegments; j++) {
-      const date: Date = addMinutes(
-        addHours(startOfViewDay, i),
-        j * segmentDuration
-      );
+  if (segmentDuration) {
+    let i: number = 0;
+    while (true) {
+      i++;
+      const segments: WeekViewHourSegment[] = [];
+
+      const date: Date = addMinutes(startOfView, i * segmentDuration);
       if (date >= startOfView && date < endOfView) {
         segments.push({
           date: dateAdjustment(date),
           displayDate: date,
-          isStart: j === 0
+          isStart: date.getMinutes() === 0
         });
+      } else {
+        break;
+      }
+
+      if (segments.length > 0) {
+        hours.push({ segments });
       }
     }
-    if (segments.length > 0) {
-      hours.push({ segments });
+  } else {
+    segmentDuration = MINUTES_IN_HOUR / hourSegments;
+
+    for (let i: number = 0; i < HOURS_IN_DAY; i++) {
+      const segments: WeekViewHourSegment[] = [];
+      for (let j: number = 0; j < hourSegments; j++) {
+        const date: Date = addMinutes(
+          addHours(startOfViewDay, i),
+          j * segmentDuration
+        );
+        if (date >= startOfView && date < endOfView) {
+          segments.push({
+            date: dateAdjustment(date),
+            displayDate: date,
+            isStart: j === 0
+          });
+        }
+      }
+      if (segments.length > 0) {
+        hours.push({ segments });
+      }
     }
   }
 
