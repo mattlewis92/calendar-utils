@@ -2,27 +2,19 @@ import { DateAdapter } from '../date-adapter';
 
 export function adapterFactory(moment): DateAdapter {
   function addDays(date: Date | number, amount: number) {
-    return moment(date)
-      .add(amount, 'days')
-      .toDate();
+    return moment(date).add(amount, 'days').toDate();
   }
 
   function addHours(date: Date | number, amount: number) {
-    return moment(date)
-      .add(amount, 'hours')
-      .toDate();
+    return moment(date).add(amount, 'hours').toDate();
   }
 
   function addMinutes(date: Date | number, amount: number) {
-    return moment(date)
-      .add(amount, 'minutes')
-      .toDate();
+    return moment(date).add(amount, 'minutes').toDate();
   }
 
   function addSeconds(date: Date | number, amount: number): Date {
-    return moment(date)
-      .add(amount, 'seconds')
-      .toDate();
+    return moment(date).add(amount, 'seconds').toDate();
   }
 
   function differenceInDays(
@@ -47,21 +39,15 @@ export function adapterFactory(moment): DateAdapter {
   }
 
   function endOfDay(date: Date | number): Date {
-    return moment(date)
-      .endOf('day')
-      .toDate();
+    return moment(date).endOf('day').toDate();
   }
 
   function endOfMonth(date: Date | number): Date {
-    return moment(date)
-      .endOf('month')
-      .toDate();
+    return moment(date).endOf('month').toDate();
   }
 
   function endOfWeek(date: Date | number): Date {
-    return moment(date)
-      .endOf('week')
-      .toDate();
+    return moment(date).endOf('week').toDate();
   }
 
   function getDay(date: Date | number): number {
@@ -94,43 +80,31 @@ export function adapterFactory(moment): DateAdapter {
   }
 
   function max(dates: Array<Date | number>): Date {
-    return moment.max(dates.map(date => moment(date))).toDate();
+    return moment.max(dates.map((date) => moment(date))).toDate();
   }
 
   function setHours(date: Date | number, hours: number): Date {
-    return moment(date)
-      .hours(hours)
-      .toDate();
+    return moment(date).hours(hours).toDate();
   }
 
   function setMinutes(date: Date | number, minutes: number): Date {
-    return moment(date)
-      .minutes(minutes)
-      .toDate();
+    return moment(date).minutes(minutes).toDate();
   }
 
   function startOfDay(date: Date | number): Date {
-    return moment(date)
-      .startOf('day')
-      .toDate();
+    return moment(date).startOf('day').toDate();
   }
 
   function startOfMinute(date: Date | number): Date {
-    return moment(date)
-      .startOf('minute')
-      .toDate();
+    return moment(date).startOf('minute').toDate();
   }
 
   function startOfMonth(date: Date | number): Date {
-    return moment(date)
-      .startOf('month')
-      .toDate();
+    return moment(date).startOf('month').toDate();
   }
 
   function startOfWeek(date: Date | number): Date {
-    return moment(date)
-      .startOf('week')
-      .toDate();
+    return moment(date).startOf('week').toDate();
   }
 
   function getHours(date: Date | number): number {
@@ -165,6 +139,6 @@ export function adapterFactory(moment): DateAdapter {
     startOfMonth,
     startOfWeek,
     getHours,
-    getMinutes
+    getMinutes,
   };
 }

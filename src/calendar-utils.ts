@@ -7,12 +7,12 @@ export enum DAYS_OF_WEEK {
   WEDNESDAY = 3,
   THURSDAY = 4,
   FRIDAY = 5,
-  SATURDAY = 6
+  SATURDAY = 6,
 }
 
 const DEFAULT_WEEKEND_DAYS: number[] = [
   DAYS_OF_WEEK.SUNDAY,
-  DAYS_OF_WEEK.SATURDAY
+  DAYS_OF_WEEK.SATURDAY,
 ];
 const DAYS_IN_WEEK: number = 7;
 const HOURS_IN_DAY: number = 24;
@@ -39,7 +39,13 @@ export interface EventAction {
   label: string;
   cssClass?: string;
   a11yLabel?: string;
-  onClick({ event, sourceEvent }: { event: CalendarEvent, sourceEvent: MouseEvent | KeyboardEvent }): any;
+  onClick({
+    event,
+    sourceEvent,
+  }: {
+    event: CalendarEvent;
+    sourceEvent: MouseEvent | KeyboardEvent;
+  }): any;
 }
 
 export interface CalendarEvent<MetaType = any> {
@@ -139,7 +145,7 @@ function getExcludedSeconds(
     startDate,
     seconds,
     excluded,
-    precision
+    precision,
   }: {
     startDate: Date;
     seconds: number;
@@ -160,14 +166,14 @@ function getExcludedSeconds(
   while (current < endDate) {
     const day: number = getDay(current);
 
-    if (excluded.some(excludedDay => excludedDay === day)) {
+    if (excluded.some((excludedDay) => excludedDay === day)) {
       result += calculateExcludedSeconds(dateAdapter, {
         dayStart,
         dayEnd,
         day,
         precision,
         startDate,
-        endDate
+        endDate,
       });
     }
 
@@ -185,7 +191,7 @@ function calculateExcludedSeconds(
     dayStart,
     dayEnd,
     startDate,
-    endDate
+    endDate,
   }: {
     day: number;
     startDate: Date;
@@ -215,7 +221,7 @@ function getWeekViewEventSpan(
     startOfWeekDate,
     excluded,
     precision,
-    totalDaysInView
+    totalDaysInView,
   }: {
     event: CalendarEvent;
     offset: number;
@@ -230,7 +236,7 @@ function getWeekViewEventSpan(
     differenceInSeconds,
     addDays,
     endOfDay,
-    differenceInDays
+    differenceInDays,
   } = dateAdapter;
   let span: number = SECONDS_IN_DAY;
   const begin: Date = max([event.start, startOfWeekDate]);
@@ -262,7 +268,7 @@ function getWeekViewEventSpan(
     startDate: begin,
     seconds: span,
     excluded,
-    precision
+    precision,
   });
 
   return span / SECONDS_IN_DAY;
@@ -274,7 +280,7 @@ function getWeekViewEventOffset(
     event,
     startOfWeek: startOfWeekDate,
     excluded,
-    precision
+    precision,
   }: {
     event: CalendarEvent;
     startOfWeek: Date;
@@ -304,7 +310,7 @@ function getWeekViewEventOffset(
     startDate: startOfWeekDate,
     seconds: offset,
     excluded,
-    precision
+    precision,
   });
 
   return Math.abs(offset / SECONDS_IN_DAY);
@@ -372,7 +378,7 @@ function getWeekDay(
   dateAdapter: DateAdapter,
   {
     date,
-    weekendDays = DEFAULT_WEEKEND_DAYS
+    weekendDays = DEFAULT_WEEKEND_DAYS,
   }: {
     date: Date;
     weekendDays: number[];
@@ -388,7 +394,7 @@ function getWeekDay(
     isPast: date < today,
     isToday: isSameDay(date, today),
     isFuture: date > today,
-    isWeekend: weekendDays.indexOf(day) > -1
+    isWeekend: weekendDays.indexOf(day) > -1,
   };
 }
 
@@ -409,14 +415,14 @@ export function getWeekViewHeader(
     excluded = [],
     weekendDays,
     viewStart = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
-    viewEnd = dateAdapter.addDays(viewStart, DAYS_IN_WEEK)
+    viewEnd = dateAdapter.addDays(viewStart, DAYS_IN_WEEK),
   }: GetWeekViewHeaderArgs
 ): WeekDay[] {
   const { addDays, getDay } = dateAdapter;
   const days: WeekDay[] = [];
   let date = viewStart;
   while (date < viewEnd) {
-    if (!excluded.some(e => getDay(date) === e)) {
+    if (!excluded.some((e) => getDay(date) === e)) {
       days.push(getWeekDay(dateAdapter, { date, weekendDays }));
     }
     date = addDays(date, 1);
@@ -464,24 +470,24 @@ function getAllDayWeekEvents(
     absolutePositionedEvents,
     viewStart,
     viewEnd,
-    eventsInPeriod
+    eventsInPeriod,
   }
 ): WeekViewAllDayEventRow[] {
   const { differenceInSeconds, differenceInDays } = dateAdapter;
   const maxRange: number = getDifferenceInDaysWithExclusions(dateAdapter, {
     date1: viewStart,
     date2: viewEnd,
-    excluded
+    excluded,
   });
   const totalDaysInView = differenceInDays(viewEnd, viewStart) + 1;
   const eventsMapped: WeekViewAllDayEvent[] = eventsInPeriod
-    .filter(event => event.allDay)
-    .map(event => {
+    .filter((event) => event.allDay)
+    .map((event) => {
       const offset: number = getWeekViewEventOffset(dateAdapter, {
         event,
         startOfWeek: viewStart,
         excluded,
-        precision
+        precision,
       });
       const span: number = getWeekViewEventSpan(dateAdapter, {
         event,
@@ -489,18 +495,18 @@ function getAllDayWeekEvents(
         startOfWeekDate: viewStart,
         excluded,
         precision,
-        totalDaysInView
+        totalDaysInView,
       });
       return { event, offset, span };
     })
-    .filter(e => e.offset < maxRange)
-    .filter(e => e.span > 0)
-    .map(entry => ({
+    .filter((e) => e.offset < maxRange)
+    .filter((e) => e.span > 0)
+    .map((entry) => ({
       event: entry.event,
       offset: entry.offset,
       span: entry.span,
       startsBeforeWeek: entry.event.start < viewStart,
-      endsAfterWeek: (entry.event.end || entry.event.start) > viewEnd
+      endsAfterWeek: (entry.event.end || entry.event.start) > viewEnd,
     }))
     .sort((itemA, itemB): number => {
       const startSecondsDiff: number = differenceInSeconds(
@@ -525,7 +531,7 @@ function getAllDayWeekEvents(
       let rowSpan: number = event.span + event.offset;
       const otherRowEvents: WeekViewAllDayEvent[] = eventsMapped
         .slice(index + 1)
-        .filter(nextEvent => {
+        .filter((nextEvent) => {
           if (
             nextEvent.offset >= rowSpan &&
             rowSpan + nextEvent.span <= totalDaysInView &&
@@ -542,12 +548,12 @@ function getAllDayWeekEvents(
         });
       const weekEvents = [event, ...otherRowEvents];
       const id = weekEvents
-        .filter(weekEvent => weekEvent.event.id)
-        .map(weekEvent => weekEvent.event.id)
+        .filter((weekEvent) => weekEvent.event.id)
+        .map((weekEvent) => weekEvent.event.id)
         .join('-');
       allDayEventRows.push({
         row: weekEvents,
-        ...(id ? { id } : {})
+        ...(id ? { id } : {}),
       });
     }
   });
@@ -577,14 +583,14 @@ function getWeekViewHourGrid(
     weekendDays,
     segmentHeight,
     viewStart,
-    viewEnd
+    viewEnd,
   }: GetWeekViewHourGridArgs
 ): WeekViewHourColumn[] {
   const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
     viewDate,
     hourSegments,
     dayStart,
-    dayEnd
+    dayEnd,
   });
   const weekDays = getWeekViewHeader(dateAdapter, {
     viewDate,
@@ -592,11 +598,11 @@ function getWeekViewHourGrid(
     excluded,
     weekendDays,
     viewStart,
-    viewEnd
+    viewEnd,
   });
   const { setHours, setMinutes, getHours, getMinutes } = dateAdapter;
 
-  return weekDays.map(day => {
+  return weekDays.map((day) => {
     const dayView = getDayView(dateAdapter, {
       events,
       viewDate: day.date,
@@ -604,11 +610,11 @@ function getWeekViewHourGrid(
       dayStart,
       dayEnd,
       segmentHeight,
-      eventWidth: 1
+      eventWidth: 1,
     });
 
-    const hours = dayViewHourGrid.map(hour => {
-      const segments = hour.segments.map(segment => {
+    const hours = dayViewHourGrid.map((hour) => {
+      const segments = hour.segments.map((segment) => {
         const date = setMinutes(
           setHours(day.date, getHours(segment.date)),
           getMinutes(segment.date)
@@ -623,12 +629,12 @@ function getWeekViewHourGrid(
       prevOverlappingEvents: WeekViewTimeEvent[]
     ): number {
       const columnCount = Math.max(
-        ...prevOverlappingEvents.map(iEvent => iEvent.left + 1)
+        ...prevOverlappingEvents.map((iEvent) => iEvent.left + 1)
       );
 
       const nextOverlappingEvents = allEvents
-        .filter(iEvent => iEvent.left >= columnCount)
-        .filter(iEvent => {
+        .filter((iEvent) => iEvent.left >= columnCount)
+        .filter((iEvent) => {
           return (
             getOverLappingWeekViewEvents(
               prevOverlappingEvents,
@@ -645,7 +651,7 @@ function getWeekViewHourGrid(
       }
     }
 
-    const mappedEvents = dayView.events.map(event => {
+    const mappedEvents = dayView.events.map((event) => {
       const columnCount = getColumnCount(
         dayView.events,
         getOverLappingWeekViewEvents(
@@ -662,9 +668,9 @@ function getWeekViewHourGrid(
     return {
       hours,
       date: day.date,
-      events: mappedEvents.map(event => {
+      events: mappedEvents.map((event) => {
         const overLappingEvents = getOverLappingWeekViewEvents(
-          mappedEvents.filter(otherEvent => otherEvent.left > event.left),
+          mappedEvents.filter((otherEvent) => otherEvent.left > event.left),
           event.top,
           event.top + event.height
         );
@@ -673,12 +679,12 @@ function getWeekViewHourGrid(
             ...event,
             width:
               Math.min(
-                ...overLappingEvents.map(otherEvent => otherEvent.left)
-              ) - event.left
+                ...overLappingEvents.map((otherEvent) => otherEvent.left)
+              ) - event.left,
           };
         }
         return event;
-      })
+      }),
     };
   });
 }
@@ -698,7 +704,7 @@ export function getWeekView(
     weekendDays,
     segmentHeight,
     viewStart = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
-    viewEnd = dateAdapter.endOfWeek(viewDate, { weekStartsOn })
+    viewEnd = dateAdapter.endOfWeek(viewDate, { weekStartsOn }),
   }: GetWeekViewArgs
 ): WeekView {
   if (!events) {
@@ -710,7 +716,7 @@ export function getWeekView(
   const eventsInPeriod = getEventsInPeriod(dateAdapter, {
     events,
     periodStart: viewStart,
-    periodEnd: viewEnd
+    periodEnd: viewEnd,
   });
 
   const header = getWeekViewHeader(dateAdapter, {
@@ -719,7 +725,7 @@ export function getWeekView(
     excluded,
     weekendDays,
     viewStart,
-    viewEnd
+    viewEnd,
   });
 
   return {
@@ -730,12 +736,12 @@ export function getWeekView(
       absolutePositionedEvents,
       viewStart,
       viewEnd,
-      eventsInPeriod
+      eventsInPeriod,
     }),
     period: {
       events: eventsInPeriod,
       start: header[0].date,
-      end: endOfDay(header[header.length - 1].date)
+      end: endOfDay(header[header.length - 1].date),
     },
     hourColumns: getWeekViewHourGrid(dateAdapter, {
       events,
@@ -748,8 +754,8 @@ export function getWeekView(
       weekendDays,
       segmentHeight,
       viewStart,
-      viewEnd
-    })
+      viewEnd,
+    }),
   };
 }
 
@@ -772,7 +778,7 @@ export function getMonthView(
     excluded = [],
     viewStart = dateAdapter.startOfMonth(viewDate),
     viewEnd = dateAdapter.endOfMonth(viewDate),
-    weekendDays
+    weekendDays,
   }: GetMonthViewArgs
 ): MonthView {
   if (!events) {
@@ -788,14 +794,14 @@ export function getMonthView(
     endOfDay,
     isSameMonth,
     getDay,
-    getMonth
+    getMonth,
   } = dateAdapter;
   const start: Date = startOfWeek(viewStart, { weekStartsOn });
   const end: Date = endOfWeek(viewEnd, { weekStartsOn });
   const eventsInMonth: CalendarEvent[] = getEventsInPeriod(dateAdapter, {
     events,
     periodStart: start,
-    periodEnd: end
+    periodEnd: end,
   });
   const initialViewDays: MonthViewDay[] = [];
   let previousDate: Date;
@@ -814,15 +820,15 @@ export function getMonthView(
       date = previousDate = start;
     }
 
-    if (!excluded.some(e => getDay(date) === e)) {
+    if (!excluded.some((e) => getDay(date) === e)) {
       const day: MonthViewDay = getWeekDay(dateAdapter, {
         date,
-        weekendDays
+        weekendDays,
       }) as MonthViewDay;
       const eventsInPeriod: CalendarEvent[] = getEventsInPeriod(dateAdapter, {
         events: eventsInMonth,
         periodStart: startOfDay(date),
-        periodEnd: endOfDay(date)
+        periodEnd: endOfDay(date),
       });
       day.inMonth = isSameMonth(date, viewDate);
       day.events = eventsInPeriod;
@@ -844,7 +850,7 @@ export function getMonthView(
         i + totalDaysVisibleInWeek
       );
       const isRowInMonth: boolean = row.some(
-        day => getMonth(day.date) === getMonth(viewDate)
+        (day) => getMonth(day.date) === getMonth(viewDate)
       );
       if (isRowInMonth) {
         days = [...days, ...row];
@@ -867,8 +873,8 @@ export function getMonthView(
     period: {
       start: days[0].date,
       end: endOfDay(days[days.length - 1].date),
-      events: eventsInMonth
-    }
+      events: eventsInMonth,
+    },
   };
 }
 
@@ -919,7 +925,7 @@ function getDayView(
     dayStart,
     dayEnd,
     eventWidth,
-    segmentHeight
+    segmentHeight,
   }: GetDayViewArgs
 ): DayView {
   const {
@@ -928,7 +934,7 @@ function getDayView(
     startOfDay,
     startOfMinute,
     endOfDay,
-    differenceInMinutes
+    differenceInMinutes,
   } = dateAdapter;
 
   const startOfView: Date = setMinutes(
@@ -943,7 +949,7 @@ function getDayView(
   const eventsInPeriod = getEventsInPeriod(dateAdapter, {
     events: events.filter((event: CalendarEvent) => !event.allDay),
     periodStart: startOfView,
-    periodEnd: endOfView
+    periodEnd: endOfView,
   });
 
   const dayViewEvents: WeekViewTimeEvent[] = eventsInPeriod
@@ -989,7 +995,7 @@ function getDayView(
 
       while (
         overlappingPreviousEvents.some(
-          previousEvent => previousEvent.left === left
+          (previousEvent) => previousEvent.left === left
         )
       ) {
         left += eventWidth;
@@ -1002,7 +1008,7 @@ function getDayView(
         top,
         left,
         startsBeforeDay,
-        endsAfterDay
+        endsAfterDay,
       };
 
       previousDayEvents.push(dayEvent);
@@ -1016,7 +1022,7 @@ function getDayView(
   const allDayEvents: CalendarEvent[] = getEventsInPeriod(dateAdapter, {
     events: events.filter((event: CalendarEvent) => event.allDay),
     periodStart: startOfDay(startOfView),
-    periodEnd: endOfDay(endOfView)
+    periodEnd: endOfDay(endOfView),
   });
 
   return {
@@ -1026,8 +1032,8 @@ function getDayView(
     period: {
       events: eventsInPeriod,
       start: startOfView,
-      end: endOfView
-    }
+      end: endOfView,
+    },
   };
 }
 
@@ -1063,7 +1069,7 @@ function getDayViewHourGrid(
     endOfDay,
     addMinutes,
     addHours,
-    addDays
+    addDays,
   } = dateAdapter;
   const hours: WeekViewHour[] = [];
 
@@ -1099,7 +1105,7 @@ function getDayViewHourGrid(
         segments.push({
           date: dateAdjustment(date),
           displayDate: date,
-          isStart: j === 0
+          isStart: j === 0,
         });
       }
     }
@@ -1116,7 +1122,7 @@ export enum EventValidationErrorMessage {
   StartPropertyMissing = 'Event is missing the `start` property',
   StartPropertyNotDate = 'Event `start` property should be a javascript date object. Do `new Date(event.start)` to fix it.',
   EndPropertyNotDate = 'Event `end` property should be a javascript date object. Do `new Date(event.end)` to fix it.',
-  EndsBeforeStart = 'Event `start` property occurs after the `end`'
+  EndsBeforeStart = 'Event `start` property occurs after the `end`',
 }
 
 export function validateEvents(
@@ -1135,7 +1141,7 @@ export function validateEvents(
     return false;
   }
 
-  events.forEach(event => {
+  events.forEach((event) => {
     if (!event.start) {
       isError(EventValidationErrorMessage.StartPropertyMissing, event);
     } else if (!(event.start instanceof Date)) {

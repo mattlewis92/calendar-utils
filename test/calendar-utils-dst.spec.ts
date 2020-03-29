@@ -12,7 +12,7 @@ describe('getWeekView', () => {
       dayStart: { hour: 0, minute: 0 },
       dayEnd: { hour: 23, minute: 59 },
       segmentHeight: 30,
-      weekStartsOn: 0
+      weekStartsOn: 0,
     });
     expect(result.hourColumns[0].hours.length).toEqual(24);
     expect(result).toMatchSnapshot();
@@ -25,7 +25,7 @@ describe('getWeekView', () => {
       dayStart: { hour: 0, minute: 0 },
       dayEnd: { hour: 23, minute: 59 },
       segmentHeight: 30,
-      weekStartsOn: 0
+      weekStartsOn: 0,
     });
     expect(result.hourColumns[0].hours.length).toEqual(24);
     expect(result).toMatchSnapshot();
