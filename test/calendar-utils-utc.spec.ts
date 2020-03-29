@@ -17,7 +17,7 @@ import {
   subHours
 } from 'date-fns';
 import * as moment from 'moment';
-import * as lolex from 'lolex';
+import * as fakeTimers from '@sinonjs/fake-timers';
 import {
   CalendarEvent,
   DAYS_OF_WEEK,
@@ -36,7 +36,7 @@ import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/mom
 
 let clock: any;
 beforeEach(() => {
-  clock = lolex.install({
+  clock = fakeTimers.install({
     now: new Date('2016-06-28').getTime(),
     toFake: ['Date']
   });
