@@ -40,7 +40,7 @@ export interface DateAdapter {
 
   isSameSecond(dateLeft: Date | number, dateRight: Date | number): boolean;
 
-  max(dates: Array<Date | number>): Date;
+  max(dates: Array<Date | number>): Date; // tslint:disable-line array-type
 
   setHours(date: Date | number, hours: number): Date;
 

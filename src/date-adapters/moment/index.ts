@@ -79,7 +79,8 @@ export function adapterFactory(moment): DateAdapter {
     return moment(dateLeft).isSame(moment(dateRight), 'second');
   }
 
-  function max(dates: Array<Date | number>): Date {
+  function max(dates: (Date | number)[]): Date {
+    // tslint:disable-line array-type
     return moment.max(dates.map((date) => moment(date))).toDate();
   }
 
