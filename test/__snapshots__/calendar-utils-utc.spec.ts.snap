@@ -30,20 +30,11 @@ Object {
             Object {
               "date": "2018-07-20T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-20T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-20T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -51,14 +42,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-20T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-20T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-20T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-20T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -73,20 +73,11 @@ Object {
             Object {
               "date": "2018-07-21T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-21T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-21T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -94,14 +85,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-21T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-21T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-21T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-21T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -116,20 +116,11 @@ Object {
             Object {
               "date": "2018-07-22T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-22T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-22T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -137,14 +128,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-22T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-22T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-22T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-22T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -159,20 +159,11 @@ Object {
             Object {
               "date": "2018-07-23T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-23T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-23T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -180,14 +171,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-23T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-23T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-23T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-23T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -202,20 +202,11 @@ Object {
             Object {
               "date": "2018-07-24T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-24T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-24T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -223,14 +214,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-24T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-24T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-24T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-24T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -245,20 +245,11 @@ Object {
             Object {
               "date": "2018-07-25T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-25T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-25T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -266,14 +257,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-25T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-25T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-25T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-25T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -288,20 +288,11 @@ Object {
             Object {
               "date": "2018-07-26T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-26T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-26T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -309,14 +300,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-26T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-26T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-26T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-26T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -331,20 +331,11 @@ Object {
             Object {
               "date": "2018-07-27T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-27T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-27T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -352,14 +343,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-27T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-27T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-27T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-27T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -374,20 +374,11 @@ Object {
             Object {
               "date": "2018-07-28T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-28T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-28T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -395,14 +386,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-28T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-28T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-28T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-28T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -417,20 +417,11 @@ Object {
             Object {
               "date": "2018-07-29T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-29T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-29T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -438,14 +429,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-29T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-29T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-29T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-29T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -472,359 +472,37 @@ Array [
   Object {
     "date": "2016-06-26T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-06-27T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-06-28T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-06-29T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-06-30T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-07-01T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-07-02T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
 ]
 `;
@@ -838,9 +516,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-26T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-26T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -849,16 +532,12 @@ Array [
           Object {
             "date": "2016-06-26T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-26T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -867,7 +546,7 @@ Array [
           Object {
             "date": "2016-06-26T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -880,9 +559,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-27T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-27T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -891,16 +575,12 @@ Array [
           Object {
             "date": "2016-06-27T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-27T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -909,7 +589,7 @@ Array [
           Object {
             "date": "2016-06-27T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -922,9 +602,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-28T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-28T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -933,16 +618,12 @@ Array [
           Object {
             "date": "2016-06-28T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-28T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -951,7 +632,7 @@ Array [
           Object {
             "date": "2016-06-28T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -964,9 +645,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-29T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-29T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -975,16 +661,12 @@ Array [
           Object {
             "date": "2016-06-29T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-29T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -993,7 +675,7 @@ Array [
           Object {
             "date": "2016-06-29T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1006,9 +688,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-30T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-30T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -1017,16 +704,12 @@ Array [
           Object {
             "date": "2016-06-30T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-30T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -1035,7 +718,7 @@ Array [
           Object {
             "date": "2016-06-30T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1048,9 +731,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-07-01T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-07-01T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -1059,16 +747,12 @@ Array [
           Object {
             "date": "2016-07-01T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-01T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -1077,7 +761,7 @@ Array [
           Object {
             "date": "2016-07-01T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1090,9 +774,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-07-02T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-07-02T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -1101,16 +790,12 @@ Array [
           Object {
             "date": "2016-07-02T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-02T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -1119,7 +804,7 @@ Array [
           Object {
             "date": "2016-07-02T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1139,20 +824,11 @@ Array [
           Object {
             "date": "2016-06-26T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-26T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-26T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -1160,14 +836,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-26T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-26T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-26T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-26T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1182,20 +867,11 @@ Array [
           Object {
             "date": "2016-06-27T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-27T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-27T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -1203,14 +879,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-27T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-27T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-27T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-27T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1225,20 +910,11 @@ Array [
           Object {
             "date": "2016-06-28T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-28T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-28T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -1246,14 +922,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-28T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-28T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-28T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-28T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1268,20 +953,11 @@ Array [
           Object {
             "date": "2016-06-29T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-29T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-29T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -1289,14 +965,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-29T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-29T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-29T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-29T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1311,20 +996,11 @@ Array [
           Object {
             "date": "2016-06-30T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-30T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-30T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -1332,14 +1008,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-30T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-30T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-30T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-30T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1354,20 +1039,11 @@ Array [
           Object {
             "date": "2016-07-01T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-01T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-07-01T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -1375,14 +1051,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-07-01T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-07-01T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-07-01T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-07-01T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1397,20 +1082,11 @@ Array [
           Object {
             "date": "2016-07-02T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-02T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-07-02T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -1418,14 +1094,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-07-02T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-07-02T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-07-02T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-07-02T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -1445,35 +1130,45 @@ Array [
           Object {
             "date": "2016-06-26T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-26T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-26T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-26T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-26T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-26T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-26T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-26T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -1481,19 +1176,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-26T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-26T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-26T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-26T03:45:00.000Z",
@@ -1513,35 +1198,45 @@ Array [
           Object {
             "date": "2016-06-27T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-27T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-27T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-27T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-27T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-27T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-27T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-27T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -1549,19 +1244,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-27T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-27T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-27T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-27T03:45:00.000Z",
@@ -1581,35 +1266,45 @@ Array [
           Object {
             "date": "2016-06-28T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-28T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-28T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-28T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-28T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-28T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-28T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-28T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -1617,19 +1312,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-28T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-28T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-28T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-28T03:45:00.000Z",
@@ -1649,35 +1334,45 @@ Array [
           Object {
             "date": "2016-06-29T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-29T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-29T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-29T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-29T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-29T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-29T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-29T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -1685,19 +1380,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-29T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-29T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-29T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-29T03:45:00.000Z",
@@ -1717,35 +1402,45 @@ Array [
           Object {
             "date": "2016-06-30T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-30T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-30T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-30T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-30T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-30T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-30T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-30T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -1753,19 +1448,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-30T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-30T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-30T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-30T03:45:00.000Z",
@@ -1785,35 +1470,45 @@ Array [
           Object {
             "date": "2016-07-01T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-01T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-01T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-07-01T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-07-01T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-01T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-07-01T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-07-01T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -1821,19 +1516,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-07-01T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-07-01T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-07-01T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-01T03:45:00.000Z",
@@ -1853,35 +1538,45 @@ Array [
           Object {
             "date": "2016-07-02T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-02T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-02T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-07-02T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-07-02T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-02T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-07-02T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-07-02T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -1889,19 +1584,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-07-02T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-07-02T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-07-02T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-02T03:45:00.000Z",
@@ -9474,20 +9159,11 @@ Object {
             Object {
               "date": "2018-07-20T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-20T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-20T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9495,14 +9171,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-20T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-20T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-20T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-20T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9517,20 +9202,11 @@ Object {
             Object {
               "date": "2018-07-21T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-21T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-21T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9538,14 +9214,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-21T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-21T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-21T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-21T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9560,20 +9245,11 @@ Object {
             Object {
               "date": "2018-07-22T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-22T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-22T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9581,14 +9257,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-22T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-22T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-22T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-22T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9603,20 +9288,11 @@ Object {
             Object {
               "date": "2018-07-23T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-23T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-23T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9624,14 +9300,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-23T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-23T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-23T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-23T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9646,20 +9331,11 @@ Object {
             Object {
               "date": "2018-07-24T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-24T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-24T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9667,14 +9343,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-24T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-24T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-24T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-24T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9689,20 +9374,11 @@ Object {
             Object {
               "date": "2018-07-25T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-25T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-25T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9710,14 +9386,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-25T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-25T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-25T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-25T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9732,20 +9417,11 @@ Object {
             Object {
               "date": "2018-07-26T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-26T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-26T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9753,14 +9429,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-26T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-26T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-26T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-26T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9775,20 +9460,11 @@ Object {
             Object {
               "date": "2018-07-27T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-27T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-27T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9796,14 +9472,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-27T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-27T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-27T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-27T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9818,20 +9503,11 @@ Object {
             Object {
               "date": "2018-07-28T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-28T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-28T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9839,14 +9515,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-28T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-28T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-28T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-28T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9861,20 +9546,11 @@ Object {
             Object {
               "date": "2018-07-29T01:30:00.000Z",
               "displayDate": "2018-07-27T01:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
-          ],
-        },
-        Object {
-          "segments": Array [
             Object {
               "date": "2018-07-29T02:00:00.000Z",
               "displayDate": "2018-07-27T02:00:00.000Z",
-              "isStart": true,
-            },
-            Object {
-              "date": "2018-07-29T02:30:00.000Z",
-              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": false,
             },
           ],
@@ -9882,14 +9558,23 @@ Object {
         Object {
           "segments": Array [
             Object {
-              "date": "2018-07-29T03:00:00.000Z",
-              "displayDate": "2018-07-27T03:00:00.000Z",
+              "date": "2018-07-29T02:30:00.000Z",
+              "displayDate": "2018-07-27T02:30:00.000Z",
               "isStart": true,
             },
             Object {
+              "date": "2018-07-29T03:00:00.000Z",
+              "displayDate": "2018-07-27T03:00:00.000Z",
+              "isStart": false,
+            },
+          ],
+        },
+        Object {
+          "segments": Array [
+            Object {
               "date": "2018-07-29T03:30:00.000Z",
               "displayDate": "2018-07-27T03:30:00.000Z",
-              "isStart": false,
+              "isStart": true,
             },
           ],
         },
@@ -9916,359 +9601,37 @@ Array [
   Object {
     "date": "2016-06-26T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-26T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-06-27T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-27T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-06-28T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-28T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-06-29T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-29T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-06-30T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-06-30T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-07-01T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-01T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
   Object {
     "date": "2016-07-02T00:00:00.000Z",
     "events": Array [],
-    "hours": Array [
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T01:40:00.000Z",
-            "displayDate": "2016-06-28T01:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T02:20:00.000Z",
-            "displayDate": "2016-06-28T02:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T03:40:00.000Z",
-            "displayDate": "2016-06-28T03:40:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-      Object {
-        "segments": Array [
-          Object {
-            "date": "2016-07-02T04:20:00.000Z",
-            "displayDate": "2016-06-28T04:20:00.000Z",
-            "isStart": false,
-          },
-        ],
-      },
-    ],
+    "hours": Array [],
   },
 ]
 `;
@@ -10282,9 +9645,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-26T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-26T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10293,16 +9661,12 @@ Array [
           Object {
             "date": "2016-06-26T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-26T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10311,7 +9675,7 @@ Array [
           Object {
             "date": "2016-06-26T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10324,9 +9688,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-27T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-27T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10335,16 +9704,12 @@ Array [
           Object {
             "date": "2016-06-27T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-27T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10353,7 +9718,7 @@ Array [
           Object {
             "date": "2016-06-27T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10366,9 +9731,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-28T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-28T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10377,16 +9747,12 @@ Array [
           Object {
             "date": "2016-06-28T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-28T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10395,7 +9761,7 @@ Array [
           Object {
             "date": "2016-06-28T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10408,9 +9774,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-29T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-29T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10419,16 +9790,12 @@ Array [
           Object {
             "date": "2016-06-29T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-29T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10437,7 +9804,7 @@ Array [
           Object {
             "date": "2016-06-29T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10450,9 +9817,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-06-30T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-06-30T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10461,16 +9833,12 @@ Array [
           Object {
             "date": "2016-06-30T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-30T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10479,7 +9847,7 @@ Array [
           Object {
             "date": "2016-06-30T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10492,9 +9860,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-07-01T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-07-01T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10503,16 +9876,12 @@ Array [
           Object {
             "date": "2016-07-01T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-01T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10521,7 +9890,7 @@ Array [
           Object {
             "date": "2016-07-01T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10534,9 +9903,14 @@ Array [
       Object {
         "segments": Array [
           Object {
+            "date": "2016-07-02T01:30:00.000Z",
+            "displayDate": "2016-06-28T01:30:00.000Z",
+            "isStart": true,
+          },
+          Object {
             "date": "2016-07-02T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10545,16 +9919,12 @@ Array [
           Object {
             "date": "2016-07-02T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-02T03:00:00.000Z",
             "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
         ],
       },
@@ -10563,7 +9933,7 @@ Array [
           Object {
             "date": "2016-07-02T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10583,20 +9953,11 @@ Array [
           Object {
             "date": "2016-06-26T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-26T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-26T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -10604,14 +9965,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-26T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-26T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-26T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-26T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10626,20 +9996,11 @@ Array [
           Object {
             "date": "2016-06-27T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-27T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-27T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -10647,14 +10008,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-27T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-27T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-27T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-27T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10669,20 +10039,11 @@ Array [
           Object {
             "date": "2016-06-28T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-28T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-28T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -10690,14 +10051,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-28T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-28T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-28T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-28T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10712,20 +10082,11 @@ Array [
           Object {
             "date": "2016-06-29T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-29T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-29T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -10733,14 +10094,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-29T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-29T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-29T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-29T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10755,20 +10125,11 @@ Array [
           Object {
             "date": "2016-06-30T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-30T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-30T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -10776,14 +10137,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-30T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-06-30T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-06-30T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-06-30T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10798,20 +10168,11 @@ Array [
           Object {
             "date": "2016-07-01T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-01T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-07-01T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -10819,14 +10180,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-07-01T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-07-01T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-07-01T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-07-01T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10841,20 +10211,11 @@ Array [
           Object {
             "date": "2016-07-02T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-02T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-07-02T02:30:00.000Z",
-            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": false,
           },
         ],
@@ -10862,14 +10223,23 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-07-02T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
+            "date": "2016-07-02T02:30:00.000Z",
+            "displayDate": "2016-06-28T02:30:00.000Z",
             "isStart": true,
           },
           Object {
+            "date": "2016-07-02T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+        ],
+      },
+      Object {
+        "segments": Array [
+          Object {
             "date": "2016-07-02T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
         ],
       },
@@ -10889,35 +10259,45 @@ Array [
           Object {
             "date": "2016-06-26T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-26T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-26T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-26T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-26T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-26T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-26T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-26T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -10925,19 +10305,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-26T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-26T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-26T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-26T03:45:00.000Z",
@@ -10957,35 +10327,45 @@ Array [
           Object {
             "date": "2016-06-27T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-27T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-27T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-27T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-27T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-27T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-27T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-27T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -10993,19 +10373,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-27T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-27T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-27T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-27T03:45:00.000Z",
@@ -11025,35 +10395,45 @@ Array [
           Object {
             "date": "2016-06-28T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-28T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-28T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-28T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-28T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-28T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-28T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-28T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -11061,19 +10441,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-28T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-28T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-28T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-28T03:45:00.000Z",
@@ -11093,35 +10463,45 @@ Array [
           Object {
             "date": "2016-06-29T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-29T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-29T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-29T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-29T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-29T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-29T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-29T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -11129,19 +10509,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-29T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-29T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-29T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-29T03:45:00.000Z",
@@ -11161,35 +10531,45 @@ Array [
           Object {
             "date": "2016-06-30T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-30T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-06-30T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-06-30T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-06-30T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-30T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-30T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-06-30T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -11197,19 +10577,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-06-30T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-06-30T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-06-30T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-06-30T03:45:00.000Z",
@@ -11229,35 +10599,45 @@ Array [
           Object {
             "date": "2016-07-01T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-01T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-01T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-07-01T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-07-01T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-01T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-07-01T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-07-01T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -11265,19 +10645,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-07-01T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-07-01T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-07-01T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-01T03:45:00.000Z",
@@ -11297,35 +10667,45 @@ Array [
           Object {
             "date": "2016-07-02T01:30:00.000Z",
             "displayDate": "2016-06-28T01:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-02T01:45:00.000Z",
             "displayDate": "2016-06-28T01:45:00.000Z",
             "isStart": false,
           },
-        ],
-      },
-      Object {
-        "segments": Array [
           Object {
             "date": "2016-07-02T02:00:00.000Z",
             "displayDate": "2016-06-28T02:00:00.000Z",
-            "isStart": true,
+            "isStart": false,
           },
           Object {
             "date": "2016-07-02T02:15:00.000Z",
             "displayDate": "2016-06-28T02:15:00.000Z",
             "isStart": false,
           },
+        ],
+      },
+      Object {
+        "segments": Array [
           Object {
             "date": "2016-07-02T02:30:00.000Z",
             "displayDate": "2016-06-28T02:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-02T02:45:00.000Z",
             "displayDate": "2016-06-28T02:45:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-07-02T03:00:00.000Z",
+            "displayDate": "2016-06-28T03:00:00.000Z",
+            "isStart": false,
+          },
+          Object {
+            "date": "2016-07-02T03:15:00.000Z",
+            "displayDate": "2016-06-28T03:15:00.000Z",
             "isStart": false,
           },
         ],
@@ -11333,19 +10713,9 @@ Array [
       Object {
         "segments": Array [
           Object {
-            "date": "2016-07-02T03:00:00.000Z",
-            "displayDate": "2016-06-28T03:00:00.000Z",
-            "isStart": true,
-          },
-          Object {
-            "date": "2016-07-02T03:15:00.000Z",
-            "displayDate": "2016-06-28T03:15:00.000Z",
-            "isStart": false,
-          },
-          Object {
             "date": "2016-07-02T03:30:00.000Z",
             "displayDate": "2016-06-28T03:30:00.000Z",
-            "isStart": false,
+            "isStart": true,
           },
           Object {
             "date": "2016-07-02T03:45:00.000Z",

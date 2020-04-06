@@ -438,7 +438,7 @@ export interface GetWeekViewArgs {
   precision?: 'minutes' | 'days';
   absolutePositionedEvents?: boolean;
   hourSegments?: number;
-  segmentDuration?: number;
+  hourDuration?: number;
   dayStart: Time;
   dayEnd: Time;
   weekendDays?: number[];
@@ -577,7 +577,7 @@ function getWeekViewHourGrid(
     events,
     viewDate,
     hourSegments,
-    segmentDuration,
+    hourDuration,
     dayStart,
     dayEnd,
     weekStartsOn,
@@ -591,7 +591,7 @@ function getWeekViewHourGrid(
   const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
     viewDate,
     hourSegments,
-    segmentDuration,
+    hourDuration,
     dayStart,
     dayEnd
   });
@@ -702,7 +702,7 @@ export function getWeekView(
     precision = 'days',
     absolutePositionedEvents = false,
     hourSegments,
-    segmentDuration,
+    hourDuration,
     dayStart,
     dayEnd,
     weekendDays,
@@ -751,7 +751,7 @@ export function getWeekView(
       events,
       viewDate,
       hourSegments,
-      segmentDuration,
+      hourDuration,
       dayStart,
       dayEnd,
       weekStartsOn,
@@ -1050,7 +1050,7 @@ interface Time {
 interface GetDayViewHourGridArgs {
   viewDate: Date;
   hourSegments: number;
-  segmentDuration: number;
+  hourDuration: number;
   dayStart: Time;
   dayEnd: Time;
 }
@@ -1068,7 +1068,7 @@ function getDayViewHourGrid(
   {
     viewDate,
     hourSegments,
-    segmentDuration,
+    hourDuration,
     dayStart,
     dayEnd
   }: GetDayViewHourGridArgs
@@ -1093,6 +1093,8 @@ function getDayViewHourGrid(
     setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
     sanitiseMinutes(dayEnd.minute)
   );
+  const segmentDuration: number =
+    (hourDuration || MINUTES_IN_HOUR) / hourSegments;
   let startOfViewDay: Date = startOfDay(viewDate);
   const endOfViewDay: Date = endOfDay(viewDate);
   let dateAdjustment: (d: Date) => Date = (d: Date) => d;
@@ -1105,48 +1107,27 @@ function getDayViewHourGrid(
     dateAdjustment = (d: Date) => addDays(d, -1);
   }
 
-  if (segmentDuration) {
-    let i: number = 0;
-    while (true) {
-      i++;
-      const segments: WeekViewHourSegment[] = [];
+  const dayDuration: number = hourDuration
+    ? (HOURS_IN_DAY * 60) / hourDuration
+    : MINUTES_IN_HOUR;
 
-      const date: Date = addMinutes(startOfView, i * segmentDuration);
+  for (let i: number = 0; i < dayDuration; i++) {
+    const segments: WeekViewHourSegment[] = [];
+    for (let j: number = 0; j < hourSegments; j++) {
+      const date: Date = addMinutes(
+        addMinutes(startOfView, i * (hourDuration || MINUTES_IN_HOUR)),
+        j * segmentDuration
+      );
       if (date >= startOfView && date < endOfView) {
         segments.push({
           date: dateAdjustment(date),
           displayDate: date,
-          isStart: date.getMinutes() === 0
+          isStart: j === 0
         });
-      } else {
-        break;
-      }
-
-      if (segments.length > 0) {
-        hours.push({ segments });
       }
     }
-  } else {
-    segmentDuration = MINUTES_IN_HOUR / hourSegments;
-
-    for (let i: number = 0; i < HOURS_IN_DAY; i++) {
-      const segments: WeekViewHourSegment[] = [];
-      for (let j: number = 0; j < hourSegments; j++) {
-        const date: Date = addMinutes(
-          addHours(startOfViewDay, i),
-          j * segmentDuration
-        );
-        if (date >= startOfView && date < endOfView) {
-          segments.push({
-            date: dateAdjustment(date),
-            displayDate: date,
-            isStart: j === 0
-          });
-        }
-      }
-      if (segments.length > 0) {
-        hours.push({ segments });
-      }
+    if (segments.length > 0) {
+      hours.push({ segments });
     }
   }
 
