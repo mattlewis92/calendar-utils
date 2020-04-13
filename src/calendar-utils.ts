@@ -850,7 +850,7 @@ export function getMonthView(
         i + totalDaysVisibleInWeek
       );
       const isRowInMonth: boolean = row.some(
-        (day) => getMonth(day.date) === getMonth(viewDate)
+        (day) => viewStart <= day.date && day.date < viewEnd
       );
       if (isRowInMonth) {
         days = [...days, ...row];

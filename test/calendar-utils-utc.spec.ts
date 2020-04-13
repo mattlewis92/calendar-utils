@@ -2959,6 +2959,28 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         );
       });
 
+      it('should exclude days from month view and respect the view start and end if passed', () => {
+        const viewDate = new Date('2020-04-13');
+        const different: MonthView = getMonthView(dateAdapter, {
+          viewDate,
+          excluded: [DAYS_OF_WEEK.SUNDAY],
+          events,
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+          viewStart: moment(viewDate)
+            .startOf('month')
+            .subtract(1, 'week')
+            .toDate(),
+          viewEnd: moment(viewDate).endOf('month').add(1, 'week').toDate(),
+        });
+        expect(different.days.length).toBe(42);
+        expect(different.days[0].date).toEqual(
+          startOfDay(new Date('2020-03-23'))
+        );
+        expect(different.days[different.days.length - 1].date).toEqual(
+          startOfDay(new Date('2020-05-09'))
+        );
+      });
+
       it('should not increase offset for excluded days', () => {
         const different: MonthView = getMonthView(dateAdapter, {
           viewDate: new Date('2016-07-01'),
