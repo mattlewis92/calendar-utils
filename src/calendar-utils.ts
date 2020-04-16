@@ -613,7 +613,8 @@ function getWeekViewHourGrid(
       dayStart,
       dayEnd,
       segmentHeight,
-      eventWidth: 1
+      eventWidth: 1,
+      hourDuration
     });
 
     const hours = dayViewHourGrid.map(hour => {
@@ -897,6 +898,7 @@ export interface GetDayViewArgs {
   };
   eventWidth: number;
   segmentHeight: number;
+  hourDuration?: number;
 }
 
 function getOverLappingWeekViewEvents(
@@ -930,7 +932,8 @@ function getDayView(
     dayStart,
     dayEnd,
     eventWidth,
-    segmentHeight
+    segmentHeight,
+    hourDuration
   }: GetDayViewArgs
 ): DayView {
   const {
@@ -967,7 +970,7 @@ function getDayView(
       const startsBeforeDay: boolean = eventStart < startOfView;
       const endsAfterDay: boolean = eventEnd > endOfView;
       const hourHeightModifier: number =
-        (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
+        (hourSegments * segmentHeight) / (hourDuration || MINUTES_IN_HOUR);
 
       let top: number = 0;
       if (eventStart > startOfView) {
