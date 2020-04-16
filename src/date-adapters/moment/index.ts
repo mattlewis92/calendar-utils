@@ -54,6 +54,7 @@ export function adapterFactory(moment): DateAdapter {
     return moment(date).day();
   }
 
+  /* istanbul ignore next */
   function getMonth(date: Date | number): number {
     return moment(date).month();
   }
