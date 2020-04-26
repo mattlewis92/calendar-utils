@@ -945,6 +945,7 @@ function getDayView(
     setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
     sanitiseMinutes(dayEnd.minute)
   );
+  endOfView.setSeconds(59, 999);
   const previousDayEvents: WeekViewTimeEvent[] = [];
   const eventsInPeriod = getEventsInPeriod(dateAdapter, {
     events: events.filter((event: CalendarEvent) => !event.allDay),

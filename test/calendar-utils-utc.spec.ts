@@ -2881,6 +2881,35 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         });
         expect(result.hourColumns[0].events).toEqual([]);
       });
+
+      it('should include events that end after 23:59:00', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: moment().endOf('day').toDate(),
+            title: '',
+            allDay: false,
+          },
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+          precision: 'days',
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0,
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59,
+          },
+          segmentHeight: 30,
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+        });
+        expect(result.hourColumns[0].events[0].event).toEqual(events[0]);
+      });
     });
 
     describe('getMonthView', () => {
