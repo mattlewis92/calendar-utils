@@ -22,7 +22,7 @@ import {
   startOfMonth,
   startOfWeek,
   getHours,
-  getMinutes
+  getMinutes,
 } from 'date-fns';
 import { DateAdapter } from '../date-adapter';
 
@@ -51,6 +51,6 @@ export function adapterFactory(): DateAdapter {
     startOfMonth,
     startOfWeek,
     getHours,
-    getMinutes
+    getMinutes,
   };
 }

@@ -14,10 +14,10 @@ import {
   startOfDay,
   startOfWeek,
   subDays,
-  subHours
+  subHours,
 } from 'date-fns';
 import * as moment from 'moment';
-import * as lolex from 'lolex';
+import * as fakeTimers from '@sinonjs/fake-timers';
 import {
   CalendarEvent,
   DAYS_OF_WEEK,
@@ -29,16 +29,16 @@ import {
   MonthView,
   SECONDS_IN_DAY,
   validateEvents,
-  WeekDay
+  WeekDay,
 } from '../src/calendar-utils';
 import { adapterFactory as dateFnsAdapterFactory } from '../src/date-adapters/date-fns';
 import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/moment';
 
 let clock: any;
 beforeEach(() => {
-  clock = lolex.install({
+  clock = fakeTimers.install({
     now: new Date('2016-06-28').getTime(),
-    toFake: ['Date']
+    toFake: ['Date'],
   });
 });
 
@@ -49,12 +49,12 @@ afterEach(() => {
 const adapters = [
   {
     name: 'date-fns',
-    adapter: dateFnsAdapterFactory()
+    adapter: dateFnsAdapterFactory(),
   },
   {
     name: 'moment',
-    adapter: momentAdapterFactory(moment)
-  }
+    adapter: momentAdapterFactory(moment),
+  },
 ];
 
 adapters.forEach(({ name, adapter: dateAdapter }) => {
@@ -62,8 +62,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
     beforeEach(() => {
       moment.updateLocale('en', {
         week: {
-          dow: DAYS_OF_WEEK.SUNDAY
-        } as any
+          dow: DAYS_OF_WEEK.SUNDAY,
+        } as any,
       });
     });
 
@@ -78,9 +78,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.TUESDAY,
               DAYS_OF_WEEK.WEDNESDAY,
               DAYS_OF_WEEK.THURSDAY,
-              DAYS_OF_WEEK.FRIDAY
+              DAYS_OF_WEEK.FRIDAY,
             ],
-            weekStartsOn: DAYS_OF_WEEK.SUNDAY
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           }).length
         ).toEqual(1);
       });
@@ -89,8 +89,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         const days: number[] = getWeekViewHeader(dateAdapter, {
           viewDate: new Date('2016-06-25'),
           weekStartsOn: DAYS_OF_WEEK.WEDNESDAY,
-          excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY]
-        }).map(d => d.date.getDay());
+          excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
+        }).map((d) => d.date.getDay());
 
         expect(days.length).toEqual(5);
         expect(days.indexOf(DAYS_OF_WEEK.SUNDAY)).toEqual(-1);
@@ -100,7 +100,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
       it('get all days of the week for the given date', () => {
         const days: WeekDay[] = getWeekViewHeader(dateAdapter, {
           viewDate: new Date('2016-06-28'),
-          weekStartsOn: DAYS_OF_WEEK.SUNDAY
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         });
         expect(days).toMatchSnapshot();
       });
@@ -109,7 +109,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         const days: WeekDay[] = getWeekViewHeader(dateAdapter, {
           viewDate: new Date('2016-06-28'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-          weekendDays: [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY]
+          weekendDays: [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY],
         });
 
         expect(days[0].isWeekend).toBe(false);
@@ -126,7 +126,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2018-07-27'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           viewStart: startOfDay(new Date('2018-07-20')),
-          viewEnd: endOfDay(new Date('2018-07-29'))
+          viewEnd: endOfDay(new Date('2018-07-29')),
         });
         expect(days.length).toEqual(10);
         expect(days).toMatchSnapshot();
@@ -140,14 +140,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: new Date('2016-06-27'),
             end: new Date('2016-06-29'),
             title: '',
-            allDay: true
+            allDay: true,
           },
           {
             start: new Date('2017-06-27'),
             end: new Date('2017-06-29'),
             title: '',
-            allDay: true
-          }
+            allDay: true,
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -157,18 +157,18 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           hourSegments: 2,
           dayStart: {
             hour: 1,
-            minute: 30
+            minute: 30,
           },
           dayEnd: {
             hour: 3,
-            minute: 59
+            minute: 59,
           },
-          segmentHeight: 30
+          segmentHeight: 30,
         });
         expect(result.period).toEqual({
           start: startOfDay(new Date('2016-06-26')),
           end: endOfDay(new Date('2016-07-02')),
-          events: [events[0]]
+          events: [events[0]],
         });
       });
 
@@ -178,14 +178,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           hourSegments: 2,
           dayStart: {
             hour: 1,
-            minute: 30
+            minute: 30,
           },
           dayEnd: {
             hour: 3,
-            minute: 59
+            minute: 59,
           },
           weekStartsOn: 0,
-          segmentHeight: 30
+          segmentHeight: 30,
         });
         expect(result.hourColumns).toMatchSnapshot();
       });
@@ -213,38 +213,38 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             start: subDays(startOfDay(new Date()), 1),
             end: addHours(startOfDay(new Date()), 16),
-            title: 'Column 1'
+            title: 'Column 1',
           },
           {
             start: startOfDay(new Date()),
             end: addMinutes(startOfDay(new Date()), 30),
-            title: 'Column 2 a'
+            title: 'Column 2 a',
           },
           {
             start: addHours(startOfDay(new Date()), 2),
             end: addHours(startOfDay(new Date()), 14),
-            title: 'Column 2 b'
+            title: 'Column 2 b',
           },
           {
             start: addHours(startOfDay(new Date()), 17),
             end: addHours(startOfDay(new Date()), 18),
-            title: 'Column 1 and column 2'
-          }
+            title: 'Column 1 and column 2',
+          },
         ];
         const result = getWeekView(dateAdapter, {
           viewDate: new Date(),
           hourSegments: 2,
           dayStart: {
             hour: 0,
-            minute: 0
+            minute: 0,
           },
           dayEnd: {
             hour: 23,
-            minute: 59
+            minute: 59,
           },
           weekStartsOn: 0,
           segmentHeight: 30,
-          events
+          events,
         }).hourColumns;
         expect(result).toMatchSnapshot();
         expect(result[2].events[0].event).toEqual(events[0]);
@@ -265,41 +265,39 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
       });
 
       it('should use the correct left value of events on the same row', () => {
-        const date = moment()
-          .startOf('week')
-          .toDate();
+        const date = moment().startOf('week').toDate();
         const events = [
           {
             start: date,
-            title: 'Title'
+            title: 'Title',
           },
           {
             start: date,
-            title: 'Title'
+            title: 'Title',
           },
           {
             start: date,
-            title: 'Title'
+            title: 'Title',
           },
           {
             start: date,
-            title: 'Title'
-          }
+            title: 'Title',
+          },
         ];
         const result = getWeekView(dateAdapter, {
           viewDate: date,
           hourSegments: 2,
           dayStart: {
             hour: 0,
-            minute: 0
+            minute: 0,
           },
           dayEnd: {
             hour: 23,
-            minute: 59
+            minute: 59,
           },
           weekStartsOn: 0,
           segmentHeight: 30,
-          events
+          events,
         }).hourColumns;
         expect(result[0].events[0].left).toEqual(0);
         expect(result[0].events[1].left).toEqual(25);
@@ -312,28 +310,28 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             start: new Date('2018-10-13T00:05:00'),
             end: new Date('2018-10-20'),
-            title: 'Event 1'
+            title: 'Event 1',
           },
           {
             start: new Date('2018-10-13T00:10:00'),
             end: new Date('2018-10-20'),
-            title: 'Event 2'
-          }
+            title: 'Event 2',
+          },
         ];
         const result = getWeekView(dateAdapter, {
           viewDate: new Date('2018-10-12'),
           hourSegments: 2,
           dayStart: {
             hour: 0,
-            minute: 0
+            minute: 0,
           },
           dayEnd: {
             hour: 23,
-            minute: 59
+            minute: 59,
           },
           weekStartsOn: 0,
           segmentHeight: 30,
-          events
+          events,
         }).hourColumns;
         expect(result[6].events[0].width).toEqual(50);
         expect(result[6].events[1].width).toEqual(50);
@@ -349,24 +347,24 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             title: 'Event 1',
             start: eventBStartDate,
-            end: eventBEndDate
+            end: eventBEndDate,
           },
           {
             title: 'Event 2',
             start: eventAStartDate,
-            end: eventAEndDate
+            end: eventAEndDate,
           },
 
           {
             title: 'Event 3',
             start: eventBStartDate,
-            end: eventBEndDate
+            end: eventBEndDate,
           },
           {
             title: 'Event 4',
             start: eventAStartDate,
-            end: eventBEndDate
-          }
+            end: eventBEndDate,
+          },
         ];
 
         const result = getWeekView(dateAdapter, {
@@ -374,15 +372,15 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           hourSegments: 2,
           dayStart: {
             hour: 0,
-            minute: 0
+            minute: 0,
           },
           dayEnd: {
             hour: 23,
-            minute: 59
+            minute: 59,
           },
           weekStartsOn: 0,
           segmentHeight: 30,
-          events
+          events,
         }).hourColumns;
 
         expect(result[2].events[0].width).toEqual(100 / 3);
@@ -396,8 +394,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-27'),
               end: new Date('2016-06-29'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -408,13 +406,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -424,10 +422,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 1,
                   span: 3,
                   startsBeforeWeek: false,
-                  endsAfterWeek: false
-                }
-              ]
-            }
+                  endsAfterWeek: false,
+                },
+              ],
+            },
           ]);
         });
 
@@ -437,14 +435,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2017-05-29'),
               end: new Date('2017-05-29'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           moment.updateLocale('en', {
             week: {
-              dow: DAYS_OF_WEEK.TUESDAY
-            } as any
+              dow: DAYS_OF_WEEK.TUESDAY,
+            } as any,
           });
 
           const result = getWeekView(dateAdapter, {
@@ -456,13 +454,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -472,10 +470,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 4,
                   span: 1,
                   startsBeforeWeek: false,
-                  endsAfterWeek: false
-                }
-              ]
-            }
+                  endsAfterWeek: false,
+                },
+              ],
+            },
           ]);
         });
 
@@ -485,13 +483,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2017-05-31'),
               end: new Date('2017-05-31'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           moment.updateLocale('en', {
             week: {
-              dow: DAYS_OF_WEEK.SATURDAY
-            } as any
+              dow: DAYS_OF_WEEK.SATURDAY,
+            } as any,
           });
 
           const weekStartsOn = DAYS_OF_WEEK.SATURDAY;
@@ -504,18 +502,18 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
 
           const header: WeekDay[] = getWeekViewHeader(dateAdapter, {
             weekStartsOn,
-            viewDate
+            viewDate,
           });
           const firstDayOfWeek: Date = startOfWeek(viewDate, { weekStartsOn });
 
@@ -536,10 +534,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 4,
                   span: 1,
                   startsBeforeWeek: false,
-                  endsAfterWeek: false
-                }
-              ]
-            }
+                  endsAfterWeek: false,
+                },
+              ],
+            },
           ]);
         });
 
@@ -549,8 +547,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-06-29'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -561,13 +559,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -577,10 +575,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 0,
                   span: 4,
                   startsBeforeWeek: true,
-                  endsAfterWeek: false
-                }
-              ]
-            }
+                  endsAfterWeek: false,
+                },
+              ],
+            },
           ]);
         });
 
@@ -590,8 +588,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-27'),
               end: new Date('2016-07-10'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -602,13 +600,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -618,10 +616,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 1,
                   span: 6,
                   startsBeforeWeek: false,
-                  endsAfterWeek: true
-                }
-              ]
-            }
+                  endsAfterWeek: true,
+                },
+              ],
+            },
           ]);
         });
 
@@ -631,8 +629,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-10'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const eventCount: number = getWeekView(dateAdapter, {
             events,
@@ -643,13 +641,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           }).allDayEventRows.length;
           expect(eventCount).toBe(0);
         });
@@ -660,8 +658,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-07-10'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -672,13 +670,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -688,10 +686,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 0,
                   span: 7,
                   startsBeforeWeek: true,
-                  endsAfterWeek: true
-                }
-              ]
-            }
+                  endsAfterWeek: true,
+                },
+              ],
+            },
           ]);
         });
 
@@ -701,14 +699,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: addDays(startOfWeek(new Date()), 2),
               end: addHours(addDays(startOfWeek(new Date()), 2), 5),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -718,13 +716,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[0].row[1].event).toEqual(events[1]);
@@ -736,14 +734,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: addDays(startOfWeek(new Date()), 2),
               end: addHours(addDays(startOfWeek(new Date()), 2), 5),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -754,13 +752,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[0].row[1].event).toEqual(events[1]);
@@ -776,14 +774,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -793,13 +791,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
@@ -810,13 +808,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 0',
               start: startOfWeek(new Date()),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -826,13 +824,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
@@ -843,13 +841,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 1',
               start: addHours(new Date(), 1),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 0',
               start: new Date(),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -859,13 +857,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[1]);
           expect(result.allDayEventRows[1].row[0].event).toEqual(events[0]);
@@ -877,8 +875,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-05-25'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -889,13 +887,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([]);
         });
@@ -905,13 +903,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 0',
               start: startOfWeek(new Date()),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -921,13 +919,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
@@ -938,8 +936,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               start: new Date('2016-06-24'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -950,13 +948,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([]);
         });
@@ -967,8 +965,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: startOfWeek(new Date('2016-06-27')),
               end: new Date('2016-08-01'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -978,13 +976,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
         });
@@ -995,8 +993,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-04-01'),
               end: endOfWeek(new Date('2016-06-27')),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1006,13 +1004,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
         });
@@ -1025,13 +1023,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([]);
         });
@@ -1044,13 +1042,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([]);
         });
@@ -1061,8 +1059,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-04'),
               end: new Date('2016-01-09'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1070,20 +1068,20 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             excluded: [
               DAYS_OF_WEEK.SUNDAY,
               DAYS_OF_WEEK.MONDAY,
-              DAYS_OF_WEEK.THURSDAY
+              DAYS_OF_WEEK.THURSDAY,
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days',
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].span).toBe(6 - 2);
         });
@@ -1094,8 +1092,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-01'),
               end: new Date('2016-01-10'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1105,13 +1103,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].span).toBe(7 - 2);
           expect(result.allDayEventRows[0].row[0].offset).toBe(0);
@@ -1125,8 +1123,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-05'),
               end: new Date('2016-01-20'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1137,13 +1135,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].span).toBe(4); // thuesday, thursday, friday, saturday
           expect(result.allDayEventRows[0].row[0].offset).toBe(1); // skip monday
@@ -1157,8 +1155,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-04'),
               end: new Date('2016-01-05'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1166,20 +1164,20 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             excluded: [
               DAYS_OF_WEEK.THURSDAY,
               DAYS_OF_WEEK.FRIDAY,
-              DAYS_OF_WEEK.SATURDAY
+              DAYS_OF_WEEK.SATURDAY,
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'days',
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].offset).toBe(1); // sunday
         });
@@ -1190,14 +1188,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-15'),
               title: '',
-              allDay: true
+              allDay: true,
             },
             {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-09'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const eventCount: number = getWeekView(dateAdapter, {
             events,
@@ -1206,19 +1204,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.SUNDAY,
               DAYS_OF_WEEK.THURSDAY,
               DAYS_OF_WEEK.FRIDAY,
-              DAYS_OF_WEEK.SATURDAY
+              DAYS_OF_WEEK.SATURDAY,
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           }).allDayEventRows.length;
           expect(eventCount).toBe(0);
         });
@@ -1230,15 +1228,15 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: startOfWeek(new Date()),
               end: addDays(startOfWeek(new Date()), 1),
               title: '',
-              allDay: true
+              allDay: true,
             },
             {
               id: 'bar',
               start: addDays(startOfWeek(new Date()), 2),
               end: addDays(startOfWeek(new Date()), 3),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1248,13 +1246,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].id).toEqual('foo-bar');
         });
@@ -1266,8 +1264,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                 start: new Date('2016-05-27'),
                 end: new Date('2016-07-10'),
                 title: '',
-                allDay: true
-              }
+                allDay: true,
+              },
             ];
 
             const result = getWeekView(dateAdapter, {
@@ -1278,13 +1276,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               hourSegments: 2,
               dayStart: {
                 hour: 1,
-                minute: 30
+                minute: 30,
               },
               dayEnd: {
                 hour: 3,
-                minute: 59
+                minute: 59,
               },
-              segmentHeight: 3
+              segmentHeight: 3,
             });
             expect(result.allDayEventRows).toEqual([
               {
@@ -1294,10 +1292,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                     offset: 0,
                     span: 7,
                     startsBeforeWeek: true,
-                    endsAfterWeek: true
-                  }
-                ]
-              }
+                    endsAfterWeek: true,
+                  },
+                ],
+              },
             ]);
           });
         });
@@ -1308,8 +1306,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2018-01-09T11:00:00.000Z'),
               end: new Date('2018-01-11T10:00:00.000Z'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1318,13 +1316,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -1334,10 +1332,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 2,
                   span: 3,
                   startsBeforeWeek: false,
-                  endsAfterWeek: false
-                }
-              ]
-            }
+                  endsAfterWeek: false,
+                },
+              ],
+            },
           ]);
         });
 
@@ -1347,8 +1345,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2018-06-20T11:00:00.000Z'),
               end: new Date('2018-08-11T10:00:00.000Z'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const view = getWeekView(dateAdapter, {
             events,
@@ -1359,26 +1357,22 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(view.allDayEventRows[0].row[0].span).toEqual(10);
           expect(view.hourColumns.length).toEqual(10);
           expect(view).toMatchSnapshot();
           expect(view.period.start).toEqual(
-            moment(new Date('2018-07-20'))
-              .startOf('day')
-              .toDate()
+            moment(new Date('2018-07-20')).startOf('day').toDate()
           );
           expect(view.period.end).toEqual(
-            moment(new Date('2018-07-29'))
-              .endOf('day')
-              .toDate()
+            moment(new Date('2018-07-29')).endOf('day').toDate()
           );
         });
 
@@ -1390,24 +1384,20 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
             segmentHeight: 30,
-            excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY]
+            excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
           });
           expect(view.period.start).toEqual(
-            moment(new Date('2018-07-30'))
-              .startOf('day')
-              .toDate()
+            moment(new Date('2018-07-30')).startOf('day').toDate()
           );
           expect(view.period.end).toEqual(
-            moment(new Date('2018-08-03'))
-              .endOf('day')
-              .toDate()
+            moment(new Date('2018-08-03')).endOf('day').toDate()
           );
         });
       });
@@ -1419,8 +1409,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-27'),
               end: new Date('2016-06-29'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -1431,13 +1421,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -1447,10 +1437,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 1,
                   span: 2,
                   startsBeforeWeek: false,
-                  endsAfterWeek: false
-                }
-              ]
-            }
+                  endsAfterWeek: false,
+                },
+              ],
+            },
           ]);
         });
 
@@ -1460,8 +1450,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-06-29'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -1472,13 +1462,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -1488,10 +1478,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 0,
                   span: 3,
                   startsBeforeWeek: true,
-                  endsAfterWeek: false
-                }
-              ]
-            }
+                  endsAfterWeek: false,
+                },
+              ],
+            },
           ]);
         });
 
@@ -1501,8 +1491,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-27'),
               end: new Date('2016-07-10'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -1513,13 +1503,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].offset).toBe(1);
           expect(result.allDayEventRows[0].row[0].span).toBe(6);
@@ -1531,10 +1521,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 1,
                   span: 6,
                   startsBeforeWeek: false,
-                  endsAfterWeek: true
-                }
-              ]
-            }
+                  endsAfterWeek: true,
+                },
+              ],
+            },
           ]);
         });
 
@@ -1544,8 +1534,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-10'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const eventCount: number = getWeekView(dateAdapter, {
             events,
@@ -1556,13 +1546,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           }).allDayEventRows.length;
           expect(eventCount).toBe(0);
         });
@@ -1573,8 +1563,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-07-10'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -1585,13 +1575,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([
             {
@@ -1601,10 +1591,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
                   offset: 0,
                   span: 7,
                   startsBeforeWeek: true,
-                  endsAfterWeek: true
-                }
-              ]
-            }
+                  endsAfterWeek: true,
+                },
+              ],
+            },
           ]);
         });
 
@@ -1614,14 +1604,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: addDays(startOfWeek(new Date()), 2),
               end: addHours(addDays(startOfWeek(new Date()), 2), 5),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1631,13 +1621,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[0].row[1].event).toEqual(events[1]);
@@ -1649,14 +1639,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               title: 'Event 0',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
               end: addHours(startOfWeek(new Date()), 5),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1666,13 +1656,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
@@ -1683,13 +1673,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 0',
               start: startOfWeek(new Date()),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1699,13 +1689,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
@@ -1716,13 +1706,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 1',
               start: addHours(new Date(), 1),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 0',
               start: new Date(),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1732,13 +1722,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[1]);
           expect(result.allDayEventRows[1].row[0].event).toEqual(events[0]);
@@ -1750,8 +1740,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-06-24'),
               end: new Date('2016-05-25'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -1762,13 +1752,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([]);
         });
@@ -1778,13 +1768,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               title: 'Event 0',
               start: startOfWeek(new Date()),
-              allDay: true
+              allDay: true,
             },
             {
               title: 'Event 1',
               start: startOfWeek(new Date()),
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1794,13 +1784,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
           expect(result.allDayEventRows[1].row[0].event).toEqual(events[1]);
@@ -1811,8 +1801,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             {
               start: new Date('2016-06-24'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
 
           const result = getWeekView(dateAdapter, {
@@ -1823,13 +1813,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([]);
         });
@@ -1840,8 +1830,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: startOfWeek(new Date('2016-06-27')),
               end: new Date('2016-08-01'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1851,13 +1841,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
         });
@@ -1868,8 +1858,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-04-01'),
               end: endOfWeek(new Date('2016-06-27')),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1879,13 +1869,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
         });
@@ -1898,13 +1888,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([]);
         });
@@ -1918,13 +1908,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows).toEqual([]);
         });
@@ -1935,8 +1925,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-04'),
               end: new Date('2016-01-09'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1944,20 +1934,20 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             excluded: [
               DAYS_OF_WEEK.SUNDAY,
               DAYS_OF_WEEK.MONDAY,
-              DAYS_OF_WEEK.THURSDAY
+              DAYS_OF_WEEK.THURSDAY,
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes',
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].span).toBe(
             3 +
@@ -1972,8 +1962,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-01'),
               end: new Date('2016-01-10'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -1984,13 +1974,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].span).toBe(7 - 2);
           expect(result.allDayEventRows[0].row[0].offset).toBe(0);
@@ -2004,8 +1994,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-05'),
               end: new Date('2016-01-20'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -2016,13 +2006,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].span).toBe(4); // tuesday, thursday, friday, saturday
           expect(result.allDayEventRows[0].row[0].offset).toBe(1); // skip monday
@@ -2036,8 +2026,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-04'),
               end: new Date('2016-01-05'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const result = getWeekView(dateAdapter, {
             events,
@@ -2045,20 +2035,20 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             excluded: [
               DAYS_OF_WEEK.THURSDAY,
               DAYS_OF_WEEK.FRIDAY,
-              DAYS_OF_WEEK.SATURDAY
+              DAYS_OF_WEEK.SATURDAY,
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes',
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           });
           expect(result.allDayEventRows[0].row[0].offset).toBe(1); // sunday
         });
@@ -2069,14 +2059,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-15'),
               title: '',
-              allDay: true
+              allDay: true,
             },
             {
               start: new Date('2016-01-08'),
               end: new Date('2016-01-09'),
               title: '',
-              allDay: true
-            }
+              allDay: true,
+            },
           ];
           const eventCount: number = getWeekView(dateAdapter, {
             events,
@@ -2085,20 +2075,20 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
               DAYS_OF_WEEK.SUNDAY,
               DAYS_OF_WEEK.THURSDAY,
               DAYS_OF_WEEK.FRIDAY,
-              DAYS_OF_WEEK.SATURDAY
+              DAYS_OF_WEEK.SATURDAY,
             ],
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             precision: 'minutes',
             hourSegments: 2,
             dayStart: {
               hour: 1,
-              minute: 30
+              minute: 30,
             },
             dayEnd: {
               hour: 3,
-              minute: 59
+              minute: 59,
             },
-            segmentHeight: 30
+            segmentHeight: 30,
           }).allDayEventRows.length;
           expect(eventCount).toBe(0);
         });
@@ -2109,43 +2099,43 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             title: 'A',
             start: new Date('2018-10-23T08:30:00'),
-            end: new Date('2018-10-23T09:00:00')
+            end: new Date('2018-10-23T09:00:00'),
           },
           {
             title: 'B',
             start: new Date('2018-10-23T09:00:00'),
-            end: new Date('2018-10-23T09:30:00')
+            end: new Date('2018-10-23T09:30:00'),
           },
           {
             title: 'D',
             start: new Date('2018-10-23T08:00:00'),
-            end: new Date('2018-10-23T08:30:00')
+            end: new Date('2018-10-23T08:30:00'),
           },
           {
             title: 'F',
             start: new Date('2018-10-23T08:00:00'),
-            end: new Date('2018-10-23T08:30:00')
+            end: new Date('2018-10-23T08:30:00'),
           },
           {
             title: 'G',
             start: new Date('2018-10-23T08:00:00'),
-            end: new Date('2018-10-23T09:30:00')
-          }
+            end: new Date('2018-10-23T09:30:00'),
+          },
         ];
         const result = getWeekView(dateAdapter, {
           viewDate: new Date('2018-10-23T08:15:00'),
           hourSegments: 2,
           dayStart: {
             hour: 0,
-            minute: 0
+            minute: 0,
           },
           dayEnd: {
             hour: 23,
-            minute: 59
+            minute: 59,
           },
           weekStartsOn: 0,
           segmentHeight: 30,
-          events
+          events,
         }).hourColumns;
 
         expect(result[2].events[3].event).toEqual(events[0]);
@@ -2161,14 +2151,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           hourSegments: 2,
           dayStart: {
             hour: 1,
-            minute: 30
+            minute: 30,
           },
           dayEnd: {
             hour: 3,
-            minute: 59
+            minute: 59,
           },
           weekStartsOn: 0,
-          segmentHeight: 30
+          segmentHeight: 30,
         }).hourColumns;
         expect(result).toMatchSnapshot();
       });
@@ -2179,14 +2169,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           hourSegments: 4,
           dayStart: {
             hour: 1,
-            minute: 30
+            minute: 30,
           },
           dayEnd: {
             hour: 3,
-            minute: 59
+            minute: 59,
           },
           weekStartsOn: 0,
-          segmentHeight: 30
+          segmentHeight: 30,
         }).hourColumns;
         expect(result).toMatchSnapshot();
       });
@@ -2197,14 +2187,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: startOfDay(subDays(new Date(), 1)),
             end: endOfDay(subDays(new Date(), 1)),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: new Date(),
             end: addDays(new Date(), 1),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2214,18 +2204,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayEnd: { hour: 24, minute: 3000 },
           segmentHeight: 30,
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate()
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
         });
 
         expect(result.period).toEqual({
           start: startOfDay(new Date()),
           end: endOfDay(new Date()),
-          events: [events[1]]
+          events: [events[1]],
         });
       });
 
@@ -2235,8 +2221,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: startOfDay(subDays(new Date(), 1)),
             end: endOfDay(subDays(new Date(), 1)),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2246,12 +2232,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayEnd: { hour: 23, minute: 59 },
           segmentHeight: 30,
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate()
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
         });
         expect(result.hourColumns[0].events).toEqual([]);
         expect(result.allDayEventRows).toEqual([]);
@@ -2263,8 +2245,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: startOfDay(subDays(new Date(), 1)),
             end: addHours(startOfDay(new Date()), 1),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2274,12 +2256,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayEnd: { hour: 23, minute: 59 },
           segmentHeight: 30,
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate()
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
       });
@@ -2290,8 +2268,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: startOfDay(new Date()),
             end: addDays(new Date(), 5),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2300,13 +2278,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
       });
@@ -2317,8 +2291,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addHours(startOfDay(new Date()), 1),
             end: addHours(startOfDay(new Date()), 2),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2327,13 +2301,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
       });
@@ -2344,8 +2314,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addHours(startOfDay(new Date()), 1),
             end: addMinutes(addHours(startOfDay(new Date()), 6), 15),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2354,13 +2324,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 6, minute: 30 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events).toEqual([]);
       });
@@ -2371,8 +2337,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: subHours(endOfDay(new Date()), 1),
             end: setMinutes(setHours(new Date(), 18), 45),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2381,13 +2347,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 18, minute: 30 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events).toEqual([]);
       });
@@ -2398,14 +2360,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addHours(startOfDay(new Date()), 1),
             end: addHours(startOfDay(new Date()), 2),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: startOfDay(new Date()),
             end: addHours(startOfDay(new Date()), 1),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2414,13 +2376,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[1]);
         expect(result.hourColumns[0].events[1].event).toBe(events[0]);
@@ -2432,8 +2390,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: startOfDay(new Date()),
             end: startOfDay(addDays(new Date(), 1)),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2442,13 +2400,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].top).toEqual(0);
         expect(result.hourColumns[0].events[0].height).toEqual(1439);
@@ -2462,8 +2416,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addDays(new Date(), 2),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2472,13 +2426,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].top).toEqual(150);
         expect(result.hourColumns[0].events[0].height).toEqual(1289);
@@ -2492,8 +2442,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: subDays(new Date(), 1),
             end: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2502,13 +2452,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].top).toEqual(0);
         expect(result.hourColumns[0].events[0].height).toEqual(150);
@@ -2522,8 +2468,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 6),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2532,13 +2478,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].top).toEqual(150);
         expect(result.hourColumns[0].events[0].height).toEqual(210);
@@ -2551,8 +2493,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2561,13 +2503,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].top).toEqual(150);
         expect(result.hourColumns[0].events[0].height).toEqual(30);
@@ -2581,8 +2519,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 5),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2591,13 +2529,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 1, minute: 30 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].top).toEqual(60);
         expect(result.hourColumns[0].events[0].height).toEqual(150);
@@ -2611,8 +2545,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 18),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2621,13 +2555,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 16, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].top).toEqual(150);
         expect(result.hourColumns[0].events[0].height).toEqual(869);
@@ -2641,8 +2571,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 7),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2651,13 +2581,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 16, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].top).toEqual(450);
         expect(result.hourColumns[0].events[0].height).toEqual(810);
@@ -2669,14 +2595,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 7),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: addHours(startOfDay(new Date()), 1),
             end: addHours(startOfDay(new Date()), 5),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2685,13 +2611,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[1]);
         expect(result.hourColumns[0].events[0].left).toBe(0);
@@ -2707,14 +2629,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 7),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: addHours(startOfDay(new Date()), 3),
             end: addHours(startOfDay(new Date()), 10),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2723,13 +2645,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
         expect(result.hourColumns[0].events[0].left).toBe(0);
@@ -2745,14 +2663,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 7),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: addHours(startOfDay(new Date()), 3),
             end: addHours(startOfDay(new Date()), 5),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2761,13 +2679,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
         expect(result.hourColumns[0].events[0].left).toBe(0);
@@ -2783,14 +2697,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 4),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: addHours(startOfDay(new Date()), 5),
             end: addHours(startOfDay(new Date()), 6),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2799,13 +2713,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
         expect(result.hourColumns[0].events[0].left).toBe(0);
@@ -2819,14 +2729,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addMinutes(addHours(startOfDay(new Date()), 2), 30),
             end: addHours(startOfDay(new Date()), 4),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: addHours(startOfDay(new Date()), 4),
             end: addHours(startOfDay(new Date()), 6),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2835,13 +2745,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
         expect(result.hourColumns[0].events[0].left).toBe(0);
@@ -2856,22 +2762,22 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             end: endOfDay(addDays(new Date(), 1)),
             title: '',
             color: { primary: '', secondary: '' },
-            allDay: true
+            allDay: true,
           },
           {
             start: subDays(startOfDay(new Date()), 1),
             end: endOfDay(addDays(new Date(), 1)),
             title: '',
             color: { primary: '', secondary: '' },
-            allDay: false
+            allDay: false,
           },
           {
             start: subDays(startOfDay(new Date()), 10),
             end: endOfDay(subDays(new Date(), 5)),
             title: '',
             color: { primary: '', secondary: '' },
-            allDay: true
-          }
+            allDay: true,
+          },
         ];
         const result = getWeekView(dateAdapter, {
           events,
@@ -2880,13 +2786,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 0, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events[0].event).toEqual(events[1]);
         expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
@@ -2898,8 +2800,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: startOfDay(new Date()),
             title: '',
             color: { primary: '', secondary: '' },
-            allDay: true
-          }
+            allDay: true,
+          },
         ];
 
         const result = getWeekView(dateAdapter, {
@@ -2909,13 +2811,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 6, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.allDayEventRows[0].row[0].event).toEqual(events[0]);
       });
@@ -2926,20 +2824,20 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: subDays(endOfMonth(new Date()), 3),
             end: addDays(endOfMonth(new Date()), 3),
             title: 'Day column 2',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: subDays(startOfDay(new Date()), 1),
             end: setHours(startOfDay(addDays(new Date(), 1)), 11),
             title: 'Day column 1 - event 1',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: setHours(addDays(startOfDay(new Date()), 1), 11),
             end: setHours(addDays(startOfDay(new Date()), 1), 15),
             title: 'Day column 1 - event 2',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
 
         const result = getWeekView(dateAdapter, {
@@ -2951,7 +2849,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           weekStartsOn: 0,
           viewStart: startOfDay(addDays(new Date(), 1)),
           viewEnd: endOfDay(addDays(new Date(), 1)),
-          segmentHeight: 30
+          segmentHeight: 30,
         });
 
         expect(result.hourColumns[0].events[0].event).toBe(events[1]);
@@ -2980,13 +2878,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 6, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
-          segmentHeight: 30
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 30,
         });
         expect(result.hourColumns[0].events).toEqual([]);
       });
@@ -2998,16 +2892,41 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayStart: { hour: 6, minute: 0 },
           dayEnd: { hour: 23, minute: 59 },
           weekStartsOn: 0,
-          viewStart: moment()
-            .startOf('day')
-            .toDate(),
-          viewEnd: moment()
-            .endOf('day')
-            .toDate(),
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
           segmentHeight: 30,
-          events: null
+          events: null,
         });
         expect(result.hourColumns[0].events).toEqual([]);
+      });
+
+      it('should include events that end after 23:59:00', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: moment().endOf('day').toDate(),
+            title: '',
+            allDay: false,
+          },
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+          precision: 'days',
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0,
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59,
+          },
+          segmentHeight: 30,
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+        });
+        expect(result.hourColumns[0].events[0].event).toEqual(events[0]);
       });
     });
 
@@ -3019,32 +2938,32 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             start: new Date('2016-07-03'),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: new Date('2016-07-05'),
             end: new Date('2016-07-07'),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: new Date('2016-06-29'),
             end: new Date('2016-06-30'),
             title: '',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: new Date('2017-06-29'),
             end: new Date('2017-06-30'),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
 
         result = getMonthView(dateAdapter, {
           viewDate: new Date('2016-07-03'),
           events,
-          weekStartsOn: DAYS_OF_WEEK.SUNDAY
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         });
       });
 
@@ -3052,7 +2971,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result.period).toEqual({
           start: startOfDay(new Date('2016-06-26')),
           end: endOfDay(new Date('2016-08-06')),
-          events: [events[0], events[1], events[2]]
+          events: [events[0], events[1], events[2]],
         });
       });
 
@@ -3061,17 +2980,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           events: [],
           viewDate: new Date('2018-07-29'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-          excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY]
+          excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
         });
         expect(view.period.start).toEqual(
-          moment(new Date('2018-07-02'))
-            .startOf('day')
-            .toDate()
+          moment(new Date('2018-07-02')).startOf('day').toDate()
         );
         expect(view.period.end).toEqual(
-          moment(new Date('2018-08-03'))
-            .endOf('day')
-            .toDate()
+          moment(new Date('2018-08-03')).endOf('day').toDate()
         );
       });
 
@@ -3080,7 +2995,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2017-07-03'),
           excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
           events,
-          weekStartsOn: DAYS_OF_WEEK.SUNDAY
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         });
         expect(different.days.length).toBe(5 * 5); // 4 + 2 weeks / a 5days
         expect(different.days[0].date).toEqual(
@@ -3091,12 +3006,34 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         );
       });
 
+      it('should exclude days from month view and respect the view start and end if passed', () => {
+        const viewDate = new Date('2020-04-13');
+        const different: MonthView = getMonthView(dateAdapter, {
+          viewDate,
+          excluded: [DAYS_OF_WEEK.SUNDAY],
+          events,
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+          viewStart: moment(viewDate)
+            .startOf('month')
+            .subtract(1, 'week')
+            .toDate(),
+          viewEnd: moment(viewDate).endOf('month').add(1, 'week').toDate(),
+        });
+        expect(different.days.length).toBe(42);
+        expect(different.days[0].date).toEqual(
+          startOfDay(new Date('2020-03-23'))
+        );
+        expect(different.days[different.days.length - 1].date).toEqual(
+          startOfDay(new Date('2020-05-09'))
+        );
+      });
+
       it('should not increase offset for excluded days', () => {
         const different: MonthView = getMonthView(dateAdapter, {
           viewDate: new Date('2016-07-01'),
           excluded: [DAYS_OF_WEEK.SUNDAY],
           events,
-          weekStartsOn: DAYS_OF_WEEK.SUNDAY
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         });
         expect(different.rowOffsets).toEqual([0, 6, 12, 18, 24]);
       });
@@ -3110,7 +3047,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2016-07-01'),
           excluded: [DAYS_OF_WEEK.SUNDAY, DAYS_OF_WEEK.SATURDAY],
           events,
-          weekStartsOn: DAYS_OF_WEEK.SUNDAY
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         });
         expect(different.totalDaysVisibleInWeek).toBe(5);
       });
@@ -3162,7 +3099,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2017-07-03'),
           events,
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-          weekendDays: [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY]
+          weekendDays: [DAYS_OF_WEEK.FRIDAY, DAYS_OF_WEEK.SATURDAY],
         });
         expect(result.days[0].isWeekend).toBe(false);
         expect(result.days[2].isWeekend).toBe(false);
@@ -3200,14 +3137,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: new Date('2016-06-29'),
             end: new Date('2016-07-01'),
             title: '',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
 
         result = getMonthView(dateAdapter, {
           viewDate: new Date('2016-07-03'),
           events,
-          weekStartsOn: DAYS_OF_WEEK.SUNDAY
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         });
         expect(result.days[3].events).toEqual([events[0]]);
         expect(result.days[4].events).toEqual([events[0]]);
@@ -3219,7 +3156,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(() =>
           getMonthView(dateAdapter, {
             viewDate: new Date('2016-07-03'),
-            weekStartsOn: DAYS_OF_WEEK.SUNDAY
+            weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           })
         ).not.toThrowError();
       });
@@ -3229,7 +3166,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           getMonthView(dateAdapter, {
             viewDate: new Date('2016-07-03'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
-            events: null
+            events: null,
           })
         ).not.toThrowError();
       });
@@ -3237,7 +3174,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
       it('should handle changes in DST', () => {
         const view: MonthView = getMonthView(dateAdapter, {
           viewDate: new Date('2015-10-03'),
-          weekStartsOn: DAYS_OF_WEEK.SUNDAY
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
         });
         expect(view.days[28].date).toEqual(startOfDay(new Date('2015-10-25')));
         expect(view.days[29].date).toEqual(startOfDay(new Date('2015-10-26')));
@@ -3248,7 +3185,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date('2015-10-03'),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           viewStart: new Date('2015-10-03'),
-          viewEnd: new Date('2015-11-10')
+          viewEnd: new Date('2015-11-10'),
         });
         expect(view.days.length).toBe(49);
         expect(view.rowOffsets).toEqual([0, 7, 14, 21, 28, 35, 42]);
@@ -3269,8 +3206,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: new Date(),
             end: addHours(new Date(), 1),
             title: 'foo',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         expect(validateEvents(events, log)).toBe(true);
         expect(log).not.toHaveBeenCalled();
@@ -3281,8 +3218,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             start: new Date(),
             title: 'foo',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         expect(validateEvents(events, log)).toBe(true);
         expect(log).not.toHaveBeenCalled();
@@ -3293,13 +3230,13 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             start: new Date(),
             title: 'foo',
-            color: { primary: '', secondary: '' }
+            color: { primary: '', secondary: '' },
           },
           {
             start: '2017-01-01',
             title: 'foo',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         expect(validateEvents(events, log)).toBe(false);
         expect(log).toHaveBeenCalledTimes(1);
@@ -3318,8 +3255,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         const events: any = [
           {
             title: 'foo',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         expect(validateEvents(events, log)).toBe(false);
         expect(log).toHaveBeenCalledWith(
@@ -3333,8 +3270,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           {
             start: '2017-01-01',
             title: 'foo',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         expect(validateEvents(events, log)).toBe(false);
         expect(log).toHaveBeenCalledWith(
@@ -3349,8 +3286,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: new Date(),
             end: '2017-01-01',
             title: 'foo',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         expect(validateEvents(events, log)).toBe(false);
         expect(log).toHaveBeenCalledWith(
@@ -3365,8 +3302,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             start: addHours(new Date(), 1),
             end: new Date(),
             title: 'foo',
-            color: { primary: '', secondary: '' }
-          }
+            color: { primary: '', secondary: '' },
+          },
         ];
         expect(validateEvents(events, log)).toBe(false);
         expect(log).toHaveBeenCalledWith(
@@ -3381,7 +3318,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         const daysDiff = getDifferenceInDaysWithExclusions(dateAdapter, {
           date1: new Date('2018-07-21'),
           date2: new Date('2018-07-28'),
-          excluded: []
+          excluded: [],
         });
         expect(daysDiff).toEqual(7);
       });
@@ -3390,7 +3327,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         const daysDiff = getDifferenceInDaysWithExclusions(dateAdapter, {
           date1: new Date('2018-07-21'),
           date2: new Date('2018-07-28'),
-          excluded: [0, 6]
+          excluded: [0, 6],
         });
         expect(daysDiff).toEqual(5);
       });
