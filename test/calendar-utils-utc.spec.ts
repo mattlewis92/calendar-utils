@@ -2910,6 +2910,32 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         });
         expect(result.hourColumns[0].events[0].event).toEqual(events[0]);
       });
+
+      it('should set a minimum event height', () => {
+        const result = getWeekView(dateAdapter, {
+          events: [{
+            start: moment().startOf('week').toDate(),
+            end: moment().startOf('week').add(5, 'minutes').toDate(),
+            title: '',
+            allDay: false,
+          },],
+          viewDate: new Date(),
+          weekStartsOn: DAYS_OF_WEEK.SUNDAY,
+          precision: 'days',
+          hourSegments: 2,
+          dayStart: {
+            hour: 0,
+            minute: 0,
+          },
+          dayEnd: {
+            hour: 23,
+            minute: 59,
+          },
+          segmentHeight: 30,
+          minimumEventHeight: 30
+        });
+        expect(result.hourColumns[0].events[0].height).toEqual(30);
+      });
     });
 
     describe('getMonthView', () => {
