@@ -445,6 +445,7 @@ export interface GetWeekViewArgs {
   segmentHeight: number;
   viewStart?: Date;
   viewEnd?: Date;
+  minimumEventHeight?: number
 }
 
 export function getDifferenceInDaysWithExclusions(
@@ -569,6 +570,7 @@ interface GetWeekViewHourGridArgs extends GetDayViewHourGridArgs {
   segmentHeight: number;
   viewStart: Date;
   viewEnd: Date;
+  minimumEventHeight: number
 }
 
 function getWeekViewHourGrid(
@@ -586,6 +588,7 @@ function getWeekViewHourGrid(
     segmentHeight,
     viewStart,
     viewEnd,
+    minimumEventHeight
   }: GetWeekViewHourGridArgs
 ): WeekViewHourColumn[] {
   const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
@@ -614,7 +617,8 @@ function getWeekViewHourGrid(
       dayEnd,
       segmentHeight,
       eventWidth: 1,
-      hourDuration
+      hourDuration,
+      minimumEventHeight
     });
 
     const hours = dayViewHourGrid.map((hour) => {
@@ -708,6 +712,7 @@ export function getWeekView(
     dayEnd,
     weekendDays,
     segmentHeight,
+    minimumEventHeight,
     viewStart = dateAdapter.startOfWeek(viewDate, { weekStartsOn }),
     viewEnd = dateAdapter.endOfWeek(viewDate, { weekStartsOn }),
   }: GetWeekViewArgs
@@ -761,6 +766,7 @@ export function getWeekView(
       segmentHeight,
       viewStart,
       viewEnd,
+      minimumEventHeight
     }),
   };
 }
@@ -898,7 +904,8 @@ export interface GetDayViewArgs {
   };
   eventWidth: number;
   segmentHeight: number;
-  hourDuration?: number;
+  hourDuration: number;
+  minimumEventHeight: number
 }
 
 function getOverLappingWeekViewEvents(
@@ -933,7 +940,8 @@ function getDayView(
     dayEnd,
     eventWidth,
     segmentHeight,
-    hourDuration
+    hourDuration,
+    minimumEventHeight
   }: GetDayViewArgs
 ): DayView {
   const {
@@ -990,6 +998,10 @@ function getDayView(
         height = segmentHeight;
       } else {
         height *= hourHeightModifier;
+      }
+
+      if (minimumEventHeight && height < minimumEventHeight) {
+        height = minimumEventHeight;
       }
 
       const bottom: number = top + height;
