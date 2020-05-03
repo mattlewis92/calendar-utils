@@ -437,7 +437,8 @@ export interface GetWeekViewArgs {
   excluded?: number[];
   precision?: 'minutes' | 'days';
   absolutePositionedEvents?: boolean;
-  hourSegments: number;
+  hourSegments?: number;
+  hourDuration?: number;
   dayStart: Time;
   dayEnd: Time;
   weekendDays?: number[];
@@ -578,6 +579,7 @@ function getWeekViewHourGrid(
     events,
     viewDate,
     hourSegments,
+    hourDuration,
     dayStart,
     dayEnd,
     weekStartsOn,
@@ -592,6 +594,7 @@ function getWeekViewHourGrid(
   const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
     viewDate,
     hourSegments,
+    hourDuration,
     dayStart,
     dayEnd,
   });
@@ -614,6 +617,7 @@ function getWeekViewHourGrid(
       dayEnd,
       segmentHeight,
       eventWidth: 1,
+      hourDuration,
       minimumEventHeight
     });
 
@@ -703,6 +707,7 @@ export function getWeekView(
     precision = 'days',
     absolutePositionedEvents = false,
     hourSegments,
+    hourDuration,
     dayStart,
     dayEnd,
     weekendDays,
@@ -752,6 +757,7 @@ export function getWeekView(
       events,
       viewDate,
       hourSegments,
+      hourDuration,
       dayStart,
       dayEnd,
       weekStartsOn,
@@ -898,6 +904,7 @@ export interface GetDayViewArgs {
   };
   eventWidth: number;
   segmentHeight: number;
+  hourDuration: number;
   minimumEventHeight: number
 }
 
@@ -933,6 +940,7 @@ function getDayView(
     dayEnd,
     eventWidth,
     segmentHeight,
+    hourDuration,
     minimumEventHeight
   }: GetDayViewArgs
 ): DayView {
@@ -971,7 +979,7 @@ function getDayView(
       const startsBeforeDay: boolean = eventStart < startOfView;
       const endsAfterDay: boolean = eventEnd > endOfView;
       const hourHeightModifier: number =
-        (hourSegments * segmentHeight) / MINUTES_IN_HOUR;
+        (hourSegments * segmentHeight) / (hourDuration || MINUTES_IN_HOUR);
 
       let top: number = 0;
       if (eventStart > startOfView) {
@@ -1058,6 +1066,7 @@ interface Time {
 interface GetDayViewHourGridArgs {
   viewDate: Date;
   hourSegments: number;
+  hourDuration: number;
   dayStart: Time;
   dayEnd: Time;
 }
@@ -1072,7 +1081,13 @@ function sanitiseMinutes(minutes: number): number {
 
 function getDayViewHourGrid(
   dateAdapter: DateAdapter,
-  { viewDate, hourSegments, dayStart, dayEnd }: GetDayViewHourGridArgs
+  {
+    viewDate,
+    hourSegments,
+    hourDuration,
+    dayStart,
+    dayEnd
+  }: GetDayViewHourGridArgs
 ): WeekViewHour[] {
   const {
     setMinutes,
@@ -1094,7 +1109,8 @@ function getDayViewHourGrid(
     setHours(startOfMinute(endOfDay(viewDate)), sanitiseHours(dayEnd.hour)),
     sanitiseMinutes(dayEnd.minute)
   );
-  const segmentDuration: number = MINUTES_IN_HOUR / hourSegments;
+  const segmentDuration: number =
+    (hourDuration || MINUTES_IN_HOUR) / hourSegments;
   let startOfViewDay: Date = startOfDay(viewDate);
   const endOfViewDay: Date = endOfDay(viewDate);
   let dateAdjustment: (d: Date) => Date = (d: Date) => d;
@@ -1107,11 +1123,15 @@ function getDayViewHourGrid(
     dateAdjustment = (d: Date) => addDays(d, -1);
   }
 
-  for (let i: number = 0; i < HOURS_IN_DAY; i++) {
+  const dayDuration: number = hourDuration
+    ? (HOURS_IN_DAY * 60) / hourDuration
+    : MINUTES_IN_HOUR;
+
+  for (let i: number = 0; i < dayDuration; i++) {
     const segments: WeekViewHourSegment[] = [];
     for (let j: number = 0; j < hourSegments; j++) {
       const date: Date = addMinutes(
-        addHours(startOfViewDay, i),
+        addMinutes(startOfView, i * (hourDuration || MINUTES_IN_HOUR)),
         j * segmentDuration
       );
       if (date >= startOfView && date < endOfView) {

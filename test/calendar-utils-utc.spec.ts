@@ -190,6 +190,24 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result.hourColumns).toMatchSnapshot();
       });
 
+      it('should consistently create blocks of time of 40 minutes each', () => {
+        const result = getWeekView(dateAdapter, {
+          viewDate: new Date(),
+          hourDuration: 40,
+          dayStart: {
+            hour: 1,
+            minute: 0
+          },
+          dayEnd: {
+            hour: 4,
+            minute: 40
+          },
+          weekStartsOn: 0,
+          segmentHeight: 30
+        });
+        expect(result.hourColumns).toMatchSnapshot();
+      });
+
       it('should position events as percentages in columns', () => {
         const events = [
           {
