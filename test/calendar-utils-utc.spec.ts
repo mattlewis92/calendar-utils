@@ -195,17 +195,25 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           viewDate: new Date(),
           hourDuration: 40,
           dayStart: {
-            hour: 1,
-            minute: 0
+            hour: 14,
+            minute: 0,
           },
           dayEnd: {
-            hour: 4,
-            minute: 40
+            hour: 17,
+            minute: 59,
           },
           weekStartsOn: 0,
-          segmentHeight: 30
+          segmentHeight: 20,
+          hourSegments: 2,
+          events: [
+            {
+              start: setHours(setMinutes(startOfWeek(new Date()), 20), 15),
+              end: setHours(setMinutes(startOfWeek(new Date()), 40), 17),
+              title: 'An event',
+            },
+          ],
         });
-        expect(result.hourColumns).toMatchSnapshot();
+        expect(result).toMatchSnapshot();
       });
 
       it('should position events as percentages in columns', () => {
@@ -2931,12 +2939,14 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
 
       it('should set a minimum event height', () => {
         const result = getWeekView(dateAdapter, {
-          events: [{
-            start: moment().startOf('week').toDate(),
-            end: moment().startOf('week').add(5, 'minutes').toDate(),
-            title: '',
-            allDay: false,
-          },],
+          events: [
+            {
+              start: moment().startOf('week').toDate(),
+              end: moment().startOf('week').add(5, 'minutes').toDate(),
+              title: '',
+              allDay: false,
+            },
+          ],
           viewDate: new Date(),
           weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           precision: 'days',
@@ -2950,7 +2960,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             minute: 59,
           },
           segmentHeight: 30,
-          minimumEventHeight: 30
+          minimumEventHeight: 30,
         });
         expect(result.hourColumns[0].events[0].height).toEqual(30);
       });
