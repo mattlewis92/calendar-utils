@@ -445,7 +445,7 @@ export interface GetWeekViewArgs {
   segmentHeight: number;
   viewStart?: Date;
   viewEnd?: Date;
-  minimumEventHeight?: number
+  minimumEventHeight?: number;
 }
 
 export function getDifferenceInDaysWithExclusions(
@@ -463,18 +463,28 @@ export function getDifferenceInDaysWithExclusions(
   return diff;
 }
 
-function getAllDayWeekEvents(
+interface GetAllDayEventArgs {
+  precision?: 'days' | 'minutes';
+  events?: CalendarEvent[];
+  absolutePositionedEvents?: boolean;
+  viewStart: Date;
+  viewEnd: Date;
+  excluded?: number[];
+}
+
+export function getAllDayWeekEvents(
   dateAdapter: DateAdapter,
   {
-    events,
-    excluded,
-    precision,
-    absolutePositionedEvents,
+    events = [],
+    excluded = [],
+    precision = 'days' as const,
+    absolutePositionedEvents = false,
     viewStart,
     viewEnd,
-    eventsInPeriod,
-  }
+  }: GetAllDayEventArgs
 ): WeekViewAllDayEventRow[] {
+  viewStart = dateAdapter.startOfDay(viewStart);
+  viewEnd = dateAdapter.endOfDay(viewEnd);
   const { differenceInSeconds, differenceInDays } = dateAdapter;
   const maxRange: number = getDifferenceInDaysWithExclusions(dateAdapter, {
     date1: viewStart,
@@ -482,7 +492,7 @@ function getAllDayWeekEvents(
     excluded,
   });
   const totalDaysInView = differenceInDays(viewEnd, viewStart) + 1;
-  const eventsMapped: WeekViewAllDayEvent[] = eventsInPeriod
+  const eventsMapped: WeekViewAllDayEvent[] = events
     .filter((event) => event.allDay)
     .map((event) => {
       const offset: number = getWeekViewEventOffset(dateAdapter, {
@@ -570,7 +580,7 @@ interface GetWeekViewHourGridArgs extends GetDayViewHourGridArgs {
   segmentHeight: number;
   viewStart: Date;
   viewEnd: Date;
-  minimumEventHeight: number
+  minimumEventHeight: number;
 }
 
 function getWeekViewHourGrid(
@@ -588,7 +598,7 @@ function getWeekViewHourGrid(
     segmentHeight,
     viewStart,
     viewEnd,
-    minimumEventHeight
+    minimumEventHeight,
   }: GetWeekViewHourGridArgs
 ): WeekViewHourColumn[] {
   const dayViewHourGrid = getDayViewHourGrid(dateAdapter, {
@@ -618,7 +628,7 @@ function getWeekViewHourGrid(
       segmentHeight,
       eventWidth: 1,
       hourDuration,
-      minimumEventHeight
+      minimumEventHeight,
     });
 
     const hours = dayViewHourGrid.map((hour) => {
@@ -740,13 +750,12 @@ export function getWeekView(
 
   return {
     allDayEventRows: getAllDayWeekEvents(dateAdapter, {
-      events,
+      events: eventsInPeriod,
       excluded,
       precision,
       absolutePositionedEvents,
       viewStart,
       viewEnd,
-      eventsInPeriod,
     }),
     period: {
       events: eventsInPeriod,
@@ -766,7 +775,7 @@ export function getWeekView(
       segmentHeight,
       viewStart,
       viewEnd,
-      minimumEventHeight
+      minimumEventHeight,
     }),
   };
 }
@@ -905,7 +914,7 @@ export interface GetDayViewArgs {
   eventWidth: number;
   segmentHeight: number;
   hourDuration: number;
-  minimumEventHeight: number
+  minimumEventHeight: number;
 }
 
 function getOverLappingWeekViewEvents(
@@ -941,7 +950,7 @@ function getDayView(
     eventWidth,
     segmentHeight,
     hourDuration,
-    minimumEventHeight
+    minimumEventHeight,
   }: GetDayViewArgs
 ): DayView {
   const {
@@ -1086,7 +1095,7 @@ function getDayViewHourGrid(
     hourSegments,
     hourDuration,
     dayStart,
-    dayEnd
+    dayEnd,
   }: GetDayViewHourGridArgs
 ): WeekViewHour[] {
   const {

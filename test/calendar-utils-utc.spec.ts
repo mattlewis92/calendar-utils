@@ -30,6 +30,7 @@ import {
   SECONDS_IN_DAY,
   validateEvents,
   WeekDay,
+  getAllDayWeekEvents,
 } from '../src/calendar-utils';
 import { adapterFactory as dateFnsAdapterFactory } from '../src/date-adapters/date-fns';
 import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/moment';
@@ -3366,6 +3367,17 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           excluded: [0, 6],
         });
         expect(daysDiff).toEqual(5);
+      });
+    });
+
+    describe('getAllDayWeekEvents', () => {
+      it('should not throw when no params are passed', () => {
+        expect(
+          getAllDayWeekEvents(dateAdapter, {
+            viewStart: new Date(),
+            viewEnd: new Date(),
+          })
+        ).toMatchSnapshot();
       });
     });
   });

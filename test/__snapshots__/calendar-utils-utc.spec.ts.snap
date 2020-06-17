@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Adapter: date-fns getAllDayWeekEvents should not throw when no params are passed 1`] = `Array []`;
+
 exports[`Adapter: date-fns getWeekView precision = "days" should allow the week start and end to be customised 1`] = `
 Object {
   "allDayEventRows": Array [
@@ -9751,6 +9753,8 @@ Array [
   },
 ]
 `;
+
+exports[`Adapter: moment getAllDayWeekEvents should not throw when no params are passed 1`] = `Array []`;
 
 exports[`Adapter: moment getWeekView precision = "days" should allow the week start and end to be customised 1`] = `
 Object {
