@@ -1002,7 +1002,11 @@ function getDayView(
 
       const startDate: Date = startsBeforeDay ? startOfView : eventStart;
       const endDate: Date = endsAfterDay ? endOfView : eventEnd;
-      let height: number = differenceInMinutes(endDate, startDate);
+      const timezoneOffset =
+        startDate.getTimezoneOffset() - endDate.getTimezoneOffset();
+      let height: number =
+        differenceInMinutes(endDate, startDate) + timezoneOffset;
+
       if (!event.end) {
         height = segmentHeight;
       } else {
