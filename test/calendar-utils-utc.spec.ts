@@ -17,6 +17,7 @@ import {
   subHours,
 } from 'date-fns';
 import * as moment from 'moment';
+import * as dayjs from 'dayjs';
 import * as fakeTimers from '@sinonjs/fake-timers';
 import {
   CalendarEvent,
@@ -34,6 +35,7 @@ import {
 } from '../src/calendar-utils';
 import { adapterFactory as dateFnsAdapterFactory } from '../src/date-adapters/date-fns';
 import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/moment';
+import { adapterFactory as dayjsAdapterFactory } from '../src/date-adapters/dayjs';
 
 let clock: any;
 beforeEach(() => {
@@ -56,6 +58,10 @@ const adapters = [
     name: 'moment',
     adapter: momentAdapterFactory(moment),
   },
+  {
+    name: 'dayjs',
+    adapter: dayjsAdapterFactory(),
+  },
 ];
 
 adapters.forEach(({ name, adapter: dateAdapter }) => {
@@ -65,6 +71,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         week: {
           dow: DAYS_OF_WEEK.SUNDAY,
         } as any,
+      });
+
+      dayjs.locale('en', {
+        weekStart: DAYS_OF_WEEK.SUNDAY,
       });
     });
 
@@ -454,6 +464,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             } as any,
           });
 
+          dayjs.locale('en', {
+            weekStart: DAYS_OF_WEEK.TUESDAY,
+          });
+
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date('2017-05-24'),
@@ -499,6 +513,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             week: {
               dow: DAYS_OF_WEEK.SATURDAY,
             } as any,
+          });
+
+          dayjs.locale('en', {
+            weekStart: DAYS_OF_WEEK.SATURDAY,
           });
 
           const weekStartsOn = DAYS_OF_WEEK.SATURDAY;
