@@ -18,6 +18,8 @@ import {
 } from 'date-fns';
 import * as moment from 'moment';
 import * as dayjs from 'dayjs';
+import * as maxPlugin from 'dayjs/plugin/minMax';
+
 import * as fakeTimers from '@sinonjs/fake-timers';
 import {
   CalendarEvent,
@@ -35,7 +37,8 @@ import {
 } from '../src/calendar-utils';
 import { adapterFactory as dateFnsAdapterFactory } from '../src/date-adapters/date-fns';
 import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/moment';
-import { adapterFactory as dayjsAdapterFactory } from '../src/date-adapters/dayjs';
+
+dayjs.extend(maxPlugin);
 
 let clock: any;
 beforeEach(() => {
@@ -60,7 +63,8 @@ const adapters = [
   },
   {
     name: 'dayjs',
-    adapter: dayjsAdapterFactory(),
+    // we use moment adapter, because it works also for dayjs
+    adapter: momentAdapterFactory(dayjs),
   },
 ];
 

@@ -86,11 +86,11 @@ export function adapterFactory(moment): DateAdapter {
   }
 
   function setHours(date: Date | number, hours: number): Date {
-    return moment(date).hours(hours).toDate();
+    return moment(date).set('hours', hours).toDate();
   }
 
   function setMinutes(date: Date | number, minutes: number): Date {
-    return moment(date).minutes(minutes).toDate();
+    return moment(date).set('minutes', minutes).toDate();
   }
 
   function startOfDay(date: Date | number): Date {
@@ -110,11 +110,11 @@ export function adapterFactory(moment): DateAdapter {
   }
 
   function getHours(date: Date | number): number {
-    return moment(date).hours();
+    return moment(date).get('hours');
   }
 
   function getMinutes(date: Date | number): number {
-    return moment(date).minutes();
+    return moment(date).get('minutes');
   }
 
   return {
