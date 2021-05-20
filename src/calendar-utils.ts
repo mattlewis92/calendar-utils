@@ -679,7 +679,7 @@ function getWeekViewHourGrid(
         )
       );
 
-      const width = 100 / columnCount;
+      const width = 90 / columnCount;
       return { ...event, left: event.left * width, width };
     });
 
