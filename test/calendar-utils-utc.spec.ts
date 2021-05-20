@@ -272,19 +272,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result).toMatchSnapshot();
         expect(result[2].events[0].event).toEqual(events[0]);
         expect(result[2].events[0].left).toEqual(0);
-        expect(result[2].events[0].width).toEqual(50);
+        expect(result[2].events[0].width).toEqual(45);
 
         expect(result[2].events[1].event).toEqual(events[1]);
-        expect(result[2].events[1].left).toEqual(50);
-        expect(result[2].events[1].width).toEqual(50);
+        expect(result[2].events[1].left).toEqual(45);
+        expect(result[2].events[1].width).toEqual(45);
 
         expect(result[2].events[2].event).toEqual(events[2]);
-        expect(result[2].events[2].left).toEqual(50);
-        expect(result[2].events[2].width).toEqual(50);
+        expect(result[2].events[2].left).toEqual(45);
+        expect(result[2].events[2].width).toEqual(45);
 
         expect(result[2].events[3].event).toEqual(events[3]);
         expect(result[2].events[3].left).toEqual(0);
-        expect(result[2].events[3].width).toEqual(100);
+        expect(result[2].events[3].width).toEqual(90);
       });
 
       it('should use the correct left value of events on the same row', () => {
@@ -323,9 +323,9 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           events,
         }).hourColumns;
         expect(result[0].events[0].left).toEqual(0);
-        expect(result[0].events[1].left).toEqual(25);
-        expect(result[0].events[2].left).toEqual(50);
-        expect(result[0].events[3].left).toEqual(75);
+        expect(result[0].events[1].left).toEqual(22.5);
+        expect(result[0].events[2].left).toEqual(45);
+        expect(result[0].events[3].left).toEqual(67.5);
       });
 
       it('should use the correct width on events that start close to each other', () => {
@@ -356,8 +356,8 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           segmentHeight: 30,
           events,
         }).hourColumns;
-        expect(result[6].events[0].width).toEqual(50);
-        expect(result[6].events[1].width).toEqual(50);
+        expect(result[6].events[0].width).toEqual(45);
+        expect(result[6].events[1].width).toEqual(45);
       });
 
       it('should use the correct width of events for events that overlap in multiple columns', () => {
@@ -406,7 +406,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           events,
         }).hourColumns;
 
-        expect(result[2].events[0].width).toEqual(100 / 3);
+        expect(result[2].events[0].width).toEqual(90 / 3);
         expect(result).toMatchSnapshot();
       });
 
@@ -2171,7 +2171,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
 
         expect(result[2].events[3].event).toEqual(events[0]);
         expect(result[2].events[3].left).toEqual(0);
-        expect(Math.floor(result[2].events[3].width)).toEqual(66);
+        expect(Math.floor(result[2].events[3].width)).toEqual(60);
 
         expect(result).toMatchSnapshot();
       });
@@ -2648,10 +2648,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[1]);
         expect(result.hourColumns[0].events[0].left).toBe(0);
-        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[0].width).toBe(45);
         expect(result.hourColumns[0].events[1].event).toBe(events[0]);
-        expect(result.hourColumns[0].events[1].left).toBe(50);
-        expect(result.hourColumns[0].events[1].width).toBe(50);
+        expect(result.hourColumns[0].events[1].left).toBe(45);
+        expect(result.hourColumns[0].events[1].width).toBe(45);
       });
 
       it('should stack events where one starts during the other and ends after it', () => {
@@ -2682,10 +2682,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
         expect(result.hourColumns[0].events[0].left).toBe(0);
-        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[0].width).toBe(45);
         expect(result.hourColumns[0].events[1].event).toBe(events[1]);
-        expect(result.hourColumns[0].events[1].left).toBe(50);
-        expect(result.hourColumns[0].events[1].width).toBe(50);
+        expect(result.hourColumns[0].events[1].left).toBe(45);
+        expect(result.hourColumns[0].events[1].width).toBe(45);
       });
 
       it('should stack events where one starts during the other and ends during it', () => {
@@ -2716,10 +2716,10 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         });
         expect(result.hourColumns[0].events[0].event).toBe(events[0]);
         expect(result.hourColumns[0].events[0].left).toBe(0);
-        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[0].width).toBe(45);
         expect(result.hourColumns[0].events[1].event).toBe(events[1]);
-        expect(result.hourColumns[0].events[1].left).toBe(50);
-        expect(result.hourColumns[0].events[1].width).toBe(50);
+        expect(result.hourColumns[0].events[1].left).toBe(45);
+        expect(result.hourColumns[0].events[1].width).toBe(45);
       });
 
       it('should not stack events that do not overlap each other', () => {
@@ -2887,19 +2887,19 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result.hourColumns[0].events[0].height).toBe(660);
         expect(result.hourColumns[0].events[0].top).toBe(0);
         expect(result.hourColumns[0].events[0].left).toBe(0);
-        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[0].width).toBe(45);
 
         expect(result.hourColumns[0].events[1].event).toBe(events[0]);
         expect(result.hourColumns[0].events[1].height).toBe(1439);
         expect(result.hourColumns[0].events[1].top).toBe(0);
-        expect(result.hourColumns[0].events[1].left).toBe(50);
-        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[1].left).toBe(45);
+        expect(result.hourColumns[0].events[0].width).toBe(45);
 
         expect(result.hourColumns[0].events[2].event).toBe(events[2]);
         expect(result.hourColumns[0].events[2].height).toBe(240);
         expect(result.hourColumns[0].events[2].top).toBe(660);
         expect(result.hourColumns[0].events[2].left).toBe(0);
-        expect(result.hourColumns[0].events[0].width).toBe(50);
+        expect(result.hourColumns[0].events[0].width).toBe(45);
       });
 
       it('should not throw if no events are provided', () => {
