@@ -999,6 +999,7 @@ function getDayView(
         top += differenceInMinutes(eventStart, startOfView) + diff;
       }
       top *= hourHeightModifier;
+      top = Math.floor(top);
 
       const startDate: Date = startsBeforeDay ? startOfView : eventStart;
       const endDate: Date = endsAfterDay ? endOfView : eventEnd;
@@ -1016,6 +1017,8 @@ function getDayView(
       if (minimumEventHeight && height < minimumEventHeight) {
         height = minimumEventHeight;
       }
+
+      height = Math.floor(height);
 
       const bottom: number = top + height;
 
