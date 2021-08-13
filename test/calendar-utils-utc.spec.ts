@@ -2786,6 +2786,38 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
         expect(result.hourColumns[0].events[1].left).toBe(0);
       });
 
+      it('should not stack events where one starts on the others end date because of rounding errors', () => {
+        const events: CalendarEvent[] = [
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 8), 10),
+            end: addMinutes(addHours(startOfDay(new Date()), 8), 15),
+            title: '',
+            color: { primary: '', secondary: '' },
+          },
+          {
+            start: addMinutes(addHours(startOfDay(new Date()), 8), 15),
+            end: addMinutes(addHours(startOfDay(new Date()), 8), 20),
+            title: '',
+            color: { primary: '', secondary: '' },
+          },
+        ];
+        const result = getWeekView(dateAdapter, {
+          events,
+          viewDate: new Date(),
+          hourSegments: 1,
+          dayStart: { hour: 0, minute: 0 },
+          dayEnd: { hour: 23, minute: 59 },
+          weekStartsOn: 0,
+          viewStart: moment().startOf('day').toDate(),
+          viewEnd: moment().endOf('day').toDate(),
+          segmentHeight: 100,
+        });
+        expect(result.hourColumns[0].events[0].event).toBe(events[0]);
+        expect(result.hourColumns[0].events[0].left).toBe(0);
+        expect(result.hourColumns[0].events[1].event).toBe(events[1]);
+        expect(result.hourColumns[0].events[1].left).toBe(0);
+      });
+
       it('should separate all day events that occur on that day', () => {
         const events: CalendarEvent[] = [
           {
