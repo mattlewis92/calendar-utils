@@ -62,4 +62,6 @@ export interface DateAdapter {
       weekStartsOn?: number;
     }
   ): Date;
+
+  timezoneOffset(date: Date | number): number;
 }

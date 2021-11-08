@@ -117,6 +117,10 @@ export function adapterFactory(moment): DateAdapter {
     return moment(date).get('minutes');
   }
 
+  function timezoneOffset(date: Date | number): number {
+    return new Date(date).getTimezoneOffset();
+  }
+
   return {
     addDays,
     addHours,
@@ -142,5 +146,6 @@ export function adapterFactory(moment): DateAdapter {
     startOfWeek,
     getHours,
     getMinutes,
+    timezoneOffset,
   };
 }
