@@ -118,7 +118,7 @@ export function adapterFactory(moment): DateAdapter {
   }
 
   function getTimezoneOffset(date: Date | number): number {
-    return new Date(date).getTimezoneOffset();
+    return moment(date).utcOffset() * -1;
   }
 
   return {
