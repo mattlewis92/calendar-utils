@@ -993,8 +993,8 @@ function getDayView(
       let top: number = 0;
       if (eventStart > startOfView) {
         // adjust the difference in minutes if the user's offset is different between the start of the day and the event (e.g. when going to or from DST)
-        const eventOffset = dateAdapter.timezoneOffset(eventStart);
-        const startOffset = dateAdapter.timezoneOffset(startOfView);
+        const eventOffset = dateAdapter.getTimezoneOffset(eventStart);
+        const startOffset = dateAdapter.getTimezoneOffset(startOfView);
         const diff = startOffset - eventOffset;
         top += differenceInMinutes(eventStart, startOfView) + diff;
       }
@@ -1004,7 +1004,8 @@ function getDayView(
       const startDate: Date = startsBeforeDay ? startOfView : eventStart;
       const endDate: Date = endsAfterDay ? endOfView : eventEnd;
       const timezoneOffset =
-        dateAdapter.timezoneOffset(startDate) - dateAdapter.timezoneOffset(endDate);
+        dateAdapter.getTimezoneOffset(startDate) -
+        dateAdapter.getTimezoneOffset(endDate);
       let height: number =
         differenceInMinutes(endDate, startDate) + timezoneOffset;
 
@@ -1132,7 +1133,10 @@ function getDayViewHourGrid(
   let dateAdjustment: (d: Date) => Date = (d: Date) => d;
 
   // this means that we change from or to DST on this day and that's going to cause problems so we bump the date
-  if (dateAdapter.timezoneOffset(startOfViewDay) !== dateAdapter.timezoneOffset(endOfViewDay)) {
+  if (
+    dateAdapter.getTimezoneOffset(startOfViewDay) !==
+    dateAdapter.getTimezoneOffset(endOfViewDay)
+  ) {
     startOfViewDay = addDays(startOfViewDay, 1);
     startOfView = addDays(startOfView, 1);
     endOfView = addDays(endOfView, 1);

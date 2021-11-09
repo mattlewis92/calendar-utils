@@ -63,5 +63,5 @@ export interface DateAdapter {
     }
   ): Date;
 
-  timezoneOffset(date: Date | number): number;
+  getTimezoneOffset(date: Date | number): number;
 }

@@ -26,7 +26,7 @@ import {
 } from 'date-fns';
 import { DateAdapter } from '../date-adapter';
 
-function timezoneOffset(date: Date | number): number {
+function getTimezoneOffset(date: Date | number): number {
   return new Date(date).getTimezoneOffset();
 }
 
@@ -56,6 +56,6 @@ export function adapterFactory(): DateAdapter {
     startOfWeek,
     getHours,
     getMinutes,
-    timezoneOffset,
+    getTimezoneOffset,
   };
 }
