@@ -1,9 +1,12 @@
 import './util/use-london-timezone';
 import { getWeekView } from '../src/calendar-utils';
 import { adapterFactory as dateFnsAdapterFactory } from '../src/date-adapters/date-fns';
+import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/moment';
 import { startOfDay } from 'date-fns';
+import * as moment from 'moment';
 
 const dateAdapter = dateFnsAdapterFactory();
+const momentDateAdapter = momentAdapterFactory(moment);
 
 describe('getWeekView', () => {
   it('should get the week view while handling the a DST change forward', () => {
@@ -49,5 +52,17 @@ describe('getWeekView', () => {
       ],
     });
     expect(result.hourColumns[0].events[0].height).toEqual(1439);
+  });
+});
+
+describe('getTimezoneOffset', () => {
+  it('should return the correct offset', () => {
+    const testDate = new Date('2019-04-01');
+
+    const dateFnsOffset = dateAdapter.getTimezoneOffset(testDate);
+    const momentOffset = momentDateAdapter.getTimezoneOffset(testDate);
+
+    expect(dateFnsOffset).toBe(-60);
+    expect(momentOffset).toBe(-60);
   });
 });
