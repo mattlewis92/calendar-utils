@@ -81,7 +81,6 @@ export function adapterFactory(moment): DateAdapter {
   }
 
   function max(dates: (Date | number)[]): Date {
-    // tslint:disable-line array-type
     return moment.max(dates.map((date) => moment(date))).toDate();
   }
 
