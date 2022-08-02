@@ -19,7 +19,6 @@
     "clean": "rm -rf dist",
     "preversion": "npm test",
     "postversion": "npm run build && git push && npm publish dist && npm run clean",
-    "codecov": "cat coverage/lcov.info | codecov",
     "lint": "eslint \"{src,test}/**/*.ts\""
   },
   "lint-staged": {
@@ -50,7 +49,6 @@
     "@typescript-eslint/eslint-plugin": "^5.32.0",
     "@typescript-eslint/parser": "^5.32.0",
     "chai": "^4.3.6",
-    "codecov": "^3.8.3",
     "copyfiles": "^2.4.1",
     "date-fns": "^2.29.1",
     "dayjs": "^1.11.4",
