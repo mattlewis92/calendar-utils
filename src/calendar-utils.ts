@@ -32,6 +32,7 @@ export interface WeekDay {
 export interface EventColor {
   primary: string;
   secondary: string;
+  secondaryText?: string;
 }
 
 export interface EventAction {
