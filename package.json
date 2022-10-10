@@ -20,7 +20,7 @@
     "preversion": "npm test",
     "postversion": "npm run build && git push && npm publish dist && npm run clean",
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "prepare": "husky install",
+    "postinstall": "husky install",
     "prepack": "pinst --disable",
     "postpack": "pinst --enable"
   },
