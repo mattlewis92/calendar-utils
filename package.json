@@ -20,7 +20,7 @@
     "preversion": "npm test",
     "postversion": "npm run build && git push && npm publish dist && npm run clean",
     "lint": "eslint \"{src,test}/**/*.ts\"",
-    "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\""
+    "prepare": "node -e \"try { require('husky').install() } catch (e) {}\""
   },
   "lint-staged": {
     "{src,test}/**/*.ts": [
