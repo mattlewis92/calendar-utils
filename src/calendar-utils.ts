@@ -110,11 +110,21 @@ export interface WeekViewTimeEvent {
   endsAfterDay: boolean;
 }
 
-interface DayView {
+export interface DayView {
   events: WeekViewTimeEvent[];
   width: number;
   allDayEvents: CalendarEvent[];
   period: ViewPeriod;
+}
+
+export interface DayViewEvent {
+  event: CalendarEvent;
+  height: number;
+  width: number;
+  top: number;
+  left: number;
+  startsBeforeDay: boolean;
+  endsAfterDay: boolean;
 }
 
 export interface WeekViewHourSegment {
