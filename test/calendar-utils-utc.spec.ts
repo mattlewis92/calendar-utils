@@ -17,6 +17,7 @@ import {
 import * as moment from 'moment';
 import * as dayjs from 'dayjs';
 import * as maxPlugin from 'dayjs/plugin/minMax';
+import * as luxon from 'luxon';
 
 import * as fakeTimers from '@sinonjs/fake-timers';
 import {
@@ -35,6 +36,7 @@ import {
 } from '../src/calendar-utils';
 import { adapterFactory as dateFnsAdapterFactory } from '../src/date-adapters/date-fns';
 import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/moment';
+import { adapterFactory as luxonAdapterFactory } from '../src/date-adapters/luxon';
 
 dayjs.extend(maxPlugin);
 
@@ -64,6 +66,10 @@ const adapters = [
     // we use moment adapter, because it works also for dayjs
     adapter: momentAdapterFactory(dayjs),
   },
+  {
+    name: 'luxon',
+    adapter: luxonAdapterFactory(luxon),
+  },
 ];
 
 adapters.forEach(({ name, adapter: dateAdapter }) => {
@@ -78,6 +84,12 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
       dayjs.locale('en', {
         weekStart: DAYS_OF_WEEK.SUNDAY,
       });
+
+      luxon.Settings.defaultWeekSettings = {
+        firstDay: 7,
+        minimalDays: 1,
+        weekend: [6, 7],
+      };
     });
 
     describe('getWeekViewHeader', () => {
@@ -470,6 +482,12 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStart: DAYS_OF_WEEK.TUESDAY,
           });
 
+          luxon.Settings.defaultWeekSettings = {
+            firstDay: DAYS_OF_WEEK.TUESDAY,
+            minimalDays: 1,
+            weekend: [6, 7],
+          };
+
           const result = getWeekView(dateAdapter, {
             events,
             viewDate: new Date('2017-05-24'),
@@ -520,6 +538,12 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
           dayjs.locale('en', {
             weekStart: DAYS_OF_WEEK.SATURDAY,
           });
+
+          luxon.Settings.defaultWeekSettings = {
+            firstDay: DAYS_OF_WEEK.SATURDAY,
+            minimalDays: 1,
+            weekend: [6, 7],
+          };
 
           const weekStartsOn = DAYS_OF_WEEK.SATURDAY;
           const viewDate: Date = new Date('2017-05-27');
