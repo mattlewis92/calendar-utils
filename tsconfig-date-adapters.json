@@ -5,6 +5,7 @@
   },
   "files": [
     "src/date-adapters/date-fns/index.ts",
-    "src/date-adapters/moment/index.ts"
+    "src/date-adapters/moment/index.ts",
+    "src/date-adapters/luxon/index.ts"
   ]
 }
