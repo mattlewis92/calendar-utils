@@ -2,11 +2,14 @@ import './util/use-london-timezone';
 import { getWeekView } from '../src/calendar-utils';
 import { adapterFactory as dateFnsAdapterFactory } from '../src/date-adapters/date-fns';
 import { adapterFactory as momentAdapterFactory } from '../src/date-adapters/moment';
+import { adapterFactory as luxonAdapterFactory } from '../src/date-adapters/luxon';
 import { startOfDay } from 'date-fns';
 import * as moment from 'moment';
+import * as luxon from 'luxon';
 
 const dateAdapter = dateFnsAdapterFactory();
 const momentDateAdapter = momentAdapterFactory(moment);
+const luxonDateAdapter = luxonAdapterFactory(luxon);
 
 describe('getWeekView', () => {
   it('should get the week view while handling the a DST change forward', () => {
@@ -61,8 +64,10 @@ describe('getTimezoneOffset', () => {
 
     const dateFnsOffset = dateAdapter.getTimezoneOffset(testDate);
     const momentOffset = momentDateAdapter.getTimezoneOffset(testDate);
+    const luxonOffset = luxonDateAdapter.getTimezoneOffset(testDate);
 
     expect(dateFnsOffset).toBe(-60);
     expect(momentOffset).toBe(-60);
+    expect(luxonOffset).toBe(-60);
   });
 });
