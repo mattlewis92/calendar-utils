@@ -1,6 +1,6 @@
 {
   "name": "calendar-utils",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Utility functions to generate views for calendars",
   "packageManager": "pnpm@9.11.0",
   "main": "bundles/calendar-utils.umd.js",
