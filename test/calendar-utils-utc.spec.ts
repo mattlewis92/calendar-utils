@@ -3271,7 +3271,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             viewDate: new Date('2016-07-03'),
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
           })
-        ).not.toThrowError();
+        ).not.toThrow();
       });
 
       it('should not throw if no events are null', () => {
@@ -3281,7 +3281,7 @@ adapters.forEach(({ name, adapter: dateAdapter }) => {
             weekStartsOn: DAYS_OF_WEEK.SUNDAY,
             events: null,
           })
-        ).not.toThrowError();
+        ).not.toThrow();
       });
 
       it('should handle changes in DST', () => {
