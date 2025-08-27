@@ -8,10 +8,10 @@
   "typings": "calendar-utils.d.ts",
   "exports": {
     "./date-adapters/date-adapter": {
-      "main": "./date-adapters/index.js",
-      "types": "./date-adapters/index.d.ts",
-      "require": "./date-adapters/index.js",
-      "import": "./date-adapters/esm/date-adapter.js"
+      "main": "./date-adapters/date-adapter/index.js",
+      "types": "./date-adapters/date-adapter/index.d.ts",
+      "require": "./date-adapter/date-adapters/index.js",
+      "import": "./date-adapters/esm/date-adapter/index.js"
     },
     "./date-adapters/date-fns": {
       "main": "./date-adapters/date-fns/index.js",
