@@ -25,6 +25,9 @@
       "require": "./date-adapters/moment/index.js",
       "import": "./date-adapters/esm/moment/index.js"
     },
+    "./package.json": {
+      "default": "./package.json"
+    },
     ".": {
       "main": "./bundles/calendar-utils.umd.js",
       "types": "./calendar-utils.d.ts",
