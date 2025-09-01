@@ -96,8 +96,8 @@
   },
   "peerDependencies": {
     "date-fns": "^4.0.0",
-    "luxon": "^3.5.0",
-    "moment": "^2.29.4"
+    "luxon": "^3.0.0",
+    "moment": "^2.0.0"
   },
   "peerDependenciesMeta": {
     "date-fns": {
