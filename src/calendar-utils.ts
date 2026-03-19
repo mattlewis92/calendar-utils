@@ -158,7 +158,13 @@ function getExcludedSeconds(
     return 0;
   }
   const { addSeconds, getDay, addDays } = dateAdapter;
-  const endDate: Date = addSeconds(startDate, seconds - 1);
+  let endDate = addSeconds(startDate, seconds - 1);
+  if (precision === 'days') {
+    // otherwise when changing to DST hour may shift before the hour of the start date
+    const daysDiff = Math.round(seconds / SECONDS_IN_DAY);
+    endDate = addSeconds(addDays(startDate, daysDiff), -1);
+  }
+
   const dayStart: number = getDay(startDate);
   const dayEnd: number = getDay(endDate);
   let result = 0; // Calculated in seconds
@@ -232,13 +238,8 @@ function getWeekViewEventSpan(
     totalDaysInView: number;
   }
 ): number {
-  const {
-    max,
-    differenceInSeconds,
-    addDays,
-    endOfDay,
-    differenceInDays,
-  } = dateAdapter;
+  const { max, differenceInSeconds, addDays, endOfDay, differenceInDays } =
+    dateAdapter;
   let span: number = SECONDS_IN_DAY;
   const begin: Date = max([event.start, startOfWeekDate]);
 
