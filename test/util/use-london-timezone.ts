@@ -1,3 +1,4 @@
 import { register } from 'timezone-mock';
 
-register('Europe/London');
+export const DEFAULT_TIMEZONE = 'Europe/London';
+register(DEFAULT_TIMEZONE);
